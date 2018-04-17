@@ -18,7 +18,7 @@ The idea of quake stats has two components:
 2. Where am I in the global ranking?
 3. How do I compare to my neigbours and top players?
 
-- *Note: Profile and leaderboards could be expanded to teams and clans.*
+*Note: Profile and leaderboards could be expanded to teams and clans.*
 
 *Note: There's also idea of seasons (e.g., a month or quarter, everyone starts with a clean slate) which is somewhat related to leaderboards.*
 
