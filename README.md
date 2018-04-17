@@ -89,13 +89,13 @@ The idea of quake stats has two components:
 
 ### Issues (collected from #dev-corner discord discussion)
 - Global ranking could give people incentive to play for stats (their public persona) which might impact community in a number of ways, including playing fewer and less diverse games. This apparently happened in QuakeLive. And perhaps could be especially harmful to a small community.
-- Ranking defines what's important about the game. This can be misaligned with personal goals (e.g., playing casually for fun) makeing one feel like it's not the right game / community. Personal anecdote: SC2 ranking always made me feel like I can't afford the time required to climb to the top, and so there's no point of playing. Rankings made me ponder the subject and took the focus away from fun.
+- Ranking defines what's important about the game. This can be misaligned with personal goals (e.g., playing casually for fun) making one feel like it's not the right game / community. Personal anecdote: SC2 ranking always made me feel like I can't afford the time required to climb to the top, and so there's no point of playing. Rankings made me ponder the subject and took the focus away from fun.
 - Ranking could be especially discouraging to beginners. Is quake community somewhat more proficient than others? Lots of old school players.
 - The above fears may not be justified. Rankings could benefit more people than they impact. They could bring extra excitement, incentive to improve, and give a unified view (across different divisions) of who's where.
 - There's a risk that small community and lack of matching system would not provide enough data to build reliable ranking. Think of clusters of players that never play outside their circles. How do you stack rank them?
-- Among other things, a good ranking system should to take player skill into account. Winning against a good player is worth more than winning against a poor player.
-- Ranking can't be based on a basic stat such as win/loss. It needs to be a synthetic, derived metric that takes multiple factors into account (who you won against, number of different maps played etc.).
-- The need for synthetic metric creates a risk that players wouldn't understand how it works and thus not trust it.
+- Among other things, a good ranking system should take player skill into account. Winning against a good player is worth more than winning against a poor player.
+- Ranking can't be based on a basic stat such as win/loss or #wins. It needs to be an abstract synthetic metric that takes multiple factors into account (skill of your opponents, map diversity etc.). This is a solved problem that will require a bit of research and building some sort of Bayesian model or using battle tested metric such as TrueSkill (see below).
+- The need for synthetic metric creates a risk that players wouldn't understand how it works and thus not fully trust it.
 
 ### Ideas
 - Opt in / out. You can say "I don't want to be part of this, thanks".
