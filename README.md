@@ -102,3 +102,6 @@ The idea of quake stats has two components:
 - Ranked / unranked matches. Ability to pick which of your matches should contribute to the global ranking.
 - Global ranking could be refreshed every week or month to prevent obsessing over it.
 
+### Links
+- [badplace endgame screenshot](https://badplace.eu/server/dev.badplace.eu/viewgame/24861/)
+- 
