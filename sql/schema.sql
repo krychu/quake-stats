@@ -1,5 +1,7 @@
+DROP TABLE IF EXISTS game_player_weapons;
 DROP TABLE IF EXISTS game_players;
 DROP TABLE IF EXISTS games;
+DROP SEQUENCE IF EXISTS game_player_weapons_id_seq;
 DROP SEQUENCE IF EXISTS game_players_id_seq;
 DROP SEQUENCE IF EXISTS games_id_seq;
 
@@ -55,77 +57,6 @@ CREATE TABLE game_players
   speed_max            REAL,
   speed_avg            REAL,
 
-  -- weapons
-  axe_attacks          INTEGER,
-  axe_hits             INTEGER,
-  axe_kills_total      INTEGER,
-  axe_kills_team       INTEGER,
-  axe_kills_enemy      INTEGER,
-  axe_kills_self       INTEGER,
-  axe_deaths           INTEGER,
-  axe_pickups_dropped  INTEGER,
-  axe_pickups_taken    INTEGER,
-  axe_dmg_enemy        INTEGER,
-  axe_dmg_team         INTEGER,
-
-  sg_attacks           INTEGER,
-  sg_hits              INTEGER,
-  sg_kills_total       INTEGER,
-  sg_kills_team        INTEGER,
-  sg_kills_enemy       INTEGER,
-  sg_kills_self        INTEGER,
-  sg_deaths            INTEGER,
-  sg_pickups_dropped   INTEGER,
-  sg_pickups_taken     INTEGER,
-  sg_dmg_enemy         INTEGER,
-  sg_dmg_team          INTEGER,
-
-  gl_attacks           INTEGER,
-  gl_hits              INTEGER,
-  gl_real              INTEGER,
-  gl_virtual           INTEGER,
-  gl_kills_total       INTEGER,
-  gl_kills_team        INTEGER,
-  gl_kills_enemy       INTEGER,
-  gl_kills_self        INTEGER,
-  gl_deaths            INTEGER,
-  gl_pickups_dropped   INTEGER,
-  gl_pickups_taken     INTEGER,
-  gl_pickups_total_taken INTEGER,
-  gl_pickups_spawn_taken INTEGER,
-  gl_pickips_spawn_total_taken INTEGER,
-  gl_dmg_enemy         INTEGER,
-  gl_dmg_team          INTEGER,
-
-  rl_attacks           INTEGER,
-  rl_hits              INTEGER,
-  rl_real              INTEGER,
-  rl_virtual           INTEGER,
-  rl_kills_total       INTEGER,
-  rl_kills_team        INTEGER,
-  rl_kills_enemy       INTEGER,
-  rl_kills_self        INTEGER,
-  rl_deaths            INTEGER,
-  rl_pickups_dropped   INTEGER,
-  rl_pickups_taken     INTEGER,
-  rl_pickups_total_taken INTEGER,
-  rl_pickups_spawn_taken INTEGER,
-  rl_pickups_spawn_total_taken INTEGER,
-  rl_dmg_enemy         INTEGER,
-  rl_dmg_team          INTEGER,
-
-  lg_attacks           INTEGER,
-  lg_hits              INTEGER,
-  lg_kills_total       INTEGER,
-  lg_kills_team        INTEGER,
-  lg_kills_enemy       INTEGER,
-  lg_kills_self        INTEGER,
-  lg_deaths            INTEGER,
-  lg_pickups_dropped   INTEGER,
-  lg_pickups_taken     INTEGER,
-  lg_dmg_enemy         INTEGER,
-  lg_dmg_team          INTEGER,
-
   -- items
   health_15            INTEGER,
   health_25            INTEGER,
@@ -135,6 +66,34 @@ CREATE TABLE game_players
   ra                   INTEGER,
   q                    INTEGER,
   q_time               INTEGER,
+
+  created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' )
+);
+
+CREATE SEQUENCE game_player_weapons_id_seq;
+CREATE TABLE game_player_weapons
+(
+  id                   INTEGER PRIMARY KEY DEFAULT nextval('game_player_weapons_id_seq'),
+  game_id              INTEGER REFERENCES games (id),
+  game_player_id       INTEGER REFERENCES game_players (id),
+
+  weapon               TEXT,
+  attacks              INTEGER,
+  hits                 INTEGER,
+  real                 INTEGER,
+  virtual              INTEGER,
+  kills_total          INTEGER,
+  kills_team           INTEGER,
+  kills_enemy          INTEGER,
+  kills_self           INTEGER,
+  deaths               INTEGER,
+  pickups_dropped      INTEGER,
+  pickups_taken        INTEGER,
+  pickups_total_taken  INTEGER,
+  pickups_spawn_taken  INTEGER,
+  pickups_spawn_total_taken INTEGER,
+  damage_enemy         INTEGER,
+  damage_team          INTEGER,
 
   created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' )
 );
