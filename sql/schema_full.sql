@@ -1,5 +1,7 @@
+DROP TABLE IF EXISTS game_player_weapons;
 DROP TABLE IF EXISTS game_players;
 DROP TABLE IF EXISTS games;
+DROP SEQUENCE IF EXISTS game_player_weapons_id_seq;
 DROP SEQUENCE IF EXISTS game_players_id_seq;
 DROP SEQUENCE IF EXISTS games_id_seq;
 
@@ -30,25 +32,25 @@ CREATE TABLE game_players
   bottom_color         INTEGER,
   ping                 INTEGER,
   name                 TEXT,
-  -- team                 TEXT,
+  team                 TEXT,
 
   -- stats
   frags                INTEGER,
   deaths               INTEGER,
-  -- tk                   INTEGER,
+  tk                   INTEGER,
   spawn_frags          INTEGER,
   kills                INTEGER,
   suicides             INTEGER,
 
   -- dmg
-  damage_taken         INTEGER,
-  damage_given         INTEGER,
-  --damage_team          INTEGER,
-  damage_self          INTEGER,
-  -- dmg_team_weapons     INTEGER,
-  -- dmg_enemy_weapons    INTEGER,
+  dmg_taken            INTEGER,
+  dmg_given            INTEGER,
+  dmg_team             INTEGER,
+  dmg_self             INTEGER,
+  dmg_team_weapons     INTEGER,
+  dmg_enemy_weapons    INTEGER,
 
-  -- xfer                 INTEGER,
+  xfer                 INTEGER,
   spree_max            INTEGER,
   spree_quad           INTEGER,
   control              REAL,
@@ -65,38 +67,33 @@ CREATE TABLE game_players
   q                    INTEGER,
   q_time               INTEGER,
 
-  -- weapons
-  sg_attacks           INTEGER,
-  sg_direct_hits       INTEGER,
-  sg_kills             INTEGER,
-  sg_deaths            INTEGER,
-  sg_damage            INTEGER,
-
-  gl_attacks           INTEGER,
-  gl_direct_hits       INTEGER,
-  gl_effective_hits    INTEGER,
-  gl_kills             INTEGER,
-  -- gl_kills_owner       INTEGER,
-  gl_deaths            INTEGER,
-  gl_picked            INTEGER,
-  -- gl_dropped           INTEGER,
-  gl_damage            INTEGER,
-
-  rl_attacks           INTEGER,
-  rl_direct_hits       INTEGER,
-  rl_effective_hits    INTEGER,
-  rl_kills             INTEGER,
-  rl_deaths            INTEGER,
-  rl_picked            INTEGER,
-  rl_damage            INTEGER,
-
-  lg_attacks           INTEGER,
-  lg_direct_hits       INTEGER,
-  lg_kills             INTEGER,
-  lg_deaths            INTEGER,
-  lg_picked            INTEGER,
-  lg_damage            INTEGER,
-
   created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' )
 );
 
+CREATE SEQUENCE game_player_weapons_id_seq;
+CREATE TABLE game_player_weapons
+(
+  id                   INTEGER PRIMARY KEY DEFAULT nextval('game_player_weapons_id_seq'),
+  game_id              INTEGER REFERENCES games (id),
+  game_player_id       INTEGER REFERENCES game_players (id),
+
+  weapon               TEXT,
+  attacks              INTEGER,
+  hits                 INTEGER,
+  real                 INTEGER,
+  virtual              INTEGER,
+  kills_total          INTEGER,
+  kills_team           INTEGER,
+  kills_enemy          INTEGER,
+  kills_self           INTEGER,
+  deaths               INTEGER,
+  pickups_dropped      INTEGER,
+  pickups_taken        INTEGER,
+  pickups_total_taken  INTEGER,
+  pickups_spawn_taken  INTEGER,
+  pickups_spawn_total_taken INTEGER,
+  damage_enemy         INTEGER,
+  damage_team          INTEGER,
+
+  created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' )
+);
