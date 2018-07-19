@@ -38,7 +38,8 @@ defmodule Webapp.MixProject do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:postgrex, "~> 0.13.5"}
     ]
   end
 end

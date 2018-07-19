@@ -11,30 +11,51 @@ module.exports = (env, options) => ({
       new OptimizeCSSAssetsPlugin({})
     ]
   },
-  entry: './js/app.js',
+  //entry: './js/app.js',
+  entry: './js/main.ts',
+  devtool: 'inline-source-map',
   output: {
     filename: 'app.js',
     path: path.resolve(__dirname, '../priv/static/js')
   },
+  watchOptions: {
+    poll: true
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
       },
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'babel-loader'
+      //   }
+      // },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        test: /\.scss$/,
+        use: [
+          //"style-loader", // creates style nodes from JS strings
+          MiniCssExtractPlugin.loader,
+          "css-loader", // translates CSS into CommonJS
+          "sass-loader" // compiles Sass to CSS
+        ]
       }
+      // {
+      //   test: /\.css$/,
+      //   use: [MiniCssExtractPlugin.loader, 'css-loader']
+      // }
     ]
+  },
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js' ]
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
     new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
   ]
 });
-
 

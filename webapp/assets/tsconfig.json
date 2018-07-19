@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    //"noImplicitAny": true,
+    "sourceMap": true,
+    "module": "es6",
+    "target": "es2015",//"es5",
+    //"allowJs": true
+  }
+}
