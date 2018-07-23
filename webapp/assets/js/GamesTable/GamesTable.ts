@@ -1,4 +1,5 @@
 import { htmlToElement, setAttributeIfDifferent, setPropertyIfDifferent } from "../utils";
+import './GamesTable.scss';
 
 export class GamesTable extends HTMLElement {
 
@@ -9,9 +10,10 @@ export class GamesTable extends HTMLElement {
 
   constructor() {
     super();
-    this._shadowRoot = this.attachShadow({ mode: "open" });
-    this._container = this._domCreateContainer();
-    this._shadowRoot.appendChild( this._container );
+    //this._shadowRoot = this.attachShadow({ mode: "open" });
+    //this._container = this._domCreateContainer();
+    //this._shadowRoot.appendChild( this._container );
+    //this.appendChild( this._container );
 
     this._readPropertiesFromAttributes();
 
@@ -53,7 +55,12 @@ export class GamesTable extends HTMLElement {
   }
 
   connectedCallback() {
-    this._recreate( this.player, this.gameCnt );
+    if ( !this._container ) {
+      this._container = this._domCreateContainer();
+      this.appendChild( this._container );
+    }
+
+    this._recreateGames( this.player, this.gameCnt );
   }
 
   disconnectedCallback() {
@@ -67,10 +74,10 @@ export class GamesTable extends HTMLElement {
   attributeChangedCallback( name, oldValue, newValue ) {
     console.log("1");
     this.player = newValue;
-    this._recreate( this.player, this.gameCnt );
+    this._recreateGames( this.player, this.gameCnt );
   }
 
-  _recreate( player: string, gameCnt: number ): void {
+  _recreateGames( player: string, gameCnt: number ): void {
     if ( !player || !player.length || this.gameCnt < 1 ) {
       return;
     }
@@ -103,7 +110,8 @@ export class GamesTable extends HTMLElement {
 <div class="recent-games-row">
   <div class="recent-games-cell">${b.name}</div>
   <div class="recent-games-cell">${a.map}</div>
-  <div class="recent-games-cell">${a.frags} / ${b.frags}</div>
+  <div class="recent-games-cell">
+    <div class="recent-games${a.frags} / ${b.frags}</div>
   <div class="recent-games-cell">${a.kd}</div>
   <div class="recent-games-cell">${a.dmg_gt}</div>
   <div class="recent-games-cell">${a.lg_acc}</div>
@@ -138,9 +146,12 @@ export class GamesTable extends HTMLElement {
   }
 
   _domRemoveGames( container: HTMLElement ): void {
-    while ( container.firstChild ) {
-      container.removeChild( container.firstChild );
+    for ( let i = container.childElementCount - 1; i > 0; i-- ) {
+      container.removeChild( container.children[ i ] );
     }
+    // while ( container.firstChild ) {
+    //   container.removeChild( container.firstChild );
+    // }
   }
 
 }

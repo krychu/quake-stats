@@ -1,0 +1,77 @@
+$cell-width: 70px;
+
+// #drawing {
+//   width: 300px;
+//   height: 300px;
+// }
+
+// body {
+//   font-family: Courier;
+// }
+
+@mixin recent-games-row() {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin recent-games-cell() {
+  margin-left: 10px;
+  margin-right: 10px;
+  min-width: $cell-width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:first-child {
+    min-width: $cell-width + 50px;
+    text-align: left;
+  }
+
+  &:nth-child(9) {
+    min-width: $cell-width / 2.0;
+  }
+}
+
+.rg__header {
+  
+}
+
+.rg__row {
+  
+}
+
+.rg__cell {
+  
+}
+
+
+
+games-table .recent-games {
+  font-family: Courier;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  font-family: Courier;
+  text-align: right;
+
+  .recent-games-header {
+    @include recent-games-row();
+
+    font-weight: bold;
+    margin-bottom: 5px;
+
+    .recent-games-header-cell {
+      @include recent-games-cell();
+      border: 1px solid white;
+    }
+  }
+
+  .recent-games-row {
+    display: flex;
+    flex-direction: row;
+    color: #777;
+
+    .recent-games-cell {
+      @include recent-games-cell();
+    }
+  }
+}

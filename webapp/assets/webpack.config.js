@@ -12,7 +12,8 @@ module.exports = (env, options) => ({
     ]
   },
   //entry: './js/app.js',
-  entry: './js/main.ts',
+  entry: [ './css/app.scss', './js/main.ts' ],
+  //entry: './js/main.ts',
   devtool: 'inline-source-map',
   output: {
     filename: 'app.js',
@@ -28,6 +29,20 @@ module.exports = (env, options) => ({
         use: 'ts-loader',
         exclude: /node_modules/
       },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      }
+
+      //   test: /\.(sa|sc|c)ss$/,
+      //   use: [
+      //     //devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+      //     'css-loader',
+      //     //'postcss-loader',
+      //     'sass-loader',
+      //   ],
+      // }
+
       // {
       //   test: /\.js$/,
       //   exclude: /node_modules/,
@@ -35,15 +50,6 @@ module.exports = (env, options) => ({
       //     loader: 'babel-loader'
       //   }
       // },
-      {
-        test: /\.scss$/,
-        use: [
-          //"style-loader", // creates style nodes from JS strings
-          MiniCssExtractPlugin.loader,
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS
-        ]
-      }
       // {
       //   test: /\.css$/,
       //   use: [MiniCssExtractPlugin.loader, 'css-loader']
@@ -55,7 +61,8 @@ module.exports = (env, options) => ({
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-    new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
+    new CopyWebpackPlugin([{ from: 'static/', to: '../' }]),
+    //new WebpackNotifierPlugin(),
   ]
 });
 
