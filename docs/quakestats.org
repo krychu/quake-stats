@@ -1,0 +1,15 @@
+
+
+
+** Mac
+   - https://stackoverflow.com/questions/44654216/correct-way-to-install-psql-without-full-postgres-on-macos
+   - psql =brew install posgres= (this also install postgres but doesn't start
+     it: verify with =brew services list=)
+
+
+** PostgreSQL
+   - TODO
+   - =cd ./quakestats/sql=
+   - Get host IP: =ifconfig | grep inet=
+   - Create database: =createdb --host IP --port 32768 --username postgres quakestats=
+   - Create tables: =psql --host IP --port 32768 --username postgres --dbname quakestats --file schema.sql=
