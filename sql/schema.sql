@@ -1,10 +1,7 @@
-DROP DATABASE IF EXISTS quakestats;
-CREATE DATABASE quakestats;
-
--- DROP TABLE IF EXISTS game_players;
--- DROP TABLE IF EXISTS games;
--- DROP SEQUENCE IF EXISTS game_players_id_seq;
--- DROP SEQUENCE IF EXISTS games_id_seq;
+DROP TABLE IF EXISTS game_players;
+DROP TABLE IF EXISTS games;
+DROP SEQUENCE IF EXISTS game_players_id_seq;
+DROP SEQUENCE IF EXISTS games_id_seq;
 
 CREATE SEQUENCE games_id_seq;
 CREATE TABLE games

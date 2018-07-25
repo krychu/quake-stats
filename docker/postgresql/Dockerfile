@@ -1,2 +1,3 @@
-FROM postgresq:latest
-ADD ../../sql/schema.sql /docker-entrypoint-initdb.d/schema.sql
+FROM postgres:latest
+ADD sql/schema.sql /
+ADD docker/postgresql/init.sh /docker-entrypoint-initdb.d/
