@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: docker/webapp/Dockerfile
+    depends_on:
+      - postgresql
     ports:
     - "4000:4000"
     volumes:
