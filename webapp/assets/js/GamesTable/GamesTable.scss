@@ -1,14 +1,5 @@
 $cell-width: 70px;
 
-// #drawing {
-//   width: 300px;
-//   height: 300px;
-// }
-
-// body {
-//   font-family: Courier;
-// }
-
 @mixin recent-games-row() {
   display: flex;
   flex-direction: row;
@@ -31,46 +22,32 @@ $cell-width: 70px;
   }
 }
 
-.rg__header {
-  
-}
-
-.rg__row {
-  
-}
-
-.rg__cell {
-  
-}
-
-
-
-games-table .recent-games {
-  font-family: Courier;
-  font-size: 14px;
+games-table {
+  // font-family: Courier;
+  // font-size: 14px;
   display: flex;
   flex-direction: column;
   font-family: Courier;
   text-align: right;
 
-  .recent-games-header {
+  .header-row {
     @include recent-games-row();
 
     font-weight: bold;
     margin-bottom: 5px;
 
-    .recent-games-header-cell {
+    .cell {
       @include recent-games-cell();
       border: 1px solid white;
     }
   }
 
-  .recent-games-row {
+  .game-row {
     display: flex;
     flex-direction: row;
     color: #777;
 
-    .recent-games-cell {
+    .cell {
       @include recent-games-cell();
     }
   }

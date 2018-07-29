@@ -1,20 +1,16 @@
-import { htmlToElement, setAttributeIfDifferent, setPropertyIfDifferent } from "../utils";
+import { htmlToElement, setAttributeIfDifferent, setPropertyIfDifferent, roundString, roundPercentageString } from "../utils";
 import './GamesTable.scss';
 
 export class GamesTable extends HTMLElement {
 
   private _shadowRoot;
-  private _container: HTMLElement;
   private _player: string;
   private _gameCnt: number = 10;
 
   constructor() {
     super();
     //this._shadowRoot = this.attachShadow({ mode: "open" });
-    //this._container = this._domCreateContainer();
     //this._shadowRoot.appendChild( this._container );
-    //this.appendChild( this._container );
-
     this._readPropertiesFromAttributes();
 
     // event listeners here
@@ -48,6 +44,7 @@ export class GamesTable extends HTMLElement {
   }
 
   set gameCnt( newCnt: number ) {
+    // TODO: use setAttributeIfDifferent
     if ( this.gameCnt !== newCnt ) {
       this._gameCnt = newCnt;
       this.setAttribute( "game-cnt", "" + this._gameCnt );
@@ -55,9 +52,8 @@ export class GamesTable extends HTMLElement {
   }
 
   connectedCallback() {
-    if ( !this._container ) {
-      this._container = this._domCreateContainer();
-      this.appendChild( this._container );
+    if ( !this.childElementCount) {
+      this.appendChild( this._domCreateHeaderRow() );
     }
 
     this._recreateGames( this.player, this.gameCnt );
@@ -72,7 +68,6 @@ export class GamesTable extends HTMLElement {
   }
 
   attributeChangedCallback( name, oldValue, newValue ) {
-    console.log("1");
     this.player = newValue;
     this._recreateGames( this.player, this.gameCnt );
   }
@@ -87,8 +82,8 @@ export class GamesTable extends HTMLElement {
       .then( (responseText) => {
         const json = JSON.parse( responseText );
         const games = this._domCreateGames( json );
-        this._domRemoveGames( this._container );
-        this._domAddGames( games, this._container );
+        this._domRemoveGames();
+        this._domAddGames( games );
       });
   }
 
@@ -96,9 +91,9 @@ export class GamesTable extends HTMLElement {
     return `/api/${player}/games/${gameCnt}`;
   }
 
-  _domAddGames( games: HTMLElement[], container: HTMLElement ): void {
+  _domAddGames( games: HTMLElement[] ): void {
     games.forEach( (e: HTMLElement) => {
-      container.appendChild( e );
+      this.appendChild( e );
     })
   }
 
@@ -107,51 +102,47 @@ export class GamesTable extends HTMLElement {
 
     json.forEach( ([a, b]: Array<any>) => {
       const s = `
-<div class="recent-games-row">
-  <div class="recent-games-cell">${b.name}</div>
-  <div class="recent-games-cell">${a.map}</div>
-  <div class="recent-games-cell">
-    <div class="recent-games${a.frags} / ${b.frags}</div>
-  <div class="recent-games-cell">${a.kd}</div>
-  <div class="recent-games-cell">${a.dmg_gt}</div>
-  <div class="recent-games-cell">${a.lg_acc}</div>
-  <div class="recent-games-cell">${a.dmg_per_minute}</div>
-  <div class="recent-games-cell">${a.ra}</div>
-  <div class="recent-games-cell">${a.ra / ( a.ra + b.ra )}</div>
-</div>
-`;
+      <div class="game-row">
+        <div class="cell">${b.name}</div>
+        <div class="cell">${a.map}</div>
+        <div class="cell">
+          ${a.frags} / ${b.frags}
+        </div>
+        <div class="cell">${ roundString(a.kd, 2) }</div>
+        <div class="cell">${ roundString(a.dmg_gt, 2) }</div>
+        <div class="cell">${ roundPercentageString(a.lg_acc, 1) }</div>
+        <div class="cell">${ roundString(a.dmg_per_minute) }</div>
+        <div class="cell">${a.ra}</div>
+        <div class="cell">${ roundPercentageString(a.ra / ( a.ra + b.ra )) }</div>
+      </div>
+      `;
       games.push( htmlToElement( s ) );
     });
 
     return games;
   }
 
-  _domCreateContainer(): HTMLElement {
+  _domCreateHeaderRow(): HTMLElement {
     const s = `
-<div class="recent-games">
-  <div class="recent-games-header">
-    <div class="recent-games-header-cell">opponent</div>
-    <div class="recent-games-header-cell">map</div>
-    <div class="recent-games-header-cell">score</div>
-    <div class="recent-games-header-cell">K/D</div>
-    <div class="recent-games-header-cell">G/T</div>
-    <div class="recent-games-header-cell">LG%</div>
-    <div class="recent-games-header-cell">dmg/min</div>
-    <div class="recent-games-header-cell">ra</div>
-  </div>
-</div>
-`;
+    <div class="header-row">
+      <div class="cell">opponent</div>
+      <div class="cell">map</div>
+      <div class="cell">score</div>
+      <div class="cell">K/D</div>
+      <div class="cell">G/T</div>
+      <div class="cell">LG%</div>
+      <div class="cell">dmg/min</div>
+      <div class="cell">ra</div>
+    </div>
+    `;
 
     return htmlToElement( s );
   }
 
-  _domRemoveGames( container: HTMLElement ): void {
-    for ( let i = container.childElementCount - 1; i > 0; i-- ) {
-      container.removeChild( container.children[ i ] );
+  _domRemoveGames(): void {
+    for ( let i = this.childElementCount - 1; i > 0; i-- ) {
+      this.removeChild( this.children[ i ] );
     }
-    // while ( container.firstChild ) {
-    //   container.removeChild( container.firstChild );
-    // }
   }
 
 }

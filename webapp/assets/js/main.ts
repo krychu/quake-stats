@@ -1,5 +1,8 @@
 import "./GamesTable/GamesTable";
 import { GamesTable } from "./GamesTable/GamesTable";
+import { GamesChart } from "./GamesChart/GamesChart";
+//import SVG from "svg.js";
+//import * as svg from "svg.js";
 
 export function main() {
   const stats = document.getElementById("stats");
@@ -7,7 +10,11 @@ export function main() {
   recentGames.player = "LocKtar";
   recentGames.gameCnt = 10;
   stats.appendChild(recentGames);
-  console.log(recentGames);
+
+  const recentGamesChart = document.createElement( "games-chart" ) as GamesChart;
+  recentGamesChart.plyaer = "LocKtar";
+  recentGamesChart.gameCnt = 10;
+  stats.
 }
 
 main();

@@ -1,6 +1,17 @@
 /* This file is for your main application css. */
 
-@import "./phoenix.css";
+//@import "./phoenix.css";
+
+main {
+  // font-family: Courier;
+  // font-size: 1.6em;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 0.9em;
+  font-weight: 300;
+  line-height: 1.4;
+  max-width: 80rem;
+  margin: 0 auto;
+}
 
 // body {
 //   background-color: red;
