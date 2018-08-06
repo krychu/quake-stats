@@ -1,1 +1,4 @@
-<div id="stats"></div>
+<div id="stats">
+  <%= render WebappWeb.GamesView, "games_chart.html", games: @recent_games %>
+  <%= render WebappWeb.GamesView, "games.html", games: Enum.slice( @recent_games, 0, 20 ) %>
+</div>

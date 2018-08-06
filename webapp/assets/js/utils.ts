@@ -12,11 +12,11 @@ export function round( n: number, p: number ): number {
   return Math.round( n * m ) / m;
 }
 
-export function roundString(n: number, p: number): number {
+export function roundString(n: number, p: number): string {
   return round( n, p ).toFixed( p );
 }
 
-export function roundPercentageString( n: number, p: number ): number {
+export function roundPercentageString( n: number, p: number ): string {
   return round( n * 100, p ).toFixed( p ) + "%";
 }
 
@@ -31,3 +31,4 @@ export function setPropertyIfDifferent( e: HTMLElement, name: string, value: str
     e[ name ] = value;
   }
 }
+

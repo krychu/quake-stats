@@ -25,5 +25,6 @@ defmodule WebappWeb.Router do
     pipe_through :api
 
     get "/:player/games/:cnt", GamesController, :games
+    get "/:player/games_chart/:cnt", GamesController, :games_chart
   end
 end
