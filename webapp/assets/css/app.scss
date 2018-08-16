@@ -4,11 +4,13 @@
 
 @import "./games_table.scss";
 @import "./games_chart.scss";
+@import "./performance.scss";
 
 main {
   // font-family: Courier;
   // font-size: 1.6em;
-  font-family: 'Helvetica', 'Arial', sans-serif;
+  //font-family: 'Helvetica', 'Arial', sans-serif;
+  font-family: Courier;
   font-size: 0.9em;
   font-weight: 300;
   line-height: 1.4;

@@ -26,5 +26,6 @@ defmodule WebappWeb.Router do
 
     get "/:player/games/:cnt", GamesController, :games
     get "/:player/games_chart/:cnt", GamesController, :games_chart
+    #get "/:player/game_cnt", PerformanceController, :game_cnt
   end
 end

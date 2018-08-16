@@ -12,7 +12,7 @@
   <line class="x-axis" x1="<%= data.chart_padding %>" y1="<%= data.svg_height / 2 %>" x2="<%= data.svg_width - data.chart_padding %>" y2="<%= data.svg_height / 2 %>" />
 
   <!-- line chart -->
-  <polyline class="lines" points="<%= data.points_str %>" fill="none" stroke="black" />
+  <polyline class="lines" points="<%= data.points_str %>" />
 
   <!-- circles -->
   <%= for point <- data.points do %>
