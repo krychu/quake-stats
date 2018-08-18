@@ -204,7 +204,8 @@ defmodule Test do
   end
 
   def pg_get do
-    Postgrex.start_link(hostname: "192.168.1.106", port: 32768, username: "postgres", database: "quakestats")
+    # Postgrex.start_link(hostname: "192.168.1.106", port: 32768, username: "postgres", database: "quakestats")
+    Postgrex.start_link(hostname: "127.0.0.1", port: 32768, username: "postgres", database: "quakestats")
   end
 
 end

@@ -1,6 +1,6 @@
 import { htmlToElement, setAttributeIfDifferent, setPropertyIfDifferent, roundString, roundPercentageString } from "../utils";
 import './GamesChart.scss';
-import SVG from "svg.js";
+// import SVG from "svg.js";
 
 export class GamesChart extends HTMLElement {
 
@@ -13,9 +13,9 @@ export class GamesChart extends HTMLElement {
     //   this.appendChild( this._domCreateContainer() );
     // }
 
-    SVG()
+    //SVG()
 
-    this._recreateGames( this.player, this.gameCnt );
+    //this._recreateGames( this.player, this.gameCnt );
   }
 
   disconnectedCallback() {
