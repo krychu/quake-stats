@@ -2,4 +2,6 @@
   <%= render WebappWeb.GamesView, "games_chart.html", games: @recent_games %>
     <%= render WebappWeb.GamesView, "games.html", games: Enum.slice( @recent_games, 0, 20 ) %>
     <%= render WebappWeb.PerformanceView, "performance.html", win_probability_timeline: @win_probability_timeline, frags_proportion_timeline: @frags_proportion_timeline, lg_accuracy_timeline: @lg_accuracy_timeline %>
+    <%= render WebappWeb.OpponentsView, "opponents.html", opponents: @opponents %>
+    <%= render WebappWeb.MapsView, "maps.html", maps: @maps %>
 </div>

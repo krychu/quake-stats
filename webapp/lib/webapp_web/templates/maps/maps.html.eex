@@ -1,0 +1,23 @@
+<div class="maps">
+    <div class="header-row">
+        <div class="cell map">map</div>
+        <div class="cell">game cnt</div>
+        <div class="cell">win%</div>
+        <div class="cell">frag%</div>
+        <div class="cell">dmg%</div>
+        <div class="cell">dmg/min</div>
+        <div class="cell">lg%</div>
+    </div>
+
+    <%= for map <- @maps do %>
+        <div class="map-row">
+            <div class="cell map"><%= map.map %></div>
+            <div class="cell"><%= map.game_cnt %></div>
+            <div class="cell"><%= map.avg_avg_win_probability %></div>
+            <div class="cell"><%= map.avg_avg_frag_proportion %></div>
+            <div class="cell"><%= map.avg_avg_dmg_proportion %></div>
+            <div class="cell"><%= map.avg_avg_dmg_per_minute %></div>
+            <div class="cell"><%= map.avg_avg_lg_accuracy %></div>
+        </div>
+    <% end %>
+</div>

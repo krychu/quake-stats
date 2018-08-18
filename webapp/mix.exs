@@ -39,7 +39,8 @@ defmodule Webapp.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
-      {:postgrex, "~> 0.13.5"}
+      {:postgrex, "~> 0.13.5"},
+      {:poison, "~> 3.1"} # used by json to pg importer, could we switch to jason?
     ]
   end
 end
