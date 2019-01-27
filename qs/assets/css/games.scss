@@ -1,0 +1,103 @@
+$cell-width: 70px;
+
+@mixin recent-games-row() {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin recent-games-cell() {
+  margin-left: 10px;
+  margin-right: 10px;
+  min-width: $cell-width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: flex;
+  flex-direction: row;
+  //justify-content: center;
+
+  //&:first-child {
+  &.opponent {
+    min-width: $cell-width + 80px;
+    //text-align: left;
+  }
+
+  &.map {
+    min-width: $cell-width + 20px;
+  }
+
+  // &:nth-child(9) {
+  //   min-width: $cell-width / 2.0;
+  // }
+}
+
+#duel-games {
+  // font-family: Courier;
+  // font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  //font-family: Courier;
+  text-align: right;
+
+  .header-row {
+    @include recent-games-row();
+
+    font-weight: bold;
+    margin-bottom: 5px;
+
+    .cell {
+      @include recent-games-cell();
+      //border: 1px solid white;
+      justify-content: flex-end;
+
+      &.opponent, &.map {
+        justify-content: flex-start;
+      }
+
+      &.frags {
+        justify-content: center;
+      }
+    }
+  }
+
+  .game-row {
+    display: flex;
+    flex-direction: row;
+    color: #777;
+
+    &.win {
+      background-color: lighten( #e1ffe9, 2% );
+    }
+
+    .cell {
+      @include recent-games-cell();
+      justify-content: flex-end;
+
+      &.opponent, &.map {
+        justify-content: flex-start;
+      }
+
+      &.frags {
+        justify-content: center;
+      }
+
+      &.frags {
+        .frags-a {
+          flex-basis: 40%;
+        }
+
+        .frags-separator {
+          flex-basis: 20%;
+          text-align: center;
+          color: #ccc;
+        }
+
+        .frags-b {
+          flex-basis: 40%;
+          text-align: left;
+        }
+      }
+
+    }
+  }
+}
