@@ -1,5 +1,5 @@
 <script>
- const SRV_PLAYER = "<%= @player %>";
+ const SV_PLAYER = "<%= @player %>";
 </script>
 
 <div id="main">

@@ -41,15 +41,15 @@ function cmd_gchart_find_html_root(): Promise<any> {
 }
 
 function cmd_gchart_render_data(): Promise<any> {
-  if (state.games.data == null || state.games_chart.html_root == null) {
-    log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.games.data}, ${state.games_chart.html_root})`);
+  if (state.data.games == null || state.games_chart.html_root == null) {
+    log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.data.games}, ${state.games_chart.html_root})`);
     return Promise.reject();
   }
 
   const svg_width = state.games_chart.html_root.offsetWidth;
   const svg_height = state.games_chart.html_root.offsetHeight;
 
-  const diffs = _games_chart_diffs(state.games.data);
+  const diffs = _games_chart_diffs(state.data.games);
   const max_y = _games_chart_max_y(diffs);
   const points = _games_chart_points(diffs, max_y, svg_width, svg_height);
 

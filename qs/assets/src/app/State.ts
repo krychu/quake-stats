@@ -8,6 +8,12 @@ class State {
   player: string | null = null;
   //num_games:                  number = 10;
 
+  data: Data = {
+    game_cnt: 40,
+    games: [],
+    game_cnts: [],
+    win_probabilities: []
+  }
   games_chart: GamesChart = {
     game_cnt: 20,
     html_root_id: "duel-games-chart",
@@ -20,8 +26,8 @@ class State {
 
   games: Games = {
     show_game_cnt: 20,
-    game_cnt: 40,
-    data: [],
+    //game_cnt: 40,
+    //data: [],
     html_root_id: "duel-games",
     html_root: null
   }
@@ -30,6 +36,14 @@ class State {
     funcs: {},
     buffer: []
   }
+}
+
+interface Data {
+  game_cnt: number;
+  games: Duel[];
+  game_cnts: [string, number][];
+  win_probabilities: any[];
+  //win_probabilities:
 }
 
 interface GamesChart {
@@ -43,11 +57,12 @@ interface GamesChart {
 
 interface Games {
   //status: "requesting_data" | "data_ready";
-  game_cnt: number;
+  show_game_cnt: number;
+  //game_cnt: number;
   //data: any[];//[][GameData, GameData];
   //data: GameData[];
   //data: [GameData, GameData][];
-  data: Duel[];
+  //data: Duel[];
   html_root_id: string;
   html_root: HTMLElement | null;
 }
