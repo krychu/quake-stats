@@ -8,5 +8,5 @@ PG_DB="quakestats"
 
 APP_SCHEMA="$SCRIPTS_PATH/../sql/schema.sql"
 
-SAMPLEDATA_PATH="$SCRIPTS_PATH/../sampledata/games_v2"
+SAMPLEDATA_PATH="../sampledata/games"
 
