@@ -5,7 +5,6 @@
 <div id="main">
 
     <div id="duel-games-chart"></div>
-    <div id="duel-games"></div>
     <div id="duel-performance"></div>
     <div id="duel-development"></div>
 

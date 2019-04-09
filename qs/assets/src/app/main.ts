@@ -1,4 +1,5 @@
-import { state } from "./State";
+import * as state from "./State";
+import * as log from "./Log";
 import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
@@ -6,8 +7,13 @@ import * as games_chart from "./GamesChart";
 
 declare const SV_PLAYER: string;
 
+const commands: [string, state.Cmd][] = [
+  [ "main_find_html_root",        cmd_main_find_html_root ]
+];
+
 export function main() {
   const modules = [
+    state, // state needs to go first since cmd module accessess stuff in state
     cmd,
     data,
     games,
@@ -18,10 +24,18 @@ export function main() {
     m.init();
   });
 
-  state.player = SV_PLAYER;
+  cmd.add_cmds(commands);
 
-  cmd.schedule_cmd("games_find_html_root").then((html_root) => {
+  state.state.player = SV_PLAYER;
+
+  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_main_html_root", html_root);
+  });
+
+  cmd.schedule_cmd("games_create_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_games_html_root", html_root);
+    // we know above is immediate
+    cmd.schedule_cmd("games_attach_html_root");
     //cmd.schedule_cmd("games_attach_html_root", "duel-games");
   });
 
@@ -42,4 +56,15 @@ export function main() {
   cmd.schedule_cmd("data_fetch_win_probabilities").then((data) => {
     cmd.schedule_cmd("state_set_win_probabilities", data);
   });
+}
+
+function cmd_main_find_html_root(): Promise<any> {
+  const html_root = document.getElementById("main");
+
+  if (!html_root) {
+    log.log("main::cmd_main_find_html_root - can't find the main html root");
+    Promise.reject();
+  }
+
+  return Promise.resolve(html_root);
 }

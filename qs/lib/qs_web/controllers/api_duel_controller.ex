@@ -2,7 +2,7 @@ defmodule QsWeb.APIDuelController do
   use QsWeb, :controller
 
   def game_cnts(conn, %{"player" => player}) do
-    game_cnts = Queries.get_game_cnts(player)
+    game_cnts = Queries.Games.get_game_cnts(player)
     #IO.inspect game_cnts
     json(conn, game_cnts)
   end
@@ -10,7 +10,7 @@ defmodule QsWeb.APIDuelController do
   def games(conn, %{"player" => player, "cnt" => cnt}) do
     #game_cnts = Queries.get_game_cnts(player)
     #render(conn, "main.html")
-    games = Queries.get_games(player, String.to_integer(cnt))
+    games = Queries.Games.get_games(player, String.to_integer(cnt))
     json(conn, games)
   end
 

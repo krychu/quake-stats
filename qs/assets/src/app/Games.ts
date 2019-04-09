@@ -14,10 +14,11 @@ const commands: [string, Cmd][] = [
   // [ "games_create_html_root",      cmd_games_create_html_root ],
   // [ "games_attach_html_root",      cmd_games_attach_html_root ],
   // WE CAN NIX THIS ONE AND HAVE RENDER ONLY WHICH PUTS STUFF INSIDE AN ELEMENT WITH THE GIVEN ID
-  [ "games_find_html_root",        cmd_games_find_html_root ],
+  //[ "games_find_html_root",        cmd_games_find_html_root ],
+  [ "games_create_html_root",      cmd_games_create_html_root ],
+  [ "games_attach_html_root",      cmd_games_attach_html_root ],
   [ "games_render_data",           cmd_games_render_data ],
 
-  [ "state_set_games_html_root",   cmd_state_set_games_html_root ],
 //[ "games_data_gset",             cmd_games_data_gset ],
   //[ "games_html_root_gset",        cmd_games_html_root_gset ],
 ];
@@ -38,10 +39,6 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
-  state.games.html_root = root;
-  return Promise.resolve();
-}
 
 // function cmd_games_create_html_root(): Promise<any> {
 //   const root = utils.htmlToElement(`
@@ -62,14 +59,30 @@ function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
 //   return Promise.resolve();
 // }
 
-function cmd_games_find_html_root(): Promise<any> {
-  const html_root = document.getElementById(state.games.html_root_id);
-  if (html_root == null) {
-    log.log(`Games:cmd_games_find_html_root - can't find element with id '${state.games.html_root_id}'`);
+// function cmd_games_find_html_root(): Promise<any> {
+//   const html_root = document.getElementById(state.games.html_root_id);
+//   if (html_root == null) {
+//     log.log(`Games:cmd_games_find_html_root - can't find element with id '${state.games.html_root_id}'`);
+//     return Promise.reject();
+//   }
+
+//   return Promise.resolve(html_root);
+// }
+
+function cmd_games_create_html_root(): Promise<any> {
+  const html_root = document.createElement("div");
+  html_root.setAttribute("id", "duel-games");
+  return Promise.resolve(html_root);
+}
+
+function cmd_games_attach_html_root(): Promise<any> {
+  if (state.games.html_root == null || state.html_main == null) {
+    log.log("Games::cmd_games_attach_html_root - state doesn't contain required data");
     return Promise.reject();
   }
 
-  return Promise.resolve(html_root);
+  state.html_main.appendChild(state.games.html_root);
+  return Promise.resolve();
 }
 
 function cmd_games_render_data(): Promise<any> {
@@ -123,19 +136,46 @@ function _html_render_games_header(): string {
 function _html_render_games_row(a: GameData, b: GameData): string {
   return `
 <div class="game-row ${a.frags > b.frags && "win"}">
+  <div class="cell player">${a.name}</div>
+
+  <div class="cell frags">
+    <div class="score">
+      <div class="frags-a">${a.frags}</div>
+      <div class="frags-separator">:</div>
+      <div class="frags-b">${b.frags}</div>
+    </div>
+    <div class="frags-bar" ><div>
+  </div>
+
   <div class="cell opponent">${b.name}</div>
   <div class="cell map">${a.map}</div>
-  <div class="cell frags">
-    <div class="frags-a">${a.frags}</div>
-    <div class="frags-separator">:</div>
-    <div class="frags-b">${b.frags}</div>
-  </div>
-  <div class="cell">${a.kd.toFixed(2)}</div>
-  <div class="cell">${a.dmg_gt.toFixed(1)}</div>
-  <div class="cell">${a.lg_acc != null && a.lg_acc.toFixed(2)}</div>
-  <div class="cell">${a.dmg_per_minute.toFixed(0)}</div>
-  <div class="cell">${a.ra}</div>
-  <div class="cell">${(a.ra / Math.max(a.ra + b.ra, 1)).toFixed(1)}</div>
+  <div class="cell date">${_time_ago(a.date)}</div>
 </div>
 `;
+}
+
+function _time_ago(date: string) {
+  const parts = date.split(":").map(part => parseInt(part));
+  const units = ["d", "h", "m"];
+
+  for (let i=0; i<units.length; i++) {
+    if (!isNaN(parts[i]) && parts[i] !== 0.0) {
+      return parts[i] + units[i];
+    }
+  }
+
+  return "?";
+}
+
+// [-1; 1]
+function _frags(a: GameData, b: GameData): number {
+  if (a.frags + b.frags === 0) {
+    return 0;
+  }
+
+  return 2.0 * (b.frags / (a.frags + b.frags) - 0.5);
+}
+
+function _fragsCss(n: number): string {
+  if 
 }

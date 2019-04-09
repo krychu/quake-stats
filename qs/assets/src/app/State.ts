@@ -1,3 +1,11 @@
+import * as log from "./Log";
+import * as cmd from "./Cmd";
+
+const commands: [string, Cmd][] = [
+  [ "state_set_main_html_root",        cmd_state_set_main_html_root ],
+  [ "state_set_games_html_root",       cmd_state_set_games_html_root ]
+]
+
 /*
   - No listeners for state changes, this leads to fragmented, hard to track
     execution flow.
@@ -14,6 +22,9 @@ class State {
     game_cnts: [],
     win_probabilities: []
   }
+
+  html_main: HTMLElement | null = null
+
   games_chart: GamesChart = {
     game_cnt: 20,
     html_root_id: "duel-games-chart",
@@ -71,24 +82,20 @@ type Duel = [GameData, GameData];
 
 interface GameData {
   // this order should stay sync with the UI design
-  frags: number;
+  game_id: number;
   name: string;
   map: string;
-  frags_percent: number;
-  rl_vs_lg: number;
+  tl: number;
+  date: string;
+  frags: number;
+  rl_damage: number;
+  lg_damage: number;
   lg_accuracy: number;
-  dmg_min: number;
+  damage_given: number;
+  damage_taken: number;
+  health_100: number;
   ra: number;
   ya: number;
-  mh: number;
-  date: string;
-  kd: number;
-  dmg_gt: number;
-  lg_acc: number;
-  dmg_per_minute: number;
-
-  tl: number;
-  ping: number;
 }
 
 //type CmdFunc = (data?: any): void
@@ -128,6 +135,33 @@ interface Cmds {
 //     num_games
 //   }
 
-const state = new State();
-(window as any).state = state;
+/**
+ * State has to be created before any of the init() methods are called. This is because init() are typically call
+ */
+//const state = new State();
+let state: State;
+
+export function init() {
+  log.log("State module initialized");
+  state = new State();
+  (window as any).state = state;
+  cmd.add_cmds(commands);
+}
+
+export function shutdown() {
+}
+
+//------------------------------------------------------------------------------
+// Commands
+//------------------------------------------------------------------------------
+function cmd_state_set_main_html_root(html_root: HTMLElement): Promise<void> {
+  state.html_main = html_root;
+  return Promise.resolve();
+}
+
+function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
+  state.games.html_root = root;
+  return Promise.resolve();
+}
+
 export { state, ScheduledCmd, GameData, Duel, Cmd };

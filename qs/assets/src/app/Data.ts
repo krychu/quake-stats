@@ -14,7 +14,7 @@ const commands: [string, Cmd][] = [
 
 export function init() {
   cmd.add_cmds(commands);
-  log.log("[Module Init] Data");
+  log.log("Data module initialized");
 }
 
 export function shutdown() {
