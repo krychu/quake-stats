@@ -90,6 +90,7 @@ CREATE TABLE game_players
   rl_picked            INTEGER,
   rl_damage            INTEGER,
 
+
   lg_attacks           INTEGER,
   lg_direct_hits       INTEGER,
   lg_kills             INTEGER,
