@@ -122,15 +122,17 @@ function _html_render_games_header(): string {
     return `
 <div class="duel-games__header">
     <div class="duel-games__header__cell"></div>
-    <div class="duel-games__header__cell">frags</div>
+    <div class="duel-games__header__cmp-cell">frags</div>
     <div class="duel-games__header__cell">opponent</div>
     <div class="duel-games__header__cell">map</div>
-    <div class="duel-games__header__cell">dmg %</div>
-    <div class="duel-games__header__cell">lg dmg %</div>
-    <div class="duel-games__header__cell">rl dmg %</div>
-    <div class="duel-games__header__cell">lg acc</div>
-    <div class="duel-games__header__cell">dmg/min</div>
-    <div class="duel-games__header__cell">pickups</div>
+    <!--<div class="duel-games__header__cmp-cell">dmg%</div>-->
+    <div class="duel-games__header__cmp-cell">dmg/min</div>
+    <div class="duel-games__header__cmp-cell">lg/min</div>
+    <div class="duel-games__header__cmp-cell">rl/min</div>
+    <div class="duel-games__header__cmp-cell">lg acc</div>
+    <div class="duel-games__header__cmp-cell">ra</div>
+    <div class="duel-games__header__cmp-cell">mh</div>
+    <div class="duel-games__header__cmp-cell">speed</div>
     <div class="duel-games__header__cell">when</div>
 </div>
 `;
@@ -139,39 +141,196 @@ function _html_render_games_header(): string {
 function _html_render_games_row(a: GameData, b: GameData): string {
     return `
 <div class="duel-games__game ${a.frags > b.frags && "duel-games__game--win"}">
-    <div class="duel-games__game__cell">${a.name}</div>
-    <div class="duel-games__game__frags-cell">
-        <div class="duel-games__game__frags-cell__a">${a.frags}</div>
-        <div class="duel-games__game__frags-cell__separator">:</div>
-        <div class="duel-games__game__frags-cell__b">${b.frags}</div>
-        <div class="test"></div>
-    </div>
+    <div class="duel-games__game__player-a-cell">${a.name}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
     <div class="duel-games__game__cell">${b.name}</div>
     <div class="duel-games__game__cell">${a.map}</div>
-    <div class="duel-games__game__cell">${a.damage_given}</div>
-    <div class="duel-games__game__cell">${a.lg_damage}</div>
-    <div class="duel-games__game__cell">${a.rl_damage}</div>
-    <div class="duel-games__game__cell">${a.lg_accuracy}</div>
-    <div class="duel-games__game__cell">${a.rl_damage}</div>
-    <div class="duel-games__game__cell">${a.ra}</div>
+    <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
+    <div class="duel-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_lg_damage_percent(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_rl_damage_percent(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_lg_accuracy_percent(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_ra(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_mh(a, b)}</div>
+    <div class="duel-games__game__cmp-cell">${_cmp_speed(a, b)}</div>
     <div class="duel-games__game__cell">${_time_ago(a.date)}</div>
 </div>
 `;
 }
 
-function _cmp() HERE
+function _cmp_frags(a: GameData, b: GameData): string {
+  if (a.frags == null || b.frags == null) {
+    return _cmp_na();
+  }
+
+  const [a_frags, b_frags] = [Math.max(a.frags, 0), Math.max(b.frags, 0)];
+
+  // bar is in the range [-1; 1]
+  let bar = 0;
+  if (a_frags + b_frags !== 0) {
+    bar = 2.0 * (b_frags / (a_frags + b_frags) - 0.5);
+  }
+
+  return _cmp(a.frags.toString(), b.frags.toString(), bar);
+}
+
+function _cmp_damage_percent(a: GameData, b: GameData): string {
+  if (a.damage_given == null || b.damage_given == null) {
+    return _cmp_na();
+  }
+
+  let [a_dmg, b_dmg, bar] = [0, 0, 0];
+  if (a.damage_given + b.damage_given !== 0) {
+    a_dmg = a.damage_given / (a.damage_given + b.damage_given);
+    b_dmg = 1.0 - a_dmg;
+    bar = 2.0 * b_dmg - 1.0;
+  }
+  return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar);
+}
+
+function _cmp_lg_damage_percent(a: GameData, b: GameData): string {
+  if (a.lg_damage == null || b.lg_damage == null) {
+    return _cmp_na();
+  }
+
+  let [a_dmg, b_dmg, bar] = [0, 0, 0];
+  //const total = a.lg_damage + a.rl_damage + b.lg_damage + b.rl_damage;
+  const total = a.damage_given + b.damage_given;
+  if (total !== 0) {
+    //a_dmg = a.lg_damage / total;
+    //b_dmg = b.lg_damage / total;
+    a_dmg = a.lg_damage / a.tl;
+    b_dmg = b.lg_damage / a.tl;
+    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
+  }
+  //return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar);
+  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
+}
+
+function _cmp_rl_damage_percent(a: GameData, b: GameData): string {
+  if (a.rl_damage == null || b.rl_damage == null) {
+    return _cmp_na();
+  }
+
+  let [a_dmg, b_dmg, bar] = [0, 0, 0];
+  //const total = a.lg_damage + a.rl_damage + b.lg_damage + b.rl_damage;
+  const total = a.damage_given + b.damage_given;
+  if (total !== 0) {
+    // a_dmg = a.rl_damage / total;
+    // b_dmg = b.rl_damage / total;
+    a_dmg = a.rl_damage / a.tl;
+    b_dmg = b.rl_damage / a.tl;
+    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
+  }
+  //return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar);
+  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
+}
+
+function _cmp_lg_accuracy_percent(a: GameData, b: GameData): string {
+  if (a.lg_accuracy == null || b.lg_accuracy == null) {
+    return _cmp_na();
+  }
+
+  let [a_acc, b_acc, bar] = [0, 0, 0];
+  if (a.lg_accuracy != null && b.lg_accuracy != null) {
+    a_acc = a.lg_accuracy;
+    b_acc = b.lg_accuracy;
+    bar = 2.0 * b_acc / (a_acc + b_acc) - 1.0;
+  }
+  return _cmp(_frac_to_percent(a_acc), _frac_to_percent(b_acc), bar);
+}
+
+function _cmp_damage_minute(a: GameData, b: GameData): string {
+  if (a.damage_given == null || b.damage_given == null) {
+    return _cmp_na();
+  }
+
+  let [a_dmg, b_dmg, bar] = [0, 0, 0];
+  if (a.damage_given != null && b.damage_given != null) {
+    a_dmg = a.damage_given / a.tl;
+    b_dmg = b.damage_given / a.tl;
+    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
+  }
+  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
+}
+
+function _cmp_ra(a: GameData, b: GameData): string {
+  if (a.ra == null && b.ra == null) {
+    return _cmp_na();
+  }
+  const a_ra = a.ra || 0;
+  const b_ra = b.ra || 0;
+  const bar = 2.0 * b_ra / (a_ra + b_ra) - 1.0;
+  return _cmp(a_ra.toString(), b_ra.toString(), bar);
+}
+
+function _cmp_mh(a: GameData, b: GameData): string {
+  if (a.health_100 == null && b.health_100 == null) {
+    return _cmp_na();
+  }
+  const a_mh = a.health_100 || 0;
+  const b_mh = b.health_100 || 0;
+  const bar = 2.0 * b_mh / (a_mh + b_mh) - 1.0;
+  return _cmp(a_mh.toString(), b_mh.toString(), bar);
+}
+
+function _cmp_speed(a: GameData, b: GameData): string {
+  if (a.speed_avg == null && b.speed_avg == null) {
+    return _cmp_na();
+  }
+  const a_speed = a.speed_avg || 0;
+  const b_speed = b.speed_avg || 0;
+  const bar = 2.0 * b_speed / (a_speed + b_speed) - 1.0;
+  return _cmp(a_speed.toFixed(0).toString(), b_speed.toFixed(0).toString(), bar);
+}
+
+// function _cmp_pickups(a: GameData, b: GameData): string {
+//   let [a_pick, b_pick, bar] = [0, 0, 0];
+//   const [ra, ya, mh] = [1.0, 0.7, 0.5];
+//   a_pick = a.ra * ra + a.health_100 * mh + a.ya * ya;
+//   b_pick = b.ra * ra + b.health_100 * mh + b.ya * ya;
+//   bar = 2.0 * b_pick / (a_pick + b_pick) - 1.0;
+//   return _cmp(a_pick.toFixed(0).toString(), b_pick.toFixed(0).toString(), bar);
+// }
+
+function _cmp(a: string, b: string, bar: number, mul: number = 32): string {
+  //const mul = 32;
+  const bar_width = Math.abs(bar) * mul;
+  let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
+  if (bar >= 0) {
+    bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
+  }
+  return `
+<div class="duel-games__game__cmp-cell__a">${a}</div>
+<div class="duel-games__game__cmp-cell__separator"></div>
+<div class="duel-games__game__cmp-cell__b">${b}</div>
+<div class="duel-games__game__cmp-cell__bar ${bar <= 0 ? "duel-games__game__cmp-cell__bar--better" : "duel-games__game__cmp-cell__bar--worse"}" style="${bar_style}"></div>
+`;
+}
+
+function _cmp_na(): string {
+  return `<div class="duel-games__game__cmp-cell__na">n/a</div>`;
+}
 
 function _time_ago(date: string) {
     const parts = date.split(":").map(part => parseInt(part));
     const units = ["d", "h", "m"];
 
     for (let i=0; i<units.length; i++) {
-        if (!isNaN(parts[i]) && parts[i] !== 0.0) {
-            return parts[i] + units[i];
-        }
+      if (!isNaN(parts[i]) && parts[i] !== 0.0) {
+        // if (units[i] === "d" && parts[i] > 365) {
+        //   return Math.floor(parts[i] / 365).toString() + "y+";
+        // } else {
+          return parts[i] + units[i];
+        //}
+      }
     }
 
     return "?";
+}
+
+function _frac_to_percent(a: number): string {
+  return (a * 100.0).toFixed(0).toString();
 }
 
 // [-1; 1]

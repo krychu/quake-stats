@@ -86,6 +86,7 @@ interface GameData {
   name: string;
   map: string;
   tl: number;
+  raw_date: number;
   date: string;
   frags: number;
   rl_damage: number;
@@ -96,6 +97,7 @@ interface GameData {
   health_100: number;
   ra: number;
   ya: number;
+  speed_avg: number;
 }
 
 //type CmdFunc = (data?: any): void

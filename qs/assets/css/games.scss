@@ -7,14 +7,34 @@
 
 .duel-games__header {
     display: flex;
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+    justify-content: center;
 }
 
 .duel-games__header__cell {
-    
+    @extend .duel-games__game__cell;
+}
+
+.duel-games__header__cmp-cell {
+    @extend .duel-games__game__cmp-cell;
+    justify-content: center;
 }
 
 .duel-games__game {
     display: flex;
+    //margin-bottom: 3px;
+    //z-index: -10;
+    justify-content: center;
+}
+
+.duel-games__game:hover {
+    //border: 1px solid blue;
+    background-color: rgba(0,0,255,0.05);
+}
+
+.duel-games__game:nth-child(even) {
+    //background-color: #f5f5f5;
 }
 
 .duel-games__game--win {
@@ -22,23 +42,66 @@
 }
 
 .duel-games__game__cell {
-    
-}
-
-.duel-games__game__frags-cell {
+//    width: $duel-games__game__cell__width;
+    //    max-width: $duel-games__game__cell__max-width;
     display: flex;
+    flex-basis: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0px 10px;
+    //max-width: 70px;
 }
 
-.duel-games__game__frags-cell__a {
-    
+.duel-games__game__player-a-cell {
+    @extend .duel-games__game__cell;
+    justify-content: flex-end;
+    //text-align: right;
 }
 
-.duel-games__game__frags-cell__separator {
-    
+.duel-games__game__cmp-cell {
+    display: flex;
+    position: relative; // anchor for the bar
+    flex-basis: 120px;
+    justify-content: center;
+    //width: $duel-games__game__cell__width;
+    //max-width: $duel-games__game__cell__max-width;
 }
 
-.duel-games__games__frags-cell__b {
-    
+.duel-games__game__cmp-cell__a {
+    flex: 1;
+    text-align: right;
+}
+
+.duel-games__game__cmp-cell__separator {
+    flex-basis: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.duel-games__game__cmp-cell__b {
+    flex: 1;
+}
+
+// width and left positions are set dynamically
+.duel-games__game__cmp-cell__bar {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.duel-games__game__cmp-cell__bar--worse {
+    background-color: rgba(255,0,0,0.15);
+    border-left: 1px solid rgba(255,0,0,0.8);
+}
+
+.duel-games__game__cmp-cell__bar--better {
+    background-color: rgba(0,255,0,0.25);
+    border-right: 1px solid rgba(0,255,0,1);
+}
+
+.duel-games__game__cmp-cell__na {
+    color: #aaa;
 }
 
 // $cell-width: 70px;

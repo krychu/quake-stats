@@ -90,8 +90,9 @@ WITH recent_game_ids AS (
      FROM games
      INNER JOIN game_players ON games.id = game_players.game_id
      WHERE name = $1
-     AND map != 'end'
+     AND dm = 3
      AND mode = 'duel'
+     -- AND duration > (tl * 60) + 10
      ORDER BY DATE DESC
      LIMIT $2
 ), recent_games AS (
@@ -100,12 +101,13 @@ WITH recent_game_ids AS (
            frags,
            rl_damage,
            lg_damage,
-           CASE WHEN lg_attacks <> 0 THEN lg_direct_hits::FLOAT / lg_attacks ELSE 0 END AS lg_accuracy,
+           CASE WHEN lg_attacks <> 0 THEN lg_direct_hits::FLOAT / lg_attacks ELSE NULL END AS lg_accuracy,
            damage_given,
            damage_taken,
            health_100,
            ra,
-           ya
+           ya,
+           speed_avg
     FROM game_players
     WHERE game_id IN ( SELECT id FROM recent_game_ids )
 ), recent_games_full AS (
@@ -117,6 +119,7 @@ SELECT game_id,
        name,
        map,
        tl,
+       date as raw_date,
        to_char(now() - date, 'DD:HH24:MM:SS') as date,
        frags,
        rl_damage,
@@ -126,14 +129,15 @@ SELECT game_id,
        damage_taken,
        health_100,
        ra,
-       ya
+       ya,
+       speed_avg
 FROM recent_games_full
-ORDER BY DATE desc, game_id, name <> $1;
+ORDER BY raw_date desc, game_id, name <> $1;
     """
 
     PG.query(query, [player, cnt])
     |> Map.get(:rows)
-    |> Enum.map(fn(row) -> Enum.zip([:game_id, :name, :map, :tl, :date, :frags, :rl_damage, :lg_damage, :lg_accuracy, :damage_given, :damage_taken, :health_100, :ra, :ya], row) end)
+    |> Enum.map(fn(row) -> Enum.zip([:game_id, :name, :map, :tl, :raw_date, :date, :frags, :rl_damage, :lg_damage, :lg_accuracy, :damage_given, :damage_taken, :health_100, :ra, :ya, :speed_avg], row) end)
     |> Enum.map(fn(kw) -> Enum.into(kw, %{}) end)
     |> Enum.chunk_every(2)
   end
