@@ -1,6 +1,11 @@
 defmodule QsWeb.APIDuelController do
   use QsWeb, :controller
 
+  def players(conn, _) do
+    players = Queries.Players.get_players()
+    json(conn, players)
+  end
+
   def game_cnts(conn, %{"player" => player}) do
     game_cnts = Queries.Games.get_game_cnts(player)
     #IO.inspect game_cnts

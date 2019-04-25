@@ -24,6 +24,7 @@ defmodule QsWeb.Router do
   scope "/api", QsWeb do
     pipe_through :api
 
+    get "/duel/players", APIDuelController, :players
     get "/duel/:player/game_cnts", APIDuelController, :game_cnts
     get "/duel/:player/games/:cnt", APIDuelController, :games
     get "/duel/:player/win_probabilities", APIDuelController, :win_probabilities
