@@ -17,6 +17,7 @@ defmodule QsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/duel/players", DuelController, :players
     get "/duel/:player", DuelController, :player
   end
 

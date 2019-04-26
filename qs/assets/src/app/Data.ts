@@ -25,13 +25,12 @@ export function shutdown() {
 // Commands
 //------------------------------------------------------------------------------
 function cmd_data_fetch_game_cnts(): Promise<any> {
-  const { player } = state;
-  if (player == null) {
+  if (state.duel_player.player == null) {
     log.log("Data::cmd_data_fetch_game_cnt - player is null");
     return Promise.reject();
   }
 
-  return fetch(_api_url_game_cnts(player))
+  return fetch(_api_url_game_cnts(state.duel_player.player))
     .then((response) => response.json())
     .then((json) => {
       return json;
@@ -39,13 +38,13 @@ function cmd_data_fetch_game_cnts(): Promise<any> {
 }
 
 function cmd_data_fetch_games(): Promise<any> {
-  const { player, data } = state;
-  if (player == null) {
+  //const { player, data } = state;
+  if (state.duel_player.player == null) {
     log.log("Data::cmd_data_fetch_games - player is null");
     return Promise.reject();
   }
 
-  return fetch(_api_url_games(player, data.game_cnt))
+  return fetch(_api_url_games(state.duel_player.player, state.duel_player.data.game_cnt))
     .then((response) => response.json())
     .then((json) => {
       //cmd.schedule_cmd("state_set_games_data", json);
@@ -56,13 +55,13 @@ function cmd_data_fetch_games(): Promise<any> {
 }
 
 function cmd_data_fetch_win_probabilities(): Promise<any> {
-  const { player } = state;
-  if (player == null) {
+  //const { player } = state;
+  if (state.duel_player.player == null) {
     log.log("Data::cmd_data_fetch_win_probabilities - player is null");
     return Promise.reject();
   }
 
-  return fetch(_api_url_win_probabilities(player))
+  return fetch(_api_url_win_probabilities(state.duel_player.player))
     .then((response) => response.json())
     .then((json) => {
       return json;
@@ -70,17 +69,17 @@ function cmd_data_fetch_win_probabilities(): Promise<any> {
 }
 
 function cmd_state_set_game_cnts(data: [string, number][]): Promise<any> {
-  state.data.game_cnts = data;
+  state.duel_player.data.game_cnts = data;
   return Promise.resolve();
 }
 
 function cmd_state_set_games(data: Duel[]): Promise<any> {
-  state.data.games = data;
+  state.duel_player.data.games = data;
   return Promise.resolve();
 }
 
 function cmd_state_set_win_probabilities(data: any[]): Promise<any> {
-  state.data.win_probabilities = data;
+  state.duel_player.data.win_probabilities = data;
   return Promise.resolve();
 }
 

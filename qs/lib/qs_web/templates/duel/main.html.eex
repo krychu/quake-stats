@@ -1,4 +1,5 @@
 <script>
+ const PAGE = "duel_player";
  const SV_PLAYER = "<%= @player %>";
 </script>
 

@@ -6,12 +6,40 @@ import * as games from "./Games";
 import * as games_chart from "./GamesChart";
 
 declare const SV_PLAYER: string;
+declare const PAGE: string;
 
 const commands: [string, state.Cmd][] = [
   [ "main_find_html_root",        cmd_main_find_html_root ]
 ];
 
 export function main() {
+  switch (PAGE) {
+    case "duel_players":
+      return main_duel_players();
+    case "duel_player":
+      return main_duel_player();
+    default:
+      console.log("ERROR: unknown page (" + PAGE + ")");
+  }
+}
+
+function main_duel_players() {
+  const modules = [
+    state, // state needs to go first since cmd module accessess stuff in state
+    cmd,
+    data,
+    games,
+    games_chart
+  ];
+
+  modules.forEach((m) => {
+    m.init();
+  });
+
+  cmd.add_cmds(commands);
+}
+
+function main_duel_player() {
   const modules = [
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
@@ -26,7 +54,7 @@ export function main() {
 
   cmd.add_cmds(commands);
 
-  state.state.player = SV_PLAYER;
+  state.state.duel_player.player = SV_PLAYER;
 
   cmd.schedule_cmd("main_find_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_main_html_root", html_root);

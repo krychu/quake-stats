@@ -12,41 +12,68 @@ const commands: [string, Cmd][] = [
   - If one part of state is in some progress you can express it with status.
 
  */
-class State {
-  player: string | null = null;
+let state: State = {
   //num_games:                  number = 10;
 
-  data: Data = {
-    game_cnt: 40,
-    games: [],
-    game_cnts: [],
-    win_probabilities: []
-  }
+  html_main: null,
 
-  html_main: HTMLElement | null = null
-
-  games_chart: GamesChart = {
-    game_cnt: 20,
-    html_root_id: "duel-games-chart",
-    html_root: null
-    // svg_width: 800,
-    // svg_
-    //html_root: null
-    // uses games.data
-  }
-
-  games: Games = {
-    show_game_cnt: 20,
-    //game_cnt: 40,
-    //data: [],
-    html_root_id: "duel-games",
-    html_root: null
-  }
-
-  cmds: Cmds = {
+  cmds: {
     funcs: {},
     buffer: []
+  },
+
+  duel_player: {
+    player: null,
+
+    data: {
+      game_cnt: 40,
+      games: [],
+      game_cnts: [],
+      win_probabilities: []
+    },
+
+    games_chart: {
+      game_cnt: 20,
+      html_root_id: "duel-games-chart",
+      html_root: null
+      // svg_width: 800,
+      // svg_
+      //html_root: null
+      // uses games.data
+    },
+
+    games: {
+      show_game_cnt: 20,
+      //game_cnt: 40,
+      //data: [],
+      html_root_id: "duel-games",
+      html_root: null
+    }
+
+  },
+
+  duel_players: {
+    
   }
+}
+
+interface State {
+  html_main: HTMLElement | null;
+  cmds: Cmds;
+
+  duel_player: DuelPlayer;
+  duel_players: DuelPlayers;
+}
+
+interface DuelPlayer {
+  player: string | null;
+  data: Data;
+  games_chart: GamesChart;
+  games: Games;
+}
+
+interface DuelPlayers {
+  
 }
 
 interface Data {
@@ -141,11 +168,11 @@ interface Cmds {
  * State has to be created before any of the init() methods are called. This is because init() are typically call
  */
 //const state = new State();
-let state: State;
+//let state: State;
 
 export function init() {
   log.log("State module initialized");
-  state = new State();
+  //state = new State();
   (window as any).state = state;
   cmd.add_cmds(commands);
 }
@@ -162,7 +189,7 @@ function cmd_state_set_main_html_root(html_root: HTMLElement): Promise<void> {
 }
 
 function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
-  state.games.html_root = root;
+  state.duel_player.games.html_root = root;
   return Promise.resolve();
 }
 

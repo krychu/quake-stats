@@ -27,33 +27,33 @@ export function shutdown() {
 // Commands
 //------------------------------------------------------------------------------
 function cmd_state_set_gchart_html_root(root: HTMLElement): Promise<any> {
-  state.games_chart.html_root = root;
+  state.duel_player.games_chart.html_root = root;
   return Promise.resolve();
 }
 
 function cmd_gchart_find_html_root(): Promise<any> {
-  const html_root = document.getElementById(state.games_chart.html_root_id);
+  const html_root = document.getElementById(state.duel_player.games_chart.html_root_id);
   if (html_root == null) {
-    log.log(`GamesChart::cmd_gchart_find_html_root - can't find element with id '${state.games_chart.html_root_id}'`);
+    log.log(`GamesChart::cmd_gchart_find_html_root - can't find element with id '${state.duel_player.games_chart.html_root_id}'`);
     return Promise.reject();
   }
   return Promise.resolve(html_root);
 }
 
 function cmd_gchart_render_data(): Promise<any> {
-  if (state.data.games == null || state.games_chart.html_root == null) {
-    log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.data.games}, ${state.games_chart.html_root})`);
+  if (state.duel_player.data.games == null || state.duel_player.games_chart.html_root == null) {
+    log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.duel_player.data.games}, ${state.duel_player.games_chart.html_root})`);
     return Promise.reject();
   }
 
-  const svg_width = state.games_chart.html_root.offsetWidth;
-  const svg_height = state.games_chart.html_root.offsetHeight;
+  const svg_width = state.duel_player.games_chart.html_root.offsetWidth;
+  const svg_height = state.duel_player.games_chart.html_root.offsetHeight;
 
-  const diffs = _games_chart_diffs(state.data.games);
+  const diffs = _games_chart_diffs(state.duel_player.data.games);
   const max_y = _games_chart_max_y(diffs);
   const points = _games_chart_points(diffs, max_y, svg_width, svg_height);
 
-  _games_chart_draw(state.games_chart.html_root, points, max_y, svg_width, svg_height);
+  _games_chart_draw(state.duel_player.games_chart.html_root, points, max_y, svg_width, svg_height);
 
   return Promise.resolve();
 }

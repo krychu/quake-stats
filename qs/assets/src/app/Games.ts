@@ -77,25 +77,25 @@ function cmd_games_create_html_root(): Promise<any> {
 }
 
 function cmd_games_attach_html_root(): Promise<any> {
-    if (state.games.html_root == null || state.html_main == null) {
+    if (state.duel_player.games.html_root == null || state.html_main == null) {
         log.log("Games::cmd_games_attach_html_root - state doesn't contain required data");
         return Promise.reject();
     }
 
-    state.html_main.appendChild(state.games.html_root);
+    state.html_main.appendChild(state.duel_player.games.html_root);
     return Promise.resolve();
 }
 
 function cmd_games_render_data(): Promise<any> {
-    const { data, games } = state;
+    //const { data, games } = state;
 
-    if (games.html_root == null || data.games == null) {
+    if (state.duel_player.games.html_root == null || state.duel_player.data.games == null) {
         log.log("Games::cmd_games_render_data - state doesn't contain required data");
         return Promise.reject();
     }
 
-    _html_remove_games(games.html_root);
-    _html_render_games(data.games.slice(0, games.show_game_cnt), games.html_root);
+    _html_remove_games(state.duel_player.games.html_root);
+    _html_render_games(state.duel_player.data.games.slice(0, state.duel_player.games.show_game_cnt), state.duel_player.games.html_root);
 
     return Promise.resolve();
 }
