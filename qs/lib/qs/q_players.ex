@@ -8,8 +8,9 @@ FROM game_players
 WHERE mode = 'duel'
     AND dm = 3
 GROUP BY name
--- HAVING count(*) > 1
-ORDER BY name asc;
+HAVING count(*) > 10
+ORDER BY name asc
+LIMIT 10000;
     """
 
     PG.query(query)

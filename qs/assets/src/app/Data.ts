@@ -1,15 +1,15 @@
-import { state, Cmd, Duel } from "./State";
+import { state, Cmd } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
 const commands: [string, Cmd][] = [
+  // duel player
   [ "data_fetch_game_cnts",             cmd_data_fetch_game_cnts ],
   [ "data_fetch_games",                 cmd_data_fetch_games ],
   [ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
 
-  [ "state_set_game_cnts",              cmd_state_set_game_cnts ],
-  [ "state_set_games",                  cmd_state_set_games ],
-  [ "state_set_win_probabilities",      cmd_state_set_win_probabilities ]
+  // duel players
+  [ "data_fetch_duel_players",          cmd_data_fetch_duel_players ]
 ];
 
 export function init() {
@@ -24,6 +24,9 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
+/**
+ * Duel Player
+ */
 function cmd_data_fetch_game_cnts(): Promise<any> {
   if (state.duel_player.player == null) {
     log.log("Data::cmd_data_fetch_game_cnt - player is null");
@@ -68,19 +71,15 @@ function cmd_data_fetch_win_probabilities(): Promise<any> {
     });
 }
 
-function cmd_state_set_game_cnts(data: [string, number][]): Promise<any> {
-  state.duel_player.data.game_cnts = data;
-  return Promise.resolve();
-}
-
-function cmd_state_set_games(data: Duel[]): Promise<any> {
-  state.duel_player.data.games = data;
-  return Promise.resolve();
-}
-
-function cmd_state_set_win_probabilities(data: any[]): Promise<any> {
-  state.duel_player.data.win_probabilities = data;
-  return Promise.resolve();
+/**
+ * Duel Players
+ */
+function cmd_data_fetch_duel_players(): Promise<any> {
+  return fetch(_api_url_duel_players())
+    .then((response) => response.json())
+    .then((json) => {
+      return json;
+    });
 }
 
 //------------------------------------------------------------------------------
@@ -98,3 +97,6 @@ function _api_url_win_probabilities(player: string): string {
   return `/api/duel/${player}/win_probabilities`;
 }
 
+function _api_url_duel_players(): string {
+  return `/api/duel/players`;
+}

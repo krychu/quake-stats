@@ -31,6 +31,8 @@
 .duel-games__game:hover {
     //border: 1px solid blue;
     background-color: rgba(0,0,255,0.05);
+    //color: $table-hover-color;
+    //background-color: $table-hover-bg-color;
 }
 
 .duel-games__game:nth-child(even) {

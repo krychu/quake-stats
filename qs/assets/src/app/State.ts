@@ -2,8 +2,17 @@ import * as log from "./Log";
 import * as cmd from "./Cmd";
 
 const commands: [string, Cmd][] = [
-  [ "state_set_main_html_root",        cmd_state_set_main_html_root ],
-  [ "state_set_games_html_root",       cmd_state_set_games_html_root ]
+  [ "state_set_main_html_root",          cmd_state_set_main_html_root ],
+  [ "state_set_games_html_root",         cmd_state_set_games_html_root ],
+
+  // duel player
+  [ "state_set_game_cnts",               cmd_state_set_game_cnts ],
+  [ "state_set_games",                   cmd_state_set_games ],
+  [ "state_set_win_probabilities",       cmd_state_set_win_probabilities ],
+
+  // duel players
+  [ "state_set_duel_players_html_root",  cmd_state_set_duel_players_html_root ],
+  [ "state_set_duel_players",            cmd_state_set_duel_players ]
 ]
 
 /*
@@ -53,7 +62,13 @@ let state: State = {
   },
 
   duel_players: {
-    
+    players: {
+      html_root: null
+    },
+
+    data: {
+      players: []
+    }
   }
 }
 
@@ -61,22 +76,34 @@ interface State {
   html_main: HTMLElement | null;
   cmds: Cmds;
 
-  duel_player: DuelPlayer;
-  duel_players: DuelPlayers;
+  duel_player: DuelPlayerState;
+  duel_players: DPS_State;
 }
 
-interface DuelPlayer {
+/**
+ * Dual Players
+ */
+interface DPS_State {
+  players: { html_root: HTMLElement | null },
+  data: { players: DPS_PlayerData[] }
+}
+
+interface DPS_PlayerData {
+  name: string;
+  game_cnt: number;
+}
+
+/**
+ * Dual Player
+ */
+interface DuelPlayerState {
   player: string | null;
-  data: Data;
+  data: DuelPlayerData;
   games_chart: GamesChart;
   games: Games;
 }
 
-interface DuelPlayers {
-  
-}
-
-interface Data {
+interface DuelPlayerData {
   game_cnt: number;
   games: Duel[];
   game_cnts: [string, number][];
@@ -193,4 +220,34 @@ function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
   return Promise.resolve();
 }
 
-export { state, ScheduledCmd, GameData, Duel, Cmd };
+/**
+ * Duel Player
+ */
+function cmd_state_set_game_cnts(data: [string, number][]): Promise<any> {
+  state.duel_player.data.game_cnts = data;
+  return Promise.resolve();
+}
+
+function cmd_state_set_games(data: Duel[]): Promise<any> {
+  state.duel_player.data.games = data;
+  return Promise.resolve();
+}
+
+function cmd_state_set_win_probabilities(data: any[]): Promise<any> {
+  state.duel_player.data.win_probabilities = data;
+  return Promise.resolve();
+}
+
+/**
+ * Duel Players
+ */
+function cmd_state_set_duel_players_html_root(html_root: HTMLElement): Promise<void> {
+  state.duel_players.players.html_root = html_root;
+  return Promise.resolve();
+}
+function cmd_state_set_duel_players(data: DPS_PlayerData[]): Promise<void> {
+  state.duel_players.data.players = data;
+  return Promise.resolve();
+}
+
+export { state, ScheduledCmd, GameData, Duel, DPS_PlayerData, Cmd };

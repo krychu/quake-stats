@@ -4,6 +4,7 @@ import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
 import * as games_chart from "./GamesChart";
+import * as players from "./Players";
 
 declare const SV_PLAYER: string;
 declare const PAGE: string;
@@ -28,8 +29,7 @@ function main_duel_players() {
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
     data,
-    games,
-    games_chart
+    players
   ];
 
   modules.forEach((m) => {
@@ -37,6 +37,21 @@ function main_duel_players() {
   });
 
   cmd.add_cmds(commands);
+
+  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_main_html_root", html_root);
+  });
+
+  cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
+    // since above is immediate we don't need to .then the one below
+    cmd.schedule_cmd("duel_players_attach_html_root");
+  });
+
+  cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
+    cmd.schedule_cmd("state_set_duel_players", data);
+    cmd.schedule_cmd("duel_players_render_data");
+  });
 }
 
 function main_duel_player() {
