@@ -102,8 +102,27 @@
     border-right: 1px solid rgba(0,255,0,1);
 }
 
+/* .duel-games__game__diff-cell__a { */
+/*     flex: 1; */
+/*     text-align: right; */
+/* } */
+
+/* .duel-games__game__diff-cell__bar--worse { */
+/*     background-color: rgba(255,0,0,0.15); */
+/*     border-left: 1px solid rgba(255,0,0,0.8); */
+/* } */
+
+/* .duel-games__game__diff-cell__bar--better { */
+/*     background-color: rgba(0,255,0,0.25); */
+/*     border-left: 1px solid rgba(0,255,0,1); */
+/* } */
+
 .duel-games__game__cmp-cell__na {
     color: #aaa;
+}
+
+.duel-games__game__cell__percent {
+    color: #ccc;
 }
 
 // $cell-width: 70px;
