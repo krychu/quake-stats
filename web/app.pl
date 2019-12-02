@@ -8,7 +8,7 @@ use PG;
 
 get '/' => sub {
     my $c = shift;
-    $c->stash(player => "bps");
+    $c->stash(player => "Locust");
     $c->render(template => 'main');
     #$c->render(text => 'Hello World!');
 };
