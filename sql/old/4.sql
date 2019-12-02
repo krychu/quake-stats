@@ -1,0 +1,1 @@
+select name, count(*) as game_cnt from games inner join game_players on games.id = game_players.game_id where mode = 'duel' group by name order by game_cnt desc;

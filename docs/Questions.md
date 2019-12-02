@@ -54,4 +54,3 @@
         - Weak on a map, loosing to opponents that the player normally win against.
     - Example games of others beating someone who the player stuggles against.
     - Who are some other opponents that the player could play against?
-
