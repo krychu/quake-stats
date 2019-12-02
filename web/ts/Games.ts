@@ -72,7 +72,7 @@ export function shutdown() {
 function cmd_games_create_html_root(): Promise<any> {
     const html_root = document.createElement("div");
     //html_root.setAttribute("id", "duel-games");
-    html_root.className = "1vs1-games";
+    html_root.className = "m1vs1-games";
     return Promise.resolve(html_root);
 }
 
@@ -120,45 +120,44 @@ ${rows}
 
 function _html_render_games_header(): string {
     return `
-<div class="1vs1-games__header">
-HERE
-    <div class="duel-games__header__cell"></div>
-    <div class="duel-games__header__cmp-cell">frags</div>
-    <div class="duel-games__header__cell">opponent</div>
-    <div class="duel-games__header__cell">map</div>
+<div class="m1vs1-games__header">
+    <div class="m1vs1-games__header__cell"></div>
+    <div class="m1vs1-games__header__cmp-cell">frags</div>
+    <div class="m1vs1-games__header__cell">opponent</div>
+    <div class="m1vs1-games__header__cell">map</div>
     <!--<div class="duel-games__header__cmp-cell">dmg%</div>-->
-    <div class="duel-games__header__cmp-cell">frags %</div>
-    <div class="duel-games__header__cmp-cell">dmg %</div>
-    <div class="duel-games__header__cmp-cell">dmg/min</div>
-    <div class="duel-games__header__cmp-cell">rl/min</div>
-    <div class="duel-games__header__cmp-cell">lg/min</div>
-    <div class="duel-games__header__cmp-cell">lg acc</div>
-    <div class="duel-games__header__cmp-cell">ra</div>
-    <div class="duel-games__header__cmp-cell">mh</div>
-    <div class="duel-games__header__cmp-cell">speed</div>
-    <div class="duel-games__header__cell">when</div>
+    <div class="m1vs1-games__header__cmp-cell">frags %</div>
+    <div class="m1vs1-games__header__cmp-cell">dmg %</div>
+    <div class="m1vs1-games__header__cmp-cell">dmg/min</div>
+    <div class="m1vs1-games__header__cmp-cell">rl/min</div>
+    <div class="m1vs1-games__header__cmp-cell">lg/min</div>
+    <div class="m1vs1-games__header__cmp-cell">lg acc</div>
+    <div class="m1vs1-games__header__cmp-cell">ra</div>
+    <div class="m1vs1-games__header__cmp-cell">mh</div>
+    <div class="m1vs1-games__header__cmp-cell">speed</div>
+    <div class="m1vs1-games__header__cell">when</div>
 </div>
 `;
 }
 
 function _html_render_games_row(a: GameData, b: GameData): string {
     return `
-<div class="duel-games__game ${a.frags > b.frags && "duel-games__game--win"}">
-    <div class="duel-games__game__player-a-cell">${a.name}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
-    <div class="duel-games__game__cell">${b.name}</div>
-    <div class="duel-games__game__cell">${a.map}</div>
+<div class="m1vs1-games__game ${a.frags > b.frags && "m1vs1-games__game--win"}">
+    <div class="m1vs1-games__game__player-a-cell">${a.name}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
+    <div class="m1vs1-games__game__cell">${b.name}</div>
+    <div class="m1vs1-games__game__cell">${a.map}</div>
     <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
-    <div class="duel-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_lg_damage_minute_diff(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_lg_accuracy_percent(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_ra(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_mh(a, b)}</div>
-    <div class="duel-games__game__cmp-cell">${_cmp_speed_diff(a, b)}</div>
-    <div class="duel-games__game__cell">${_time_ago(a.date)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_lg_damage_minute_diff(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_lg_accuracy_percent(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_ra(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_mh(a, b)}</div>
+    <div class="m1vs1-games__game__cmp-cell">${_cmp_speed_diff(a, b)}</div>
+    <div class="m1vs1-games__game__cell">${_time_ago(a.date)}</div>
 </div>
 `;
 }
@@ -482,13 +481,13 @@ function _cmp(a: string, b: string, bar: number, mul: number = 32, is_percent: b
   }
   let percent_span = "";
   if (is_percent) {
-    percent_span = `<span class="duel-games__game__cell__percent">%</span>`;
+    percent_span = `<span class="m1va1-games__game__cell__percent">%</span>`;
   }
   return `
-<div class="duel-games__game__cmp-cell__a">${a}${percent_span}</div>
-<div class="duel-games__game__cmp-cell__separator"></div>
-<div class="duel-games__game__cmp-cell__b">${b}${percent_span}</div>
-<div class="duel-games__game__cmp-cell__bar ${bar <= 0 ? "duel-games__game__cmp-cell__bar--better" : "duel-games__game__cmp-cell__bar--worse"}" style="${bar_style}"></div>
+<div class="m1vs1-games__game__cmp-cell__a">${a}${percent_span}</div>
+<div class="m1vs1-games__game__cmp-cell__separator"></div>
+<div class="m1vs1-games__game__cmp-cell__b">${b}${percent_span}</div>
+<div class="m1vs1-games__game__cmp-cell__bar ${bar <= 0 ? "m1vs1-games__game__cmp-cell__bar--better" : "m1vs1-games__game__cmp-cell__bar--worse"}" style="${bar_style}"></div>
 `;
 }
 
@@ -503,7 +502,7 @@ function _cmp(a: string, b: string, bar: number, mul: number = 32, is_percent: b
 // }
 
 function _cmp_na(): string {
-  return `<div class="duel-games__game__cmp-cell__na">n/a</div>`;
+  return `<div class="m1vs1-games__game__cmp-cell__na">n/a</div>`;
 }
 
 function _time_ago(date: string) {
