@@ -1,0 +1,230 @@
+@import '_vars';
+
+.m1vs1-games {
+    display: flex;
+    flex-direction: column;
+}
+
+.m1vs1-games__header {
+    display: flex;
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+    justify-content: center;
+}
+
+.m1vs1-games__header__cell {
+    @extend .m1vs1-games__game__cell;
+}
+
+.m1vs1-games__header__cmp-cell {
+    @extend .m1vs1-games__game__cmp-cell;
+    justify-content: center;
+}
+
+.m1vs1-games__game {
+    display: flex;
+    //margin-bottom: 3px;
+    //z-index: -10;
+    justify-content: center;
+}
+
+.m1vs1-games__game:hover {
+    //border: 1px solid blue;
+    background-color: rgba(0,0,255,0.05);
+    //color: $table-hover-color;
+    //background-color: $table-hover-bg-color;
+}
+
+.m1vs1-games__game:nth-child(even) {
+    //background-color: #f5f5f5;
+}
+
+.m1vs1-games__game--win {
+    background-color: $win-color;
+}
+
+.m1vs1-games__game__cell {
+//    width: $duel-games__game__cell__width;
+    //    max-width: $duel-games__game__cell__max-width;
+    display: flex;
+    flex-basis: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0px 10px;
+    //max-width: 70px;
+}
+
+.m1vs1-games__game__player-a-cell {
+    @extend .m1vs1-games__game__cell;
+    justify-content: flex-end;
+    //text-align: right;
+}
+
+.m1vs1-games__game__cmp-cell {
+    display: flex;
+    position: relative; // anchor for the bar
+    flex-basis: 120px;
+    justify-content: center;
+    //width: $duel-games__game__cell__width;
+    //max-width: $duel-games__game__cell__max-width;
+}
+
+.m1vs1-games__game__cmp-cell__a {
+    flex: 1;
+    text-align: right;
+}
+
+.m1vs1-games__game__cmp-cell__separator {
+    flex-basis: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.m1vs1-games__game__cmp-cell__b {
+    flex: 1;
+}
+
+// width and left positions are set dynamically
+.m1vs1-games__game__cmp-cell__bar {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.m1vs1-games__game__cmp-cell__bar--worse {
+    background-color: rgba(255,0,0,0.15);
+    border-left: 1px solid rgba(255,0,0,0.8);
+}
+
+.m1vs1-games__game__cmp-cell__bar--better {
+    background-color: rgba(0,255,0,0.25);
+    border-right: 1px solid rgba(0,255,0,1);
+}
+
+/* .duel-games__game__diff-cell__a { */
+/*     flex: 1; */
+/*     text-align: right; */
+/* } */
+
+/* .duel-games__game__diff-cell__bar--worse { */
+/*     background-color: rgba(255,0,0,0.15); */
+/*     border-left: 1px solid rgba(255,0,0,0.8); */
+/* } */
+
+/* .duel-games__game__diff-cell__bar--better { */
+/*     background-color: rgba(0,255,0,0.25); */
+/*     border-left: 1px solid rgba(0,255,0,1); */
+/* } */
+
+.m1vs1-games__game__cmp-cell__na {
+    color: #aaa;
+}
+
+.m1vs1-games__game__cell__percent {
+    color: #ccc;
+}
+
+// $cell-width: 70px;
+
+// @mixin recent-games-row() {
+//   display: flex;
+//   flex-direction: row;
+// }
+
+// @mixin recent-games-cell() {
+//   margin-left: 10px;
+//   margin-right: 10px;
+//   min-width: $cell-width;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+
+//   display: flex;
+//   flex-direction: row;
+//   //justify-content: center;
+
+//   //&:first-child {
+//   &.opponent {
+//     min-width: $cell-width + 80px;
+//     //text-align: left;
+//   }
+
+//   &.map {
+//     min-width: $cell-width + 20px;
+//   }
+
+//   // &:nth-child(9) {
+//   //   min-width: $cell-width / 2.0;
+//   // }
+// }
+
+// #duel-games {
+//   // font-family: Courier;
+//   // font-size: 14px;
+//   display: flex;
+//   flex-direction: column;
+//   //font-family: Courier;
+//   text-align: right;
+
+//   .header-row {
+//     @include recent-games-row();
+
+//     font-weight: bold;
+//     margin-bottom: 5px;
+
+//     .cell {
+//       @include recent-games-cell();
+//       //border: 1px solid white;
+//       justify-content: flex-end;
+
+//       &.opponent, &.map {
+//         justify-content: flex-start;
+//       }
+
+//       &.frags {
+//         justify-content: center;
+//       }
+//     }
+//   }
+
+//   .game-row {
+//     display: flex;
+//     flex-direction: row;
+//     color: #777;
+
+//     &.win {
+//       background-color: lighten( #e1ffe9, 2% );
+//     }
+
+//     .cell {
+//       @include recent-games-cell();
+//       justify-content: flex-end;
+
+//       &.opponent, &.map {
+//         justify-content: flex-start;
+//       }
+
+//       &.frags {
+//         justify-content: center;
+//       }
+
+//       &.frags {
+//         .frags-a {
+//           flex-basis: 40%;
+//         }
+
+//         .frags-separator {
+//           flex-basis: 20%;
+//           text-align: center;
+//           color: #ccc;
+//         }
+
+//         .frags-b {
+//           flex-basis: 40%;
+//           text-align: left;
+//         }
+//       }
+
+//     }
+//   }
+// }

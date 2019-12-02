@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "sourceMap": false,
+        "alwaysStrict": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": true,
+        "lib": ["es2016", "dom"],
+        "module": "esnext",
+        "target": "es5",
+        "outDir": "public",
+        "rootDir": "ts",
+        "moduleResolution": "node",
+    }
+}
