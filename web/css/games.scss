@@ -70,6 +70,10 @@
     //max-width: $duel-games__game__cell__max-width;
 }
 
+.m1vs1-games__cell--narrow {
+    flex-basis: 90px !important;
+}
+
 .m1vs1-games__game__cmp-cell__a {
     flex: 1;
     text-align: right;
@@ -90,6 +94,33 @@
     position: absolute;
     height: 100%;
     z-index: -1;
+}
+
+// single cmp cell
+.m1vs1-games__header__single-cmp-cell {
+    @extend .m1vs1-games__header__cmp-cell;
+    flex-basis: 60px;
+}
+
+.m1vs1-games__game__single-cmp-cell {
+    @extend .m1vs1-games__game__cmp-cell;
+    flex-basis: 60px;
+}
+
+.m1vs1-games__game__single-cmp-cell__a {
+    @extend .m1vs1-games__game__cmp-cell__a;
+    text-align: center;
+    padding-right: 10px;
+}
+
+.m1vs1-games__game__single-cmp-cell__bar {
+    @extend .m1vs1-games__game__cmp-cell__bar;
+    right: 10px;
+}
+
+.m1vs1-games__game__single-cmp-cell__bar--worse {
+    background-color: rgba(255,0,0,0.15);
+    border-right: 1px solid rgba(255,0,0,0.8);
 }
 
 .m1vs1-games__game__cmp-cell__bar--worse {
@@ -123,6 +154,10 @@
 
 .m1vs1-games__game__cell__percent {
     color: #ccc;
+}
+
+.m1vs1-games__separator-cell {
+    flex-basis: 40px;
 }
 
 // $cell-width: 70px;

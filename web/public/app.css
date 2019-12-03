@@ -1,27 +1,27 @@
-.1vs1-games {
+.m1vs1-games {
   display: flex;
   flex-direction: column; }
 
-.1vs1-games__header {
+.m1vs1-games__header {
   display: flex;
   text-transform: uppercase;
   margin-bottom: 10px;
   justify-content: center; }
 
-.1vs1-games__header__cmp-cell {
+.m1vs1-games__header__cmp-cell, .m1vs1-games__header__single-cmp-cell {
   justify-content: center; }
 
-.1vs1-games__game {
+.m1vs1-games__game {
   display: flex;
   justify-content: center; }
 
-.1vs1-games__game:hover {
+.m1vs1-games__game:hover {
   background-color: rgba(0, 0, 255, 0.05); }
 
-.1vs1-games__game--win {
+.m1vs1-games__game--win {
   background-color: none; }
 
-.1vs1-games__game__cell, .1vs1-games__header__cell, .1vs1-games__game__player-a-cell {
+.m1vs1-games__game__cell, .m1vs1-games__header__cell, .m1vs1-games__game__player-a-cell {
   display: flex;
   flex-basis: 100px;
   overflow: hidden;
@@ -29,37 +29,57 @@
   white-space: nowrap;
   margin: 0px 10px; }
 
-.1vs1-games__game__player-a-cell {
+.m1vs1-games__game__player-a-cell {
   justify-content: flex-end; }
 
-.1vs1-games__game__cmp-cell, .1vs1-games__header__cmp-cell {
+.m1vs1-games__game__cmp-cell, .m1vs1-games__header__cmp-cell, .m1vs1-games__header__single-cmp-cell, .m1vs1-games__game__single-cmp-cell {
   display: flex;
   position: relative;
   flex-basis: 120px;
   justify-content: center; }
 
-.1vs1-games__game__cmp-cell__a {
+.m1vs1-games__cell--narrow {
+  flex-basis: 90px !important; }
+
+.m1vs1-games__game__cmp-cell__a, .m1vs1-games__game__single-cmp-cell__a {
   flex: 1;
   text-align: right; }
 
-.1vs1-games__game__cmp-cell__separator {
+.m1vs1-games__game__cmp-cell__separator {
   flex-basis: 20px;
   display: flex;
   justify-content: center; }
 
-.1vs1-games__game__cmp-cell__b {
+.m1vs1-games__game__cmp-cell__b {
   flex: 1; }
 
-.1vs1-games__game__cmp-cell__bar {
+.m1vs1-games__game__cmp-cell__bar, .m1vs1-games__game__single-cmp-cell__bar {
   position: absolute;
   height: 100%;
   z-index: -1; }
 
-.1vs1-games__game__cmp-cell__bar--worse {
+.m1vs1-games__header__single-cmp-cell {
+  flex-basis: 60px; }
+
+.m1vs1-games__game__single-cmp-cell {
+  flex-basis: 60px; }
+
+.m1vs1-games__game__single-cmp-cell__a {
+  text-align: center;
+  padding-right: 10px; }
+
+.m1vs1-games__game__single-cmp-cell__bar {
+  right: 10px; }
+
+.m1vs1-games__game__single-cmp-cell__bar--worse {
+  background-color: rgba(255, 0, 0, 0.15);
+  border-right: 1px solid rgba(255, 0, 0, 0.8); }
+
+.m1vs1-games__game__cmp-cell__bar--worse {
   background-color: rgba(255, 0, 0, 0.15);
   border-left: 1px solid rgba(255, 0, 0, 0.8); }
 
-.1vs1-games__game__cmp-cell__bar--better {
+.m1vs1-games__game__cmp-cell__bar--better {
   background-color: rgba(0, 255, 0, 0.25);
   border-right: 1px solid lime; }
 
@@ -75,11 +95,14 @@
 /*     background-color: rgba(0,255,0,0.25); */
 /*     border-left: 1px solid rgba(0,255,0,1); */
 /* } */
-.1vs1-games__game__cmp-cell__na {
+.m1vs1-games__game__cmp-cell__na {
   color: #aaa; }
 
-.1vs1-games__game__cell__percent {
+.m1vs1-games__game__cell__percent {
   color: #ccc; }
+
+.m1vs1-games__separator-cell {
+  flex-basis: 40px; }
 
 #main {
   font-family: Courier;

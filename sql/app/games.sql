@@ -1,4 +1,14 @@
+-- Recent games
 --
+-- Description
+-- -----------
+-- Recent duel games for the player. Each game consists of two rows: One row
+-- with the player stats for the game, and the other row with the equivalent
+-- opponent stats for the game. These rows are not combined in any way. The
+-- application has to do it to assemble the complete set of stats for the game.
+--
+-- Placeholders
+-- ------------
 -- $1 Player name
 -- $2 Game count
 --

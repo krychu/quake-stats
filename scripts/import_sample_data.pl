@@ -169,7 +169,7 @@ sub insert_player {
         $player->{spree}->{quad},
         $player->{control},
         $player->{speed}->{max},
-        $player->{spped}->{avg},
+        $player->{speed}->{avg},
 
         $player->{items}->{health_15}->{took},
         $player->{items}->{health_25}->{took},

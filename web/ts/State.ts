@@ -4,10 +4,12 @@ import * as cmd from "./Cmd";
 const commands: [string, Cmd][] = [
   [ "state_set_main_html_root",          cmd_state_set_main_html_root ],
   [ "state_set_games_html_root",         cmd_state_set_games_html_root ],
+  [ "state_set_opponents_html_root",     cmd_state_set_opponents_html_root ],
 
   // duel player
   [ "state_set_game_cnts",               cmd_state_set_game_cnts ],
   [ "state_set_games",                   cmd_state_set_games ],
+  [ "state_set_opponents",               cmd_state_set_opponents ],
   [ "state_set_win_probabilities",       cmd_state_set_win_probabilities ],
 
   // duel players
@@ -37,6 +39,7 @@ let state: State = {
     data: {
       game_cnt: 40,
       games: [],
+      opponents: [],
       game_cnts: [],
       win_probabilities: []
     },
@@ -55,8 +58,12 @@ let state: State = {
       show_game_cnt: 20,
       //game_cnt: 40,
       //data: [],
-      html_root_id: "duel-games",
+      //html_root_id: "duel-games",
       html_root: null
+    },
+
+    opponents: {
+      html_root: null,
     }
 
   },
@@ -101,11 +108,13 @@ interface DuelPlayerState {
   data: DuelPlayerData;
   games_chart: GamesChart;
   games: Games;
+  opponents: Opponents;
 }
 
 interface DuelPlayerData {
   game_cnt: number;
   games: Duel[];
+  opponents: OpponentData[];
   game_cnts: [string, number][];
   win_probabilities: any[];
   //win_probabilities:
@@ -128,11 +137,30 @@ interface Games {
   //data: GameData[];
   //data: [GameData, GameData][];
   //data: Duel[];
-  html_root_id: string;
+  //html_root_id: string;
+  html_root: HTMLElement | null;
+}
+
+interface Opponents {
   html_root: HTMLElement | null;
 }
 
 type Duel = [GameData, GameData];
+
+interface OpponentData {
+  name_b: string;
+  game_cnt: number;
+  win_cnt: number;
+  loss_cnt: number;
+  avg_frag_proportion: number;
+  max_frag_proportion: number;
+  min_frag_proportion: number;
+  avg_lg_accuracy: number;
+  avg_dmg_proportion: number;
+  avg_dmg_per_minute: number;
+  most_frequent_map: string;
+  avg_win_probability: number;
+}
 
 interface GameData {
   // this order should stay sync with the UI design
@@ -220,6 +248,11 @@ function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
   return Promise.resolve();
 }
 
+function cmd_state_set_opponents_html_root(root: HTMLElement): Promise<any> {
+  state.duel_player.opponents.html_root = root;
+  return Promise.resolve();
+}
+
 /**
  * Duel Player
  */
@@ -230,6 +263,11 @@ function cmd_state_set_game_cnts(data: [string, number][]): Promise<any> {
 
 function cmd_state_set_games(data: Duel[]): Promise<any> {
   state.duel_player.data.games = data;
+  return Promise.resolve();
+}
+
+function cmd_state_set_opponents(data: OpponentData[]): Promise<any> {
+  state.duel_player.data.opponents = data;
   return Promise.resolve();
 }
 

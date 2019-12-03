@@ -8,17 +8,29 @@ use PG;
 
 get '/' => sub {
     my $c = shift;
-    $c->stash(player => "Locust");
+    $c->stash(player => "bps");
     $c->render(template => 'main');
     #$c->render(text => 'Hello World!');
 };
 
+# API
+
+# Recent games
 get '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
     my $player = $c->stash('player');
     my $game_cnt = $c->stash('cnt');
     my $games = PG::get_games($player, $game_cnt);
     $c->render(json => $games);
+};
+
+# Opponents
+get '/api/1vs1/:player/opponents' => sub {
+    my $c = shift;
+    my $player = $c->stash('player');
+    my $interval_str = '4 months';
+    my $opponents = PG::get_opponents($player, $interval_str);
+    $c->render(json => $opponents);
 };
 
 app->start;

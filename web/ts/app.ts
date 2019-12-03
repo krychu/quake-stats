@@ -3,6 +3,7 @@ import * as log from "./Log";
 import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
+import * as opponents from "./Opponents";
 import * as games_chart from "./GamesChart";
 import * as players from "./Players";
 
@@ -62,6 +63,7 @@ function main_duel_player() {
     cmd,
     data,
     games,
+    opponents,
     games_chart
   ];
 
@@ -77,6 +79,7 @@ function main_duel_player() {
     cmd.schedule_cmd("state_set_main_html_root", html_root);
   });
 
+  // Create and store recent games html root
   cmd.schedule_cmd("games_create_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_games_html_root", html_root);
     // we know above is immediate
@@ -84,14 +87,28 @@ function main_duel_player() {
     //cmd.schedule_cmd("games_attach_html_root", "duel-games");
   });
 
+  // Create and store opponents html root
+  cmd.schedule_cmd("opponents_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_opponents_html_root", html_root);
+    // we know above is immediate
+    cmd.schedule_cmd("opponents_attach_html_root");
+  });
+
   cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
     cmd.schedule_cmd("state_set_gchart_html_root", html_root);
   })
 
+  // Request, store and render recent games
   cmd.schedule_cmd("data_fetch_games").then((data) => {
     cmd.schedule_cmd("state_set_games", data);
     cmd.schedule_cmd("games_render_data");
     cmd.schedule_cmd("gchart_render_data");
+  });
+
+  // Request, store and render opponents
+  cmd.schedule_cmd("data_fetch_opponents").then((data) => {
+    cmd.schedule_cmd("state_set_opponents", data);
+    cmd.schedule_cmd("opponents_render_data");
   });
 
   cmd.schedule_cmd("data_fetch_game_cnts").then((data) => {

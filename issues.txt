@@ -1,0 +1,10 @@
+Open issues
+--------------------------------------------------------------------------------
+- Opponents
+- Maps
+- BPS recent games chart
+- Performance charts
+- Filters for player/map
+
+Done
+--------------------------------------------------------------------------------
