@@ -3,11 +3,12 @@
 -- Description
 -- -----------
 -- Top opponents for the player. One opponent per row with all related stats.
+-- The stats are averages across games against the opponent.
 --
 -- Placeholders
 -- ------------
 -- $1 Player name
--- $2 String time interval, e.g., '4 months'
+-- $2 Time interval as string, e.g., '4 months'
 --
 WITH recent_games AS (
     SELECT

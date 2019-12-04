@@ -104,6 +104,29 @@
 .m1vs1-games__separator-cell {
   flex-basis: 40px; }
 
+.m11-opponents {
+  display: flex;
+  flex-direction: column; }
+
+.m11-opponents__row {
+  display: flex;
+  justify-content: center; }
+
+.m11-opponents__row--header {
+  text-transform: uppercase;
+  margin-bottom: 10px; }
+
+.m11-opponents__cell {
+  display: flex;
+  flex-basis: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0px 10px; }
+
+.m11-opponents__cell--name {
+  justify-content: flex-start; }
+
 #main {
   font-family: Courier;
   font-size: 0.9em;

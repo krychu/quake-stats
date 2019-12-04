@@ -4,6 +4,7 @@ import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
 import * as opponents from "./Opponents";
+import * as maps from "./Maps";
 import * as games_chart from "./GamesChart";
 import * as players from "./Players";
 
@@ -64,6 +65,7 @@ function main_duel_player() {
     data,
     games,
     opponents,
+    maps,
     games_chart
   ];
 
@@ -94,6 +96,13 @@ function main_duel_player() {
     cmd.schedule_cmd("opponents_attach_html_root");
   });
 
+  // Create and store maps html root
+  cmd.schedule_cmd("maps_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_maps_html_root", html_root);
+    // we know above is immediate
+    cmd.schedule_cmd("maps_attach_html_root");
+  });
+
   cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
     cmd.schedule_cmd("state_set_gchart_html_root", html_root);
   })
@@ -109,6 +118,12 @@ function main_duel_player() {
   cmd.schedule_cmd("data_fetch_opponents").then((data) => {
     cmd.schedule_cmd("state_set_opponents", data);
     cmd.schedule_cmd("opponents_render_data");
+  });
+
+  // Request, store and render maps
+  cmd.schedule_cmd("data_fetch_maps").then((data) => {
+    cmd.schedule_cmd("state_set_maps", data);
+    cmd.schedule_cmd("maps_render_data");
   });
 
   cmd.schedule_cmd("data_fetch_game_cnts").then((data) => {

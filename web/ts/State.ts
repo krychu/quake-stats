@@ -5,6 +5,7 @@ const commands: [string, Cmd][] = [
   [ "state_set_main_html_root",          cmd_state_set_main_html_root ],
   [ "state_set_games_html_root",         cmd_state_set_games_html_root ],
   [ "state_set_opponents_html_root",     cmd_state_set_opponents_html_root ],
+  [ "state_set_maps_html_root",          cmd_state_set_maps_html_root ],
 
   // duel player
   [ "state_set_game_cnts",               cmd_state_set_game_cnts ],
@@ -40,6 +41,7 @@ let state: State = {
       game_cnt: 40,
       games: [],
       opponents: [],
+      maps: [],
       game_cnts: [],
       win_probabilities: []
     },
@@ -64,10 +66,15 @@ let state: State = {
 
     opponents: {
       html_root: null,
+    },
+
+    maps: {
+      html_root: null,
     }
 
   },
 
+  // This should be another state?
   duel_players: {
     players: {
       html_root: null
@@ -109,12 +116,14 @@ interface DuelPlayerState {
   games_chart: GamesChart;
   games: Games;
   opponents: Opponents;
+  maps: Maps;
 }
 
 interface DuelPlayerData {
   game_cnt: number;
   games: Duel[];
   opponents: OpponentData[];
+  maps: MapData[];
   game_cnts: [string, number][];
   win_probabilities: any[];
   //win_probabilities:
@@ -145,9 +154,13 @@ interface Opponents {
   html_root: HTMLElement | null;
 }
 
+interface Maps {
+  html_root: HTMLElement | null;
+}
+
 type Duel = [GameData, GameData];
 
-interface OpponentData {
+export interface OpponentData {
   name_b: string;
   game_cnt: number;
   win_cnt: number;
@@ -160,6 +173,19 @@ interface OpponentData {
   avg_dmg_per_minute: number;
   most_frequent_map: string;
   avg_win_probability: number;
+}
+
+export interface MapData {
+  map: string;
+  game_cnt: number;
+  opponent_cnt: number;
+  avg_avg_win_probability: number;
+  avg_avg_frag_proportion: number;
+  max_max_frag_proportion: number;
+  min_min_frag_proportion: number;
+  avg_avg_lg_accuracy: number;
+  avg_avg_dmg_proportion: number;
+  avg_avg_dmg_per_minute: number;
 }
 
 interface GameData {
@@ -250,6 +276,11 @@ function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
 
 function cmd_state_set_opponents_html_root(root: HTMLElement): Promise<any> {
   state.duel_player.opponents.html_root = root;
+  return Promise.resolve();
+}
+
+function cmd_state_set_maps_html_root(root: HTMLElement): Promise<any> {
+  state.duel_player.maps.html_root = root;
   return Promise.resolve();
 }
 
