@@ -34,8 +34,10 @@ WITH recent_games AS (
       CASE WHEN recent_games.frags < game_players.frags THEN 1 ELSE 0 END AS loss,
       recent_games.frags::FLOAT / GREATEST(recent_games.frags + game_players.frags, 1) AS frag_proportion,
       recent_games.lg_direct_hits::FLOAT / GREATEST(recent_games.lg_attacks, 1) AS lg_accuracy,
+      game_players.lg_direct_hits::FLOAT / GREATEST(game_players.lg_attacks, 1) AS lg_accuracy_b,
       recent_games.damage_given::FLOAT / GREATEST(recent_games.damage_given + game_players.damage_given, 1) AS dmg_proportion,
       recent_games.damage_given::FLOAT / tl AS dmg_per_minute,
+      game_players.damage_given::FLOAT / tl AS dmg_per_minute_b,
       game_players.name AS name_b,
 			map
     FROM recent_games
@@ -47,16 +49,24 @@ WITH recent_games AS (
       COUNT(*) AS game_cnt,
       SUM(win) AS win_cnt,
       SUM(loss) AS loss_cnt,
-      ROUND(AVG(frag_proportion)::NUMERIC, 3)::TEXT AS avg_frag_proportion,
-      ROUND(MAX(frag_proportion)::NUMERIC, 3)::TEXT AS max_frag_proportion,
-      ROUND(MIN(frag_proportion)::NUMERIC, 3)::TEXT AS min_frag_proportion,
-      ROUND(AVG(lg_accuracy)::NUMERIC, 3)::TEXT AS avg_lg_accuracy,
-      ROUND(AVG(dmg_proportion)::NUMERIC, 3)::TEXT AS avg_dmg_proportion,
-      ROUND(AVG(dmg_per_minute)::NUMERIC, 0)::TEXT AS avg_dmg_per_minute,
+      --(SELECT COUNT(*) FROM duels) AS total_game_cnt,
+      --ROUND(AVG(frag_proportion)::NUMERIC, 3)::TEXT AS avg_frag_proportion,
+      ROUND(AVG(frag_proportion) * 100) AS avg_frag_proportion,
+      ROUND(MAX(frag_proportion) * 100) AS max_frag_proportion,
+      ROUND(MIN(frag_proportion) * 100) AS min_frag_proportion,
+      ROUND(AVG(lg_accuracy) * 100) AS avg_lg_accuracy,
+      ROUND(AVG(lg_accuracy_b) * 100) AS avg_lg_accuracy_b,
+      ROUND(AVG(dmg_proportion) * 100) AS avg_dmg_proportion,
+      ROUND(AVG(dmg_per_minute)) AS avg_dmg_per_minute,
+      ROUND(AVG(dmg_per_minute_b)) AS avg_dmg_per_minute_b,
 			mode() WITHIN GROUP (ORDER BY map) AS most_frequent_map
     FROM duels
     GROUP BY name_b
 )
 SELECT *,
-  ROUND( (win_cnt :: FLOAT / GREATEST( win_cnt + loss_cnt, 1 ))::numeric , 3 )::TEXT AS avg_win_probability
-FROM opponents ORDER BY game_cnt DESC;
+  (SELECT MAX(game_cnt) FROM opponents) as max_game_cnt,
+  100 - avg_frag_proportion AS avg_frag_proportion_b,
+  100 - avg_dmg_proportion AS avg_dmg_proportion_b,
+  ROUND((win_cnt :: FLOAT / GREATEST( win_cnt + loss_cnt, 1 )) * 100) AS avg_win_probability,
+  100 - ROUND((win_cnt :: FLOAT / GREATEST( win_cnt + loss_cnt, 1 )) * 100) AS avg_win_probability_b
+FROM opponents ORDER BY avg_win_probability ASC, game_cnt DESC;

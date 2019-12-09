@@ -69,10 +69,11 @@ function _html_render_opponents_header(): string {
 <div class="m11-opponents__row m11-opponents__row--header">
   <div class="m11-opponents__cell m11-opponents__cell--header m11-opponents__cell--name">name</div>
   <div class="m11-opponents__cell m11-opponents__cell--header">games</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">win rate</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">frag %</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">dmg %</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">fq map</div>
+  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">win rate</div>
+  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">frag %</div>
+  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">dmg %</div>
+  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">lg %</div>
+  <div class="m11-opponents__cell m11-opponents__cell--header m11-opponents__cell--name">fq map</div>
 </div>
 `;
 }
@@ -81,11 +82,78 @@ function _html_render_opponent_row(opponent: OpponentData): string {
   return `
 <div class="m11-opponents__row m11-opponents__row--opponent">
   <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.name_b}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.game_cnt}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_win_probability}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_frag_proportion}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_dmg_proportion}</div>
+  ${_game_cnts(opponent)}
+  ${_cmp_avg_win_probability(opponent)}
+  ${_cmp_avg_frag_proportion(opponent)}
+  ${_cmp_avg_dmg_proportion(opponent)}
+  ${_cmp_avg_lg_accuracy(opponent)}
   <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.most_frequent_map}</div>
+</div>
+`;
+}
+
+function _game_cnts(d: OpponentData): string {
+  const val = d.game_cnt;
+  const bar = d.game_cnt / d.max_game_cnt;
+  return _val_with_bar(val.toString(), bar, 80);
+}
+
+function _cmp_avg_win_probability(d: OpponentData): string {
+  const a = d.avg_win_probability;
+  const b = d.avg_win_probability_b;
+  const bar = (50 - a) / 50.0;
+  return _cmp(a.toString(), b.toString(), bar);
+}
+
+function _cmp_avg_frag_proportion(d: OpponentData): string {
+  const a = d.avg_frag_proportion;
+  const b = d.avg_frag_proportion_b;
+  const bar = (50 - a) / 50.0;
+  return _cmp(a.toString(), b.toString(), bar);
+}
+
+function _cmp_avg_dmg_proportion(d: OpponentData): string {
+  const a = d.avg_dmg_proportion;
+  const b = d.avg_dmg_proportion_b;
+  const bar = (50 - a) / 50.0;
+  return _cmp(a.toString(), b.toString(), bar);
+}
+
+function _cmp_avg_lg_accuracy(d: OpponentData): string {
+  const a = d.avg_lg_accuracy;
+  const b = d.avg_lg_accuracy_b;
+  const bar = 2.0 * b / (a + b) - 1.0;
+  return _cmp(a.toString(), b.toString(), bar);
+}
+
+function _cmp(a: string, b: string, bar: number, mul: number = 40, is_percent: boolean = false): string {
+  //const mul = 32;
+  const bar_width = Math.abs(bar) * mul;
+  let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
+  if (bar >= 0) {
+    bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
+  }
+  let percent_span = "";
+  if (is_percent) {
+    percent_span = `<span class="m11-opponents__cell__percent">%</span>`;
+  }
+  return `
+<div class="m11-opponents__cmp-cell m11-opponents__cell--opponent">
+  <div class="m11-opponents__cmp-cell__a">${a}${percent_span}</div>
+  <div class="m11-opponents__cmp-cell__separator"></div>
+  <div class="m11-opponents__cmp-cell__b">${b}${percent_span}</div>
+  <div class="m11-opponents__cmp-cell__bar ${bar <= 0 ? "m11-opponents__cmp-cell__bar--better" : "m11-opponents__cmp-cell__bar--worse"}" style="${bar_style}"></div>
+</div>
+`;
+}
+
+function _val_with_bar(a: string, bar: number, mul: number = 32): string {
+  const bar_width = Math.abs(bar) * mul;
+  const bar_style = `width: ${bar_width}px;`;
+  return `
+<div class="m11-opponents__bar-cell">
+  <div class="m11-opponents__bar-cell__value">${a}</div>
+  <div class="m11-opponents__bar-cell__bar" style="${bar_style}"></div>
 </div>
 `;
 }

@@ -1,0 +1,41 @@
+@import '_vars';
+
+.m11-maps {
+    display: flex;
+    flex-direction: column;
+}
+
+.m11-maps__row {
+    display: flex;
+    justify-content: center;
+}
+
+.m11-maps__row--header {
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+}
+
+.m11-maps__row--map {
+    
+}
+
+.m11-maps__cell {
+    display: flex;
+    flex-basis: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0px 10px;
+}
+
+.m11-maps__cell--header {
+    
+}
+
+.m11-maps__cell--map {
+    
+}
+
+.m11-maps__cell--name {
+    justify-content: flex-start;
+}

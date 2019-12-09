@@ -1,10 +1,21 @@
 Open issues
 --------------------------------------------------------------------------------
-- Opponents
-- Maps
+- Opponents: Avg results
+- Maps: Format numbers
+- Maps: Histogram bars for game cnt (grey)
+- Opponents: Highlight top5/bottom5 results
+- Opponents: Progress indicators
 - BPS recent games chart
-- Performance charts
 - Filters for player/map
+- Contextual help: tooltips?
+- Q: Development section needed?
+- Q: Frags, Damage, Weapon sections?
 
 Done
 --------------------------------------------------------------------------------
++ (09.12.2019) Opponents: Histogram bars for game cnt (grey)
++ (09.12.2019) Opponents: opponent results + bars
++ (09.12.2019) Opponents: Sort and color win rate
++ (05.12.2019) Opponents: Format numbers
++ (05.12.2019) Opponents
++ (05.12.2019) Maps

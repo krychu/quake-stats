@@ -16,6 +16,7 @@ my %queries;
 
     $queries{select_1vs1_games} = $dbh->prepare(scalar(read_file('../sql/app/games.sql')));
     $queries{select_1vs1_opponents} = $dbh->prepare(scalar(read_file('../sql/app/opponents.sql')));
+    $queries{select_1vs1_maps} = $dbh->prepare(scalar(read_file('../sql/app/maps.sql')));
 
     sub get_dbh {
         return $dbh;
@@ -34,6 +35,14 @@ sub get_games {
 sub get_opponents {
     my ($player, $interval_str) = @_;
     my $query = $queries{select_1vs1_opponents};
+
+    $query->execute($player, $interval_str);
+    return $query->fetchall_arrayref({});
+}
+
+sub get_maps {
+    my ($player, $interval_str) = @_;
+    my $query = $queries{select_1vs1_maps};
 
     $query->execute($player, $interval_str);
     return $query->fetchall_arrayref({});

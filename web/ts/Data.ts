@@ -7,6 +7,7 @@ const commands: [string, Cmd][] = [
   [ "data_fetch_game_cnts",             cmd_data_fetch_game_cnts ],
   [ "data_fetch_games",                 cmd_data_fetch_games ],
   [ "data_fetch_opponents",             cmd_data_fetch_opponents ],
+  [ "data_fetch_maps",                  cmd_data_fetch_maps ],
   [ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
 
   // duel players
@@ -71,6 +72,19 @@ function cmd_data_fetch_opponents(): Promise<any> {
     });
 }
 
+function cmd_data_fetch_maps(): Promise<any> {
+  if (state.duel_player.player == null) {
+    log.log("Data::data_fetch_maps - player is null");
+    return Promise.reject();
+  }
+
+  return fetch(_api_url_maps(state.duel_player.player))
+    .then((response) => response.json())
+    .then((json) => {
+      return json;
+    });
+}
+
 function cmd_data_fetch_win_probabilities(): Promise<any> {
   //const { player } = state;
   if (state.duel_player.player == null) {
@@ -109,6 +123,10 @@ function _api_url_games(player: string, game_cnt: number): string {
 
 function _api_url_opponents(player: string): string {
   return `/api/1vs1/${player}/opponents`;
+}
+
+function _api_url_maps(player: string): string {
+  return `/api/1vs1/${player}/maps`;
 }
 
 function _api_url_win_probabilities(player: string): string {

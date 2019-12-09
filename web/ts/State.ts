@@ -11,6 +11,7 @@ const commands: [string, Cmd][] = [
   [ "state_set_game_cnts",               cmd_state_set_game_cnts ],
   [ "state_set_games",                   cmd_state_set_games ],
   [ "state_set_opponents",               cmd_state_set_opponents ],
+  [ "state_set_maps",                    cmd_state_set_maps ],
   [ "state_set_win_probabilities",       cmd_state_set_win_probabilities ],
 
   // duel players
@@ -163,16 +164,22 @@ type Duel = [GameData, GameData];
 export interface OpponentData {
   name_b: string;
   game_cnt: number;
+  max_game_cnt: number;
   win_cnt: number;
   loss_cnt: number;
   avg_frag_proportion: number;
+  avg_frag_proportion_b: number;
   max_frag_proportion: number;
   min_frag_proportion: number;
   avg_lg_accuracy: number;
+  avg_lg_accuracy_b: number;
   avg_dmg_proportion: number;
+  avg_dmg_proportion_b: number;
   avg_dmg_per_minute: number;
+  avg_dmg_per_minute_b: number;
   most_frequent_map: string;
   avg_win_probability: number;
+  avg_win_probability_b: number;
 }
 
 export interface MapData {
@@ -299,6 +306,11 @@ function cmd_state_set_games(data: Duel[]): Promise<any> {
 
 function cmd_state_set_opponents(data: OpponentData[]): Promise<any> {
   state.duel_player.data.opponents = data;
+  return Promise.resolve();
+}
+
+function cmd_state_set_maps(data: MapData[]): Promise<any> {
+  state.duel_player.data.maps = data;
   return Promise.resolve();
 }
 

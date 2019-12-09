@@ -54,10 +54,9 @@ function _html_remove_maps(element: HTMLElement) {
   log.log("IMPLEMENT ME: _html_remove_opponents");
 }
 
-HERE
-function _html_render_maps(data: OpponentData[], element: HTMLElement) {
-  let rows = _html_render_opponents_header();
-  rows += data.map((opponent) => _html_render_opponent_row(opponent)).join("");
+function _html_render_maps(data: MapData[], element: HTMLElement) {
+  let rows = _html_render_maps_header();
+  rows += data.map((map) => _html_render_map_row(map)).join("");
   const html = `
 ${rows}
 `;
@@ -65,28 +64,30 @@ ${rows}
   element.insertAdjacentHTML("beforeend", html);
 }
 
-function _html_render_opponents_header(): string {
+function _html_render_maps_header(): string {
   return `
-<div class="m11-opponents__row m11-opponents__row--header">
-  <div class="m11-opponents__cell m11-opponents__cell--header m11-opponents__cell--name">name</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">games</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">win rate</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">frag %</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">dmg %</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">fq map</div>
+<div class="m11-maps__row m11-maps__row--header">
+  <div class="m11-maps__cell m11-maps__cell--header m11-maps__cell--name">name</div>
+  <div class="m11-maps__cell m11-maps__cell--header">games</div>
+  <div class="m11-maps__cell m11-maps__cell--header">opponents</div>
+  <div class="m11-maps__cell m11-maps__cell--header">win rate</div>
+  <div class="m11-maps__cell m11-maps__cell--header">frag %</div>
+  <div class="m11-maps__cell m11-maps__cell--header">dmg %</div>
+  <div class="m11-maps__cell m11-maps__cell--header">dmg/min</div>
 </div>
 `;
 }
 
-function _html_render_opponent_row(opponent: OpponentData): string {
+function _html_render_map_row(map: MapData): string {
   return `
-<div class="m11-opponents__row m11-opponents__row--opponent">
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.name_b}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.game_cnt}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_win_probability}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_frag_proportion}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.avg_dmg_proportion}</div>
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--name">${opponent.most_frequent_map}</div>
+<div class="m11-maps__row m11-maps__row--map">
+  <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${map.map}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.game_cnt}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.opponent_cnt}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.avg_avg_win_probability}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.avg_avg_frag_proportion}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.avg_avg_dmg_proportion}</div>
+  <div class="m11-maps__cell m11-maps__cell--map">${map.avg_avg_dmg_per_minute}</div>
 </div>
 `;
 }

@@ -26,7 +26,7 @@ WITH recent_games AS (
 		tl
 	FROM games INNER JOIN game_players ON games.id = game_players.game_id
 	WHERE name = $1
-		AND date > DATE('2017-11-01') - INTERVAL $s
+		AND date > DATE('2017-11-01') - INTERVAL $2
 		AND mode = 'duel'
 	ORDER BY date DESC
 ), duels AS (

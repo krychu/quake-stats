@@ -493,7 +493,7 @@ function _cmp_speed_diff(a: GameData, b: GameData): string {
 //   return _cmp(a_pick.toFixed(0).toString(), b_pick.toFixed(0).toString(), bar);
 // }
 
-function _cmp(a: string, b: string, bar: number, mul: number = 32, is_percent: boolean = false): string {
+function _cmp(a: string, b: string, bar: number, mul: number = 40, is_percent: boolean = false): string {
   //const mul = 32;
   const bar_width = Math.abs(bar) * mul;
   let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
@@ -502,7 +502,7 @@ function _cmp(a: string, b: string, bar: number, mul: number = 32, is_percent: b
   }
   let percent_span = "";
   if (is_percent) {
-    percent_span = `<span class="m1va1-games__game__cell__percent">%</span>`;
+    percent_span = `<span class="m1vs1-games__game__cell__percent">%</span>`;
   }
   return `
 <div class="m1vs1-games__game__cmp-cell__a">${a}${percent_span}</div>

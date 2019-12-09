@@ -1,4 +1,5 @@
 @import '_vars';
+@import 'games';
 
 .m11-opponents {
     display: flex;
@@ -16,12 +17,11 @@
 }
 
 .m11-opponents__row--opponent {
-    
 }
 
 .m11-opponents__cell {
     display: flex;
-    flex-basis: 100px;
+    flex-basis: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -29,13 +29,62 @@
 }
 
 .m11-opponents__cell--header {
-    
 }
 
 .m11-opponents__cell--opponent {
-    
 }
 
 .m11-opponents__cell--name {
     justify-content: flex-start;
+    flex-basis: 120px;
+}
+
+/* cmp cell */
+.m11-opponents__cmp-cell {
+    @extend .m1vs1-games__game__cmp-cell;
+}
+
+.m11-opponents__cmp-cell__a {
+    @extend .m1vs1-games__game__cmp-cell__a;
+}
+
+.m11-opponents__cmp-cell__b {
+    @extend .m1vs1-games__game__cmp-cell__b;
+}
+
+.m11-opponents__cmp-cell__separator {
+    @extend .m1vs1-games__game__cmp-cell__separator;
+}
+
+.m11-opponents__cmp-cell__bar {
+    @extend .m1vs1-games__game__cmp-cell__bar;
+}
+
+.m11-opponents__cmp-cell__bar--better {
+    @extend .m1vs1-games__game__cmp-cell__bar--better;
+}
+
+.m11-opponents__cmp-cell__bar--worse {
+    @extend .m1vs1-games__game__cmp-cell__bar--worse;
+}
+
+.m11-opponents__cmp-cell--header {
+    @extend .m1vs1-games__header__cmp-cell;
+}
+
+/* bar cell */
+.m11-opponents__bar-cell {
+    @extend .m11-opponents__cell;
+    position: relative; // anchor for the bar
+}
+
+.m11-opponents__bar-cell__value {
+}
+
+.m11-opponents__bar-cell__bar {
+    position: absolute;
+    height: 100%;
+    left: 0px;
+    background-color: #eee;
+    z-index: -1;
 }

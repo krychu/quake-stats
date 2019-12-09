@@ -33,6 +33,15 @@ get '/api/1vs1/:player/opponents' => sub {
     $c->render(json => $opponents);
 };
 
+# Maps
+get '/api/1vs1/:player/maps' => sub {
+    my $c = shift;
+    my $player = $c->stash('player');
+    my $interval_str = '4 months';
+    my $maps = PG::get_maps($player, $interval_str);
+    $c->render(json => $maps);
+};
+
 app->start;
 
 __DATA__
