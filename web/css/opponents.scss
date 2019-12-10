@@ -34,7 +34,23 @@
 .m11-opponents__cell--opponent {
 }
 
-.m11-opponents__cell--name {
+// .m11-opponents__cell--name {
+//     background-color: red;
+// }
+
+.m11-opponents__cell--map {
+    justify-content: flex-start;
+    flex-basis: 120px;
+}
+
+.m11-opponents__cell--name-a {
+    justify-content: flex-end;
+    flex-basis: 120px;
+    margin-right: 5px;
+    color: $grey-2;
+}
+
+.m11-opponents__cell--name-b {
     justify-content: flex-start;
     flex-basis: 120px;
 }
@@ -87,4 +103,18 @@
     left: 0px;
     background-color: #eee;
     z-index: -1;
+}
+
+/* avg row */
+.m11-opponents__row--avg:nth-child(2) {
+    margin-top: 5px;
+}
+
+.m11-opponents__row--avg:nth-child(3) {
+    //margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.m11-opponents__cmp-cell--avg {
+    font-weight: bold;
 }

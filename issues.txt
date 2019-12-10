@@ -1,18 +1,23 @@
 Open issues
 --------------------------------------------------------------------------------
-- Opponents: Avg results
+- Opponents: Make dmg bars longer
 - Maps: Format numbers
 - Maps: Histogram bars for game cnt (grey)
-- Opponents: Highlight top5/bottom5 results
-- Opponents: Progress indicators
+- Maps: a vs b + bars
 - BPS recent games chart
-- Filters for player/map
+- Style: Sections, font, size
+- Duel Players: index page
 - Contextual help: tooltips?
+- Q: Opponents: Highlight top5/bottom5 results
+- Opponents: Progress indicators
+- Filters for player/map
 - Q: Development section needed?
 - Q: Frags, Damage, Weapon sections?
 
 Done
 --------------------------------------------------------------------------------
++ (10.12.2019) Opponents: Add "you vs opponent" column for clarity
++ (10.12.2019) Opponents: Avg results
 + (09.12.2019) Opponents: Histogram bars for game cnt (grey)
 + (09.12.2019) Opponents: opponent results + bars
 + (09.12.2019) Opponents: Sort and color win rate
