@@ -91,17 +91,40 @@ interface State {
   html_main: HTMLElement | null;
   cmds: Cmds;
 
-  duel_player: DuelPlayerState;
-  duel_players: DPS_State;
+  //duel_player: DuelPlayerState;
+  duel_player: {
+    player: string | null;
+    data: {
+      game_cnt: number;
+      games: Duel[];
+      opponents: OpponentData[];
+      maps: MapData[];
+      game_cnts: [string, number][];
+      win_probabilities: any[];
+    };
+    games_chart: GamesChart;
+    games: Games;
+    opponents: Opponents;
+    maps: Maps;
+  };
+
+  duel_players: {
+    players: {
+      html_root: HTMLElement | null
+    },
+    data: {
+      players: DPS_PlayerData[]
+    }
+  };
 }
 
 /**
  * Dual Players
  */
-interface DPS_State {
-  players: { html_root: HTMLElement | null },
-  data: { players: DPS_PlayerData[] }
-}
+// interface DPS_State {
+//   players: { html_root: HTMLElement | null },
+//   data: { players: DPS_PlayerData[] }
+// }
 
 interface DPS_PlayerData {
   name: string;
@@ -111,24 +134,24 @@ interface DPS_PlayerData {
 /**
  * Dual Player
  */
-interface DuelPlayerState {
-  player: string | null;
-  data: DuelPlayerData;
-  games_chart: GamesChart;
-  games: Games;
-  opponents: Opponents;
-  maps: Maps;
-}
+// interface DuelPlayerState {
+//   player: string | null;
+//   data: DuelPlayerData;
+//   games_chart: GamesChart;
+//   games: Games;
+//   opponents: Opponents;
+//   maps: Maps;
+// }
 
-interface DuelPlayerData {
-  game_cnt: number;
-  games: Duel[];
-  opponents: OpponentData[];
-  maps: MapData[];
-  game_cnts: [string, number][];
-  win_probabilities: any[];
-  //win_probabilities:
-}
+// interface DuelPlayerData {
+//   game_cnt: number;
+//   games: Duel[];
+//   opponents: OpponentData[];
+//   maps: MapData[];
+//   game_cnts: [string, number][];
+//   win_probabilities: any[];
+//   //win_probabilities:
+// }
 
 interface GamesChart {
   game_cnt: number;

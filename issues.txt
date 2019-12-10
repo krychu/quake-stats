@@ -1,6 +1,7 @@
 Open issues
 --------------------------------------------------------------------------------
-- Duel Players: index page
+- Duel Player: player's page at /1vs1/bps
+- Duel Players: index page at /1vs1
 - Opponents: Make dmg bars longer
 - BPS recent games chart
 - Style: Sections, font, size

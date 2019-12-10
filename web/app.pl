@@ -13,6 +13,11 @@ get '/' => sub {
     #$c->render(text => 'Hello World!');
 };
 
+get '/1vs1/:player' => sub {
+    my $c = shift;
+    $c->render(template => '1vs1');
+};
+
 # API
 
 # Recent games
@@ -70,5 +75,32 @@ __DATA__
     </div>
 
     <script type="module" src="app.js"></script>
+  </body>
+</html>
+
+@@ 1vs1.html.ep
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quake World Stats</title>
+    <link rel="stylesheet" href="/app.css"/>
+  </head>
+  <body>
+    <script>
+      const PAGE = 'duel_player';
+      const SV_PLAYER = '<%= $player %>';
+    </script>
+
+    <div id="main">
+      <div id="1vs1-games-chart"></div>
+      <div id="1vs1-performance"></div>
+      <div id="1vs1-development"></div>
+    </div>
+
+    <script type="module" src="/app.js"></script>
   </body>
 </html>
