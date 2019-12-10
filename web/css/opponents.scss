@@ -88,6 +88,10 @@
     @extend .m1vs1-games__header__cmp-cell;
 }
 
+.m11-opponents__cmp-cell--na {
+    color: #aaa;
+}
+
 /* bar cell */
 .m11-opponents__bar-cell {
     @extend .m11-opponents__cell;

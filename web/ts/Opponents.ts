@@ -138,6 +138,9 @@ function _game_cnts(d: Pick<OpponentData, "game_cnt" | "max_game_cnt">, avg = fa
 function _cmp_avg_win_probability(d: Pick<OpponentData, "avg_win_probability" | "avg_win_probability_b">, avg = false): string {
   const a = d.avg_win_probability;
   const b = d.avg_win_probability_b;
+  if (a == null || b == null) {
+    return _cmp_na();
+  }
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
 }
@@ -145,6 +148,9 @@ function _cmp_avg_win_probability(d: Pick<OpponentData, "avg_win_probability" | 
 function _cmp_avg_frag_proportion(d: Pick<OpponentData, "avg_frag_proportion" | "avg_frag_proportion_b">, avg = false): string {
   const a = d.avg_frag_proportion;
   const b = d.avg_frag_proportion_b;
+  if (a == null || b == null) {
+    return _cmp_na();
+  }
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
 }
@@ -152,6 +158,9 @@ function _cmp_avg_frag_proportion(d: Pick<OpponentData, "avg_frag_proportion" | 
 function _cmp_avg_dmg_proportion(d: Pick<OpponentData, "avg_dmg_proportion" | "avg_dmg_proportion_b">, avg = false): string {
   const a = d.avg_dmg_proportion;
   const b = d.avg_dmg_proportion_b;
+  if (a == null || b == null) {
+    return _cmp_na();
+  }
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
 }
@@ -159,6 +168,9 @@ function _cmp_avg_dmg_proportion(d: Pick<OpponentData, "avg_dmg_proportion" | "a
 function _cmp_avg_lg_accuracy(d: Pick<OpponentData, "avg_lg_accuracy" | "avg_lg_accuracy_b">, avg = false): string {
   const a = d.avg_lg_accuracy;
   const b = d.avg_lg_accuracy_b;
+  if (a == null || b == null) {
+    return _cmp_na();
+  }
   const bar = 2.0 * b / (a + b) - 1.0;
   return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
 }
@@ -166,7 +178,7 @@ function _cmp_avg_lg_accuracy(d: Pick<OpponentData, "avg_lg_accuracy" | "avg_lg_
 /*
  * avg indicates if we're rendering an row with averages.
  */
-function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false, avg = false): string {
+function _cmp(a: number, b: number, bar: number, mul = 40, is_percent = false, avg = false): string {
   //const mul = 32;
   const bar_width = Math.abs(bar) * mul;
   let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
@@ -197,4 +209,8 @@ function _val_with_bar(a: string, bar: number, mul: number = 32, avg = false): s
   <div class="m11-opponents__bar-cell__bar ${avg ? "m11-opponents__bar-cell__bar--avg" : ""}" style="${bar_style}"></div>
 </div>
 `;
+}
+
+function _cmp_na(): string {
+  return `<div class="m11-opponents__cmp-cell m11-opponents__cmp-cell--na">n/a</div>`;
 }
