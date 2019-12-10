@@ -1,4 +1,6 @@
 @import '_vars';
+@import 'games';
+@import 'opponents';
 
 .m11-maps {
     display: flex;
@@ -21,7 +23,7 @@
 
 .m11-maps__cell {
     display: flex;
-    flex-basis: 100px;
+    flex-basis: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -38,4 +40,50 @@
 
 .m11-maps__cell--name {
     justify-content: flex-start;
+}
+
+/* cmp cell */
+.m11-maps__cmp-cell {
+    @extend .m1vs1-games__game__cmp-cell;
+}
+
+.m11-maps__cmp-cell__a {
+    @extend .m1vs1-games__game__cmp-cell__a;
+}
+
+.m11-maps__cmp-cell__b {
+    @extend .m1vs1-games__game__cmp-cell__b;
+}
+
+.m11-maps__cmp-cell__separator {
+    @extend .m1vs1-games__game__cmp-cell__separator;
+}
+
+.m11-maps__cmp-cell__bar {
+    @extend .m1vs1-games__game__cmp-cell__bar;
+}
+
+.m11-maps__cmp-cell__bar--better {
+    @extend .m1vs1-games__game__cmp-cell__bar--better;
+}
+
+.m11-maps__cmp-cell__bar--worse {
+    @extend .m1vs1-games__game__cmp-cell__bar--worse;
+}
+
+.m11-maps__cmp-cell--header {
+    @extend .m1vs1-games__header__cmp-cell;
+}
+
+/* bar cell */
+.m11-maps__bar-cell {
+    @extend .m11-opponents__bar-cell;
+}
+
+.m11-maps__bar-cell__value {
+    //@extend .m11-opponents__bar-cell__value;
+}
+
+.m11-maps__bar-cell__bar {
+    @extend .m11-opponents__bar-cell__bar;
 }

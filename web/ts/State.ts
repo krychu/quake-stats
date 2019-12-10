@@ -185,14 +185,20 @@ export interface OpponentData {
 export interface MapData {
   map: string;
   game_cnt: number;
+  max_game_cnt: number;
   opponent_cnt: number;
   avg_avg_win_probability: number;
+  avg_avg_win_probability_b: number;
   avg_avg_frag_proportion: number;
+  avg_avg_frag_proportion_b: number;
   max_max_frag_proportion: number;
   min_min_frag_proportion: number;
   avg_avg_lg_accuracy: number;
+  avg_avg_lg_accuracy_b: number;
   avg_avg_dmg_proportion: number;
+  avg_avg_dmg_proportion_b: number;
   avg_avg_dmg_per_minute: number;
+  avg_avg_dmg_per_minute_b: number;
 }
 
 interface GameData {
