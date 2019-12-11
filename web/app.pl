@@ -6,11 +6,9 @@ use lib "../src";
 use Mojolicious::Lite;
 use PG;
 
-get '/' => sub {
+get '/1vs1' => sub {
     my $c = shift;
-    $c->stash(player => "bps");
-    $c->render(template => 'main');
-    #$c->render(text => 'Hello World!');
+    $c->render(template => '1vs1index');
 };
 
 get '/1vs1/:player' => sub {
@@ -19,6 +17,13 @@ get '/1vs1/:player' => sub {
 };
 
 # API
+
+# Players
+get '/api/1vs1/players' => sub {
+    my $c = shift;
+    my $players = PG::get_players();
+    $c->render(json => $players);
+};
 
 # Recent games
 get '/api/1vs1/:player/games/:cnt' => sub {
@@ -51,7 +56,7 @@ app->start;
 
 __DATA__
 
-@@ main.html.ep
+@@ 1vs1index.html.ep
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,14 +69,10 @@ __DATA__
   </head>
   <body>
     <script>
-      const PAGE = 'duel_player';
-      const SV_PLAYER = '<%= $player %>';
+      const PAGE = 'duel_players';
     </script>
 
     <div id="main">
-      <div id="1vs1-games-chart"></div>
-      <div id="1vs1-performance"></div>
-      <div id="1vs1-development"></div>
     </div>
 
     <script type="module" src="app.js"></script>

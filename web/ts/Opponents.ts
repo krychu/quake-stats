@@ -178,7 +178,7 @@ function _cmp_avg_lg_accuracy(d: Pick<OpponentData, "avg_lg_accuracy" | "avg_lg_
 /*
  * avg indicates if we're rendering an row with averages.
  */
-function _cmp(a: number, b: number, bar: number, mul = 40, is_percent = false, avg = false): string {
+function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false, avg = false): string {
   //const mul = 32;
   const bar_width = Math.abs(bar) * mul;
   let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;

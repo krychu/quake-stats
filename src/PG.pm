@@ -17,11 +17,18 @@ my %queries;
     $queries{select_1vs1_games} = $dbh->prepare(scalar(read_file('../sql/app/games.sql')));
     $queries{select_1vs1_opponents} = $dbh->prepare(scalar(read_file('../sql/app/opponents.sql')));
     $queries{select_1vs1_maps} = $dbh->prepare(scalar(read_file('../sql/app/maps.sql')));
+    $queries{select_1vs1_players} = $dbh->prepare(scalar(read_file('../sql/app/players.sql')));
 
     sub get_dbh {
         return $dbh;
     }
 };
+
+sub get_players {
+    my $query = $queries{select_1vs1_players};
+    $query->execute();
+    return $query->fetchall_arrayref({});
+}
 
 sub get_games {
     my ($player, $game_cnt) = @_;

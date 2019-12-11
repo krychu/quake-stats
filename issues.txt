@@ -1,10 +1,12 @@
 Open issues
 --------------------------------------------------------------------------------
-- Duel Player: player's page at /1vs1/bps
-- Duel Players: index page at /1vs1
 - Opponents: Make dmg bars longer
 - BPS recent games chart
 - Style: Sections, font, size
+- Opponents: no averages if game cnt < 2
+- Bug: exclude n/a from calculating averages
+- Don't show tables if there's no data
+- Add logo
 - Contextual help: tooltips?
 - Q: Opponents: Highlight top5/bottom5 results
 - Opponents: Progress indicators
@@ -14,6 +16,8 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (11.12.2019) Duel Players: index page at /1vs1
++ (10.12.2019) Duel Player: player's page at /1vs1/bps
 + (10.12.2019) Maps: a vs b + bars
 + (10.12.2019) Maps: Histogram bars for game cnt (grey)
 + (10.12.2019) Maps: Format numbers
