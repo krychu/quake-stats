@@ -49,7 +49,7 @@ let state: State = {
 
     games_chart: {
       game_cnt: 20,
-      html_root_id: "duel-games-chart",
+      html_root_id: "1vs1-games-chart",
       html_root: null
       // svg_width: 800,
       // svg_

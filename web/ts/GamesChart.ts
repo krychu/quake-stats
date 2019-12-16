@@ -5,7 +5,9 @@ import * as log from "./Log";
 import * as SVG from "svg.js";
 
 const commands: [string, Cmd][] = [
-  [ "gchart_find_html_root",            cmd_gchart_find_html_root ],
+  //[ "gchart_find_html_root",            cmd_gchart_find_html_root ],
+  [ "gchart_create_html_root",          cmd_gchart_create_html_root ],
+  [ "gchart_attach_html_root",          cmd_gchart_attach_html_root ],
   [ "gchart_render_data",               cmd_gchart_render_data ],
   [ "state_set_gchart_html_root",       cmd_state_set_gchart_html_root ]
 ];
@@ -31,14 +33,30 @@ function cmd_state_set_gchart_html_root(root: HTMLElement): Promise<any> {
   return Promise.resolve();
 }
 
-function cmd_gchart_find_html_root(): Promise<any> {
-  const html_root = document.getElementById(state.duel_player.games_chart.html_root_id);
-  if (html_root == null) {
-    log.log(`GamesChart::cmd_gchart_find_html_root - can't find element with id '${state.duel_player.games_chart.html_root_id}'`);
-    return Promise.reject();
-  }
+function cmd_gchart_create_html_root(): Promise<any> {
+  const html_root = document.createElement("div");
+  html_root.className = "m11-games-chart";
   return Promise.resolve(html_root);
 }
+
+function cmd_gchart_attach_html_root(): Promise<any> {
+  if (state.duel_player.games_chart.html_root == null || state.html_main == null) {
+    log.log("GamesChart:cmd_gchart_attach_html_root = state doesn't contain required data");
+    return Promise.reject();
+  }
+
+  state.html_main.appendChild(state.duel_player.games_chart.html_root);
+  return Promise.resolve();
+}
+
+// function cmd_gchart_find_html_root(): Promise<any> {
+//   const html_root = document.getElementById(state.duel_player.games_chart.html_root_id);
+//   if (html_root == null) {
+//     log.log(`GamesChart::cmd_gchart_find_html_root - can't find element with id '${state.duel_player.games_chart.html_root_id}'`);
+//     return Promise.reject();
+//   }
+//   return Promise.resolve(html_root);
+// }
 
 function cmd_gchart_render_data(): Promise<any> {
   if (state.duel_player.data.games == null || state.duel_player.games_chart.html_root == null) {
@@ -52,6 +70,11 @@ function cmd_gchart_render_data(): Promise<any> {
   const diffs = _games_chart_diffs(state.duel_player.data.games);
   const max_y = _games_chart_max_y(diffs);
   const points = _games_chart_points(diffs, max_y, svg_width, svg_height);
+
+  // console.log(state.duel_player.data.games);
+  // console.log(diffs);
+  // console.log(max_y);
+  // console.log(points);
 
   _games_chart_draw(state.duel_player.games_chart.html_root, points, max_y, svg_width, svg_height);
 
@@ -81,6 +104,9 @@ function _games_chart_points(diffs: number[], max: number, width: number, height
   const padding_x = CHART_PADDING_X / width;
   const padding_y = CHART_PADDING_Y / height;
 
+  console.log(height);
+  // console.log(max);
+
   // 1. Calculate [x, y] pairs in the range of [0, 1]
   return diffs.map((d, i) => {
     const p = i / (diffs.length - 1);
@@ -90,6 +116,8 @@ function _games_chart_points(diffs: number[], max: number, width: number, height
   }).map(([xp, yp]) => {
     const content_x = 1.0 - 2.0 * padding_x;
     const content_y = 1.0 - 2.0 * padding_y;
+    console.log(padding_y);
+    //console.log(yp * content_y);
     return [padding_x + xp * content_x, padding_y + yp * content_y];
   // 3. Turn xs and ys into [0, 100] range
   }).map(([xp, yp]) => {

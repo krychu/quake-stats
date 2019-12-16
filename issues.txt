@@ -1,7 +1,7 @@
 Open issues
 --------------------------------------------------------------------------------
-- Opponents: Make dmg bars longer
 - BPS recent games chart
+- Opponents: Make dmg bars longer
 - Style: Sections, font, size
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages

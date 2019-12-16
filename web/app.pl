@@ -97,9 +97,6 @@ __DATA__
     </script>
 
     <div id="main">
-      <div id="1vs1-games-chart"></div>
-      <div id="1vs1-performance"></div>
-      <div id="1vs1-development"></div>
     </div>
 
     <script type="module" src="/app.js"></script>

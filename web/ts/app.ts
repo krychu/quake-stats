@@ -81,6 +81,12 @@ function main_duel_player() {
     cmd.schedule_cmd("state_set_main_html_root", html_root);
   });
 
+  // Create and store games chart html root
+  cmd.schedule_cmd("gchart_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_gchart_html_root", html_root);
+    cmd.schedule_cmd("gchart_attach_html_root");
+  });
+
   // Create and store recent games html root
   cmd.schedule_cmd("games_create_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_games_html_root", html_root);
@@ -103,9 +109,9 @@ function main_duel_player() {
     cmd.schedule_cmd("maps_attach_html_root");
   });
 
-  cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
-    cmd.schedule_cmd("state_set_gchart_html_root", html_root);
-  })
+  // cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
+  //   cmd.schedule_cmd("state_set_gchart_html_root", html_root);
+  // })
 
   // Request, store and render recent games
   cmd.schedule_cmd("data_fetch_games").then((data) => {
