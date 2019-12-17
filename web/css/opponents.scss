@@ -1,5 +1,5 @@
 @import '_vars';
-@import 'games';
+//@import 'games';
 
 .m11-opponents {
     display: flex;
@@ -9,6 +9,10 @@
 .m11-opponents__row {
     display: flex;
     justify-content: center;
+
+    &:hover {
+        background-color: $table-hover-bg-color;
+    }
 }
 
 .m11-opponents__row--header {

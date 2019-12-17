@@ -1,6 +1,6 @@
 @import '_vars';
-@import 'games';
-@import 'opponents';
+//@import 'games';
+//@import 'opponents';
 
 .m11-maps {
     display: flex;
@@ -10,6 +10,10 @@
 .m11-maps__row {
     display: flex;
     justify-content: center;
+
+    &:hover {
+        background-color: $table-hover-bg-color;
+    }
 }
 
 .m11-maps__row--header {
