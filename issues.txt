@@ -1,6 +1,6 @@
 Open issues
 --------------------------------------------------------------------------------
-- BPS recent games chart
+- Docker
 - Opponents: Make dmg bars longer
 - Style: Sections, font, size
 - Opponents: no averages if game cnt < 2
@@ -16,6 +16,7 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (18.12.2019) BPS recent games chart
 + (11.12.2019) Duel Players: index page at /1vs1
 + (10.12.2019) Duel Player: player's page at /1vs1/bps
 + (10.12.2019) Maps: a vs b + bars
