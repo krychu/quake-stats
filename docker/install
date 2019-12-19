@@ -1,14 +1,14 @@
 #!/bin/bash
 
 apt-get update
-apt-get -y --force-yes install build-essential
-apt-get -y --force-yes install git
-apt-get -y --force-yes install vim
-apt-get -y --force-yes install cpanminus
-apt-get -y --force-yes install wget
-apt-get -y --force-yes install sudo
-apt-get -y --force-yes install lsb-release
-apt-get -y --force-yes install curl
+apt-get -y install build-essential
+apt-get -y install git
+apt-get -y install vim
+apt-get -y install cpanminus
+apt-get -y install wget
+apt-get -y install sudo
+apt-get -y install lsb-release
+apt-get -y install curl
 
 # PostgreSQL 12 repo
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -18,8 +18,8 @@ echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" 
 curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
 apt-get update
-apt-get -y --force-yes install postgresql-12 postgresql-client-12 postgresql-server-dev-12
-apt-get -y --force-yes install nodejs
+apt-get -y install postgresql-12 postgresql-client-12 postgresql-server-dev-12
+apt-get -y install nodejs
 
 
 

@@ -9,7 +9,7 @@
     display: flex;
     text-transform: uppercase;
     margin-bottom: $vgap-normal;
-    justify-content: center;
+    //justify-content: center;
 }
 
 .duel-players__header__cell {
@@ -22,12 +22,12 @@
 
 .duel-players__player {
     display: flex;
-    justify-content: center;
+    //justify-content: center;
 }
 
 .duel-players__player:hover {
     cursor: pointer;
-    color: $table-hover-color;
+    //color: $table-hover-color;
     background-color: $table-hover-bg-color;
 }
 

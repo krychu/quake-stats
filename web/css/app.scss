@@ -19,10 +19,15 @@
     margin-bottom: 100px;
 }
 
-#player {
+.main--players {
+    max-width: 800px !important;
+}
+
+#player, #players {
     width: 800px;
     font-family: $font-2;
     font-size: 52px;
+    margin-bottom: 20px;
     //margin: 0 auto;
 
     a {
@@ -36,7 +41,7 @@
     font-size: 38px;
     //margin: 0 auto;
     text-align: left;
-    margin-top: 70px;
+    margin-top: 50px;
     margin-bottom: 25px;
 }
 

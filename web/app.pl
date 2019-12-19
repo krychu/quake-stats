@@ -66,17 +66,18 @@ __DATA__
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quake World Stats</title>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata|Audiowide|Bree+Serif|Odibee+Sans|Titillium+Web&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="app.css"/>
+    <link rel="stylesheet" href="/app.css"/>
   </head>
   <body>
     <script>
       const PAGE = 'duel_players';
     </script>
 
-    <div id="main">
+    <div id="main" class="main--players">
+      <div id="players">duel</div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="/app.js"></script>
   </body>
 </html>
 
@@ -99,7 +100,7 @@ __DATA__
     </script>
 
     <div id="main">
-      <div id="player"><a href="">duel</a> / <%= $player %></div>
+      <div id="player"><a href="/1vs1">duel</a> / <%= $player %></div>
     </div>
 
     <script type="module" src="/app.js"></script>
