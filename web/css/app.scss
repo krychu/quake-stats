@@ -4,6 +4,7 @@
 @import "./opponents.scss";
 @import "./maps.scss";
 @import "./games_chart.scss";
+@improt "./_vars.scss";
 
 #main {
     // font-family: Courier;
@@ -11,20 +12,40 @@
     // font-weight: 300;
     // line-height: 1.4;
     //font-family: 'Inconsolata', monospace;
-    font-family: 'Inconsolata';
+    font-family: $font-1;
     //max-width: 80rem;
     max-width: 1400px;
     margin: 0 auto;
+    margin-bottom: 100px;
 }
 
 #player {
     width: 800px;
-    font-family: 'Merriweather';
+    font-family: $font-2;
     font-size: 52px;
-    margin: 0 auto;
+    //margin: 0 auto;
 
     a {
         text-decoration: none;
         color: blue;
     }
+}
+
+.title {
+    font-family: $font-2;
+    font-size: 38px;
+    //margin: 0 auto;
+    text-align: left;
+    margin-top: 70px;
+    margin-bottom: 25px;
+}
+
+.m11-games-chart__title {
+    @extend .title;
+    margin-top: 50px;
+    margin-bottom: 10px;
+}
+
+.m11-opponents__title, .m11-maps__title {
+    @extend .title;
 }

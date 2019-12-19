@@ -65,7 +65,7 @@ __DATA__
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quake World Stats</title>
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Merriweather|Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Audiowide|Bree+Serif|Odibee+Sans|Titillium+Web&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="app.css"/>
   </head>
   <body>
@@ -89,7 +89,7 @@ __DATA__
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quake World Stats</title>
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Merriweather|Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Audiowide|Bree+Serif|Odibee+Sans|Titillium+Web&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/app.css"/>
   </head>
   <body>

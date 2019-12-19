@@ -28,15 +28,31 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-function cmd_state_set_gchart_html_root(root: HTMLElement): Promise<any> {
-  state.duel_player.games_chart.html_root = root;
+function cmd_state_set_gchart_html_root(roots: HTMLElement[]): Promise<any> {
+  state.duel_player.games_chart.html_root = roots[0];
+  state.duel_player.games_chart.html_chart_root = roots[1];
   return Promise.resolve();
 }
 
-function cmd_gchart_create_html_root(): Promise<any> {
+function cmd_gchart_create_html_root(): Promise<HTMLElement[]> {
   const html_root = document.createElement("div");
-  html_root.className = "m11-games-chart";
-  return Promise.resolve(html_root);
+  //html_root.className = "m11-games-chart";
+
+  const html_chart_root = document.createElement("div");
+  html_chart_root.className = "m11-games-chart";
+
+  html_root.insertAdjacentHTML("beforeend", _html_render_title());
+  html_root.appendChild(html_chart_root);
+
+  return Promise.resolve([html_root, html_chart_root]);
+}
+
+function _html_render_title(): string {
+  return `
+<div class="m11-games-chart__title">
+Last games
+</div>
+`;
 }
 
 function cmd_gchart_attach_html_root(): Promise<any> {
@@ -59,13 +75,13 @@ function cmd_gchart_attach_html_root(): Promise<any> {
 // }
 
 function cmd_gchart_render_data(): Promise<any> {
-  if (state.duel_player.data.games == null || state.duel_player.games_chart.html_root == null) {
+  if (state.duel_player.data.games == null || state.duel_player.games_chart.html_chart_root == null) {
     log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.duel_player.data.games}, ${state.duel_player.games_chart.html_root})`);
     return Promise.reject();
   }
 
-  const svg_width = state.duel_player.games_chart.html_root.offsetWidth;
-  const svg_height = state.duel_player.games_chart.html_root.offsetHeight;
+  const svg_width = state.duel_player.games_chart.html_chart_root.offsetWidth;
+  const svg_height = state.duel_player.games_chart.html_chart_root.offsetHeight;
 
   const diffs = _games_chart_diffs(state.duel_player.data.games);
   const max_y = _games_chart_max_y(diffs);
@@ -76,7 +92,7 @@ function cmd_gchart_render_data(): Promise<any> {
   // console.log(max_y);
   // console.log(points);
 
-  _games_chart_draw(state.duel_player.games_chart.html_root, points, max_y, svg_width, svg_height);
+  _games_chart_draw(state.duel_player.games_chart.html_chart_root, points, max_y, svg_width, svg_height);
 
   return Promise.resolve();
 }

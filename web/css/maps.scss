@@ -9,7 +9,7 @@
 
 .m11-maps__row {
     display: flex;
-    justify-content: center;
+    //justify-content: center;
 
     &:hover {
         background-color: $table-hover-bg-color;
@@ -44,6 +44,45 @@
 
 .m11-maps__cell--name {
     justify-content: flex-start;
+}
+
+.m11-maps__player-a-cell {
+    @extend .m11-maps__cell;
+    flex-basis: unset;
+    max-width: 120px;
+    margin-left: 0px;
+    color: $player-a-color;
+
+    div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.m11-maps__player-b-cell {
+    @extend .m11-maps__cell;
+    flex-basis: unset;
+    color: $player-a-color;
+}
+
+.m11-maps__vs-cell {
+    color: $vs-cell-color;
+}
+
+.m11-maps__player-a-cell.m11-maps__cell--header,
+.m11-maps__vs-cell.m11-maps__cell--header,
+.m11-maps__player-b-cell.m11-maps__cell--header {
+    visibility: hidden;
+
+
+
+
+
+
+
+
+
 }
 
 /* cmp cell */

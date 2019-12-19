@@ -38,6 +38,15 @@
 .m11-opponents__cell--opponent {
 }
 
+.m11-opponents__player-a-cell.m11-opponents__cell--header,
+.m11-opponents__vs-cell.m11-opponents__cell--header {
+    visibility: hidden;
+}
+
+.m11-opponents__vs-cell {
+    color: $vs-cell-color;
+}
+
 // .m11-opponents__cell--name {
 //     background-color: red;
 // }
@@ -47,14 +56,27 @@
     flex-basis: 120px;
 }
 
-.m11-opponents__cell--name-a {
-    justify-content: flex-end;
-    flex-basis: 120px;
-    margin-right: 5px;
-    color: $grey-2;
+.m11-opponents__player-a-cell {
+    @extend .m11-opponents__cell;
+    //justify-content: flex-end;
+    //flex-basis: 120px;
+    flex-basis: unset;
+    max-width: 120px;
+    margin-left: 0px;
+    color: $player-a-color;
+
+    div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
-.m11-opponents__cell--name-b {
+.m11-opponents__vs-cell {
+}
+
+.m11-opponents__player-b-cell {
+    @extend .m11-opponents__cell;
     justify-content: flex-start;
     flex-basis: 120px;
 }
@@ -93,7 +115,7 @@
 }
 
 .m11-opponents__cmp-cell--na {
-    color: #aaa;
+    color: $na-color;
 }
 
 /* bar cell */

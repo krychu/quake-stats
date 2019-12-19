@@ -109,23 +109,13 @@ function _html_remove_games(element: HTMLElement) {
 }
 
 function _html_render_games(data: Duel[], element: HTMLElement) {
-  const title = _html_render_title();
   let rows = _html_render_games_header(data[0][0]);
   rows += data.map(([a, b]) => _html_render_games_row(a, b)).join("");
   const html = `
-${title}
 ${rows}
 `;
 
     element.insertAdjacentHTML("beforeend", html);
-}
-
-function _html_render_title(): string {
-  return `
-<div class="title">
-Recent games
-</div>
-`;
 }
 
 function _html_render_games_header(a: GameData): string {

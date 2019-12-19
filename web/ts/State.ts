@@ -49,8 +49,9 @@ let state: State = {
 
     games_chart: {
       game_cnt: 20,
-      html_root_id: "1vs1-games-chart",
-      html_root: null
+      html_root_id: "1vs1-games-chart", // Can be removed
+      html_root: null,
+      html_chart_root: null
       // svg_width: 800,
       // svg_
       //html_root: null
@@ -155,8 +156,9 @@ interface DPS_PlayerData {
 
 interface GamesChart {
   game_cnt: number;
-  html_root_id: string;
+  html_root_id: string; // Can be removed
   html_root: HTMLElement | null;
+  html_chart_root: HTMLElement | null;
   // svg_width: number;
   // svg_height: number;
   //html_root: HTMLElement | null;
