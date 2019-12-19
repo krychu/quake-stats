@@ -1,19 +1,46 @@
 #!/bin/bash
 
 apt-get update
-apt-get -y --force-yes install postgresql-client
-apt-get -y --force-yes install vim
-apt-get -y --force-yes install curl
-apt-get -y --force-yes install sudo
-apt-get -y --force-yes install inotify-tools
-apt-get -y --force-yes install rebar
-
-mix local.hex --force
-mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
-
-curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-apt-get -y --force-yes install nodejs
 apt-get -y --force-yes install build-essential
+apt-get -y --force-yes install git
+apt-get -y --force-yes install vim
+apt-get -y --force-yes install cpanminus
+apt-get -y --force-yes install wget
+apt-get -y --force-yes install sudo
+apt-get -y --force-yes install lsb-release
+apt-get -y --force-yes install curl
 
-cd /socialbenchmark/socialbenchmark/ && mix hex.info && mix deps.get
-cd /socialbenchmark/socialbenchmark_webapp/ && mix deps.get && npm install
+# PostgreSQL 12 repo
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+
+# Node
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+
+apt-get update
+apt-get -y --force-yes install postgresql-12 postgresql-client-12 postgresql-server-dev-12
+apt-get -y --force-yes install nodejs
+
+
+
+# TODO: change /etc/postgresql/12/main/pg_hba.conf
+/etc/init.d/postgresql start
+
+git clone https://github.com/krychu/quake-stats.git
+cpanm Mojolicious
+cpanm DBD::Pg
+cpanm Array::Split
+cpanm Log::Any
+cpanm Syntax::Keyword::Try
+cpanm JSON::Parse
+
+cd /quake-stats/scripts && ./create_db.pl
+cd /quake-stats/scripts && ./pg_load_schema_file.sh
+# TODO: get sampledata
+cd /quake-stats/scripts && ./import_sample_data.pl
+cd /quake-stats/web && npm install
+
+
+
+cd /quake-stats/web && npx webpack
+cd /quake-stats/web && morbo app.pl
