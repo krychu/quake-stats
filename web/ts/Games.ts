@@ -121,11 +121,14 @@ ${rows}
 function _html_render_games_header(a: GameData): string {
     return `
 <div class="m11-games__header">
-    <div class="m11-games__header__player-a-cell"><div>${a.name}</div></div>
+    <!--<div class="m11-games__header__player-a-cell"><div>${a.name}</div></div>-->
+    <div class="m11-games__header__when-cell">when</div>
     <div class="m11-games__header__cmp-cell">frags</div>
     <div class="m11-games__header__cell">opponent</div>
     <div class="m11-games__header__map-cell">map</div>
-    <div class="m11-games__header__when-cell">when</div>
+
+    <div class="m11-games__separator-cell"></div>
+
     <!--<div class="duel-games__header__cmp-cell">dmg%</div>-->
     <!--<div class="m11-games__header__cmp-cell">frags %</div>-->
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">dmg %</div>
@@ -133,7 +136,9 @@ function _html_render_games_header(a: GameData): string {
     <div class="m11-games__header__cmp-cell">rl/min</div>
     <div class="m11-games__header__cmp-cell">lg/min</div>
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">lg acc</div>
+
     <div class="m11-games__separator-cell"></div>
+
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">ra</div>
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">ya</div>
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">mh</div>
@@ -146,11 +151,14 @@ function _html_render_games_header(a: GameData): string {
 function _html_render_games_row(a: GameData, b: GameData): string {
     return `
 <div class="m11-games__game ${a.frags > b.frags && "m11-games__game--win"}">
-    <div class="m11-games__game__player-a-cell"><div>${a.name}</div></div>
+    <!--<div class="m11-games__game__player-a-cell"><div>${a.name}</div></div>-->
+    <div class="m11-games__game__when-cell">${_time_ago(a.date)}</div>
     <div class="m11-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
     <div class="m11-games__game__player-b-cell"><div>${b.name}</div></div>
     <div class="m11-games__game__map-cell"><div>${a.map}</div></div>
-    <div class="m11-games__game__when-cell">${_time_ago(a.date)}</div>
+
+    <div class="m11-games__separator-cell"></div>
+
     <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
     <!--<div class="m11-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>-->
     <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_damage_percent(a, b)}</div>

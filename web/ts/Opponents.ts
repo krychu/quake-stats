@@ -57,7 +57,7 @@ function _html_remove_opponents(element: HTMLElement) {
 function _html_render_opponents(player: string, data: OpponentData[], element: HTMLElement) {
   const title = _html_render_title();
   let rows = _html_render_opponents_header(player);
-  rows += _html_render_avg_top5_row(player, data, "avg (top 5)");
+  //rows += _html_render_avg_top5_row(player, data, "avg (top 5)");
   rows += _html_render_avg_row(player, data, "avg (all)");
   rows += data.map((opponent) => _html_render_opponent_row(player, opponent)).join("");
   const html = `
@@ -79,8 +79,8 @@ Opponents
 function _html_render_opponents_header(player: string): string {
   return `
 <div class="m11-opponents__row m11-opponents__row--header">
-  <div class="m11-opponents__player-a-cell m11-opponents__cell--header"><div>${player}</div></div>
-  <div class="m11-opponents__vs-cell m11-opponents__cell--header">vs</div>
+  <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--header"><div>${player}</div></div>-->
+  <!--<div class="m11-opponents__vs-cell m11-opponents__cell--header">vs</div>-->
   <div class="m11-opponents__player-b-cell m11-opponents__cell--header">opponent</div>
   <div class="m11-opponents__cell m11-opponents__cell--header">games</div>
   <div class="m11-opponents__cmp-cell m11-opponents__cell--header">win rate</div>
@@ -95,8 +95,8 @@ function _html_render_opponents_header(player: string): string {
 function _html_render_opponent_row(player: string, opponent: OpponentData): string {
   return `
 <div class="m11-opponents__row m11-opponents__row--opponent">
-  <div class="m11-opponents__player-a-cell m11-opponents__cell--opponent"><div>${player}</div></div>
-  <div class="m11-opponents__vs-cell">vs</div>
+  <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--opponent"><div>${player}</div></div>-->
+  <!--<div class="m11-opponents__vs-cell">vs</div>-->
   <div class="m11-opponents__player-b-cell m11-opponents__cell--opponent">${opponent.name_b}</div>
   ${_game_cnts(opponent)}
   ${_cmp_avg_win_probability(opponent)}
@@ -122,8 +122,8 @@ function _html_render_avg_row(player: string, data: OpponentData[], name = "avg"
 
   return `
  <div class="m11-opponents__row m11-opponents__row--avg">
-   <div class="m11-opponents__player-a-cell m11-opponents__cell--avg"><div>${player}</div></div>
-   <div class="m11-opponents__vs-cell">vs</div>
+   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--avg"><div>${player}</div></div>-->
+   <!--<div class="m11-opponents__vs-cell">vs</div>-->
    <div class="m11-opponents__player-b-cell m11-opponents__cell--avg">${name}</div>
    ${_game_cnts({game_cnt: 0, max_game_cnt: 1}, true)}
    ${_cmp_avg_win_probability({avg_win_probability, avg_win_probability_b}, true)}

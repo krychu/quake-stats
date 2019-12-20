@@ -33,6 +33,7 @@
 
 .m11-games__header__when-cell {
     @extend .m11-games__game__when-cell;
+    visibility: hidden;
 }
 
 .m11-games__game {
@@ -113,7 +114,10 @@
 
 .m11-games__game__when-cell {
     @extend .m11-games__game__cell;
-    flex-basis: 60px;
+    flex-basis: 40px;
+    margin-right: 0px;
+    margin-left: 0px;
+    color: $grey-2;
 }
 
 .m11-games__game__cmp-cell {
