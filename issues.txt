@@ -1,13 +1,15 @@
 Open issues
 --------------------------------------------------------------------------------
-- Docker
 - Opponents: Make dmg bars longer
-- Style: Sections, font, size
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages
-- Don't show tables if there's no data
-- Add logo
+- Don't show tables if there's no data (or no page)
+- Add header / logo
+- Docker
+- Bug: encoding of player names
 - Contextual help: tooltips?
+- Hover over games chart highlights related game
+- Label games chart
 - Q: Opponents: Highlight top5/bottom5 results
 - Opponents: Progress indicators
 - Filters for player/map
@@ -16,6 +18,7 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (19.12.2019) Style: Sections, font, size
 + (18.12.2019) BPS recent games chart
 + (11.12.2019) Duel Players: index page at /1vs1
 + (10.12.2019) Duel Player: player's page at /1vs1/bps
