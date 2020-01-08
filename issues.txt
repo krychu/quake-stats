@@ -1,13 +1,15 @@
 Open issues
 --------------------------------------------------------------------------------
-- Docker
 - Opponents: Make dmg bars longer
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages
-- Don't show tables if there's no data
-- Add logo
+- Don't show tables if there's no data (or no page)
+- Add header / logo
+- Docker
+- Bug: encoding of player names
 - Contextual help: tooltips?
-- Q: Abandon flexbox and switch to widths.
+- Hover over games chart highlights related game
+- Label games chart
 - Q: Opponents: Highlight top5/bottom5 results
 - Opponents: Progress indicators
 - Filters for player/map

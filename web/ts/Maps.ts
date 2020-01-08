@@ -77,9 +77,9 @@ Maps
 function _html_render_maps_header(player: string): string {
   return `
 <div class="m11-maps__row m11-maps__row--header">
-  <div class="m11-maps__player-a-cell m11-maps__cell--header"><div>${player}</div></div>
-  <div class="m11-maps__vs-cell m11-maps__cell--header">vs</div>
-  <div class="m11-maps__player-b-cell m11-maps__cell--header">opponent</div>
+  <!--<div class="m11-maps__player-a-cell m11-maps__cell--header"><div>${player}</div></div>-->
+  <!--<div class="m11-maps__vs-cell m11-maps__cell--header">vs</div>-->
+  <!--<div class="m11-maps__player-b-cell m11-maps__cell--header">opponent</div>-->
   <div class="m11-maps__cell m11-maps__cell--header m11-maps__cell--name">map</div>
   <div class="m11-maps__cell m11-maps__cell--header">games</div>
   <div class="m11-maps__cell m11-maps__cell--header">opponents</div>
@@ -94,9 +94,9 @@ function _html_render_maps_header(player: string): string {
 function _html_render_map_row(player: string, map: MapData): string {
   return `
 <div class="m11-maps__row m11-maps__row--map">
-  <div class="m11-maps__player-a-cell m11-maps__cell--map"><div>${player}</div></div>
-  <div class="m11-maps__vs-cell m11-maps__cell--map">vs</div>
-  <div class="m11-maps__player-b-cell m11-maps__cell--map">opponent</div>
+  <!--<div class="m11-maps__player-a-cell m11-maps__cell--map"><div>${player}</div></div>-->
+  <!--<div class="m11-maps__vs-cell m11-maps__cell--map">vs</div>-->
+  <!--<div class="m11-maps__player-b-cell m11-maps__cell--map">opponent</div>-->
   <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${map.map}</div>
   ${_game_cnts(map)}
   <div class="m11-maps__cell m11-maps__cell--map">${map.opponent_cnt}</div>

@@ -1,41 +1,42 @@
 @import '_vars';
 
-.m1vs1-games {
+.m11-games {
     display: flex;
     flex-direction: column;
 }
 
-.m1vs1-games__header {
+.m11-games__header {
     display: flex;
     text-transform: uppercase;
     margin-bottom: $vgap-normal;
     //justify-content: center;
 }
 
-.m1vs1-games__header__cell {
-    @extend .m1vs1-games__game__cell;
+.m11-games__header__cell {
+    @extend .m11-games__game__cell;
 }
 
-.m1vs1-games__header__player-a-cell {
-    @extend .m1vs1-games__game__player-a-cell;
+.m11-games__header__player-a-cell {
+    @extend .m11-games__game__player-a-cell;
     text-transform: initial;
     visibility: hidden;
 }
 
-.m1vs1-games__header__cmp-cell {
-    @extend .m1vs1-games__game__cmp-cell;
+.m11-games__header__cmp-cell {
+    @extend .m11-games__game__cmp-cell;
     justify-content: center;
 }
 
-.m1vs1-games__header__map-cell {
-    @extend .m1vs1-games__game__map-cell;
+.m11-games__header__map-cell {
+    @extend .m11-games__game__map-cell;
 }
 
-.m1vs1-games__header__when-cell {
-    @extend .m1vs1-games__game__when-cell;
+.m11-games__header__when-cell {
+    @extend .m11-games__game__when-cell;
+    visibility: hidden;
 }
 
-.m1vs1-games__game {
+.m11-games__game {
     display: flex;
     //margin-bottom: 3px;
     //z-index: -10;
@@ -46,22 +47,22 @@
     /* } */
 }
 
-.m1vs1-games__game:hover {
+.m11-games__game:hover {
     //border: 1px solid blue;
     //background-color: rgba(0,0,255,0.05);
     //color: $table-hover-color;
     background-color: $table-hover-bg-color;
 }
 
-.m1vs1-games__game:nth-child(even) {
+.m11-games__game:nth-child(even) {
     //background-color: #f5f5f5;
 }
 
-.m1vs1-games__game--win {
+.m11-games__game--win {
     background-color: $win-color;
 }
 
-.m1vs1-games__game__cell {
+.m11-games__game__cell {
 //    width: $duel-games__game__cell__width;
     //    max-width: $duel-games__game__cell__max-width;
     display: flex;
@@ -73,8 +74,8 @@
     //max-width: 70px;
 }
 
-.m1vs1-games__game__player-a-cell {
-    @extend .m1vs1-games__game__cell;
+.m11-games__game__player-a-cell {
+    @extend .m11-games__game__cell;
     flex-basis: unset;
     max-width: 120px;
     /* max-width: 100px; */
@@ -90,8 +91,8 @@
     }
 }
 
-.m1vs1-games__game__player-b-cell {
-    @extend .m1vs1-games__game__cell;
+.m11-games__game__player-b-cell {
+    @extend .m11-games__game__cell;
 
     div {
         overflow: hidden;
@@ -100,8 +101,8 @@
     }
 }
 
-.m1vs1-games__game__map-cell {
-    @extend .m1vs1-games__game__cell;
+.m11-games__game__map-cell {
+    @extend .m11-games__game__cell;
     flex-basis: 80px;
 
     div {
@@ -111,12 +112,15 @@
     }
 }
 
-.m1vs1-games__game__when-cell {
-    @extend .m1vs1-games__game__cell;
-    flex-basis: 60px;
+.m11-games__game__when-cell {
+    @extend .m11-games__game__cell;
+    flex-basis: 40px;
+    margin-right: 0px;
+    margin-left: 0px;
+    color: $grey-2;
 }
 
-.m1vs1-games__game__cmp-cell {
+.m11-games__game__cmp-cell {
     display: flex;
     position: relative; // anchor for the bar
     flex-basis: 120px;
@@ -125,65 +129,65 @@
     //max-width: $duel-games__game__cell__max-width;
 }
 
-.m1vs1-games__cell--narrow {
+.m11-games__cell--narrow {
     flex-basis: 90px !important;
 }
 
-.m1vs1-games__game__cmp-cell__a {
+.m11-games__game__cmp-cell__a {
     flex: 1;
     text-align: right;
 }
 
-.m1vs1-games__game__cmp-cell__separator {
+.m11-games__game__cmp-cell__separator {
     flex-basis: 20px;
     display: flex;
     justify-content: center;
 }
 
-.m1vs1-games__game__cmp-cell__b {
+.m11-games__game__cmp-cell__b {
     flex: 1;
 }
 
 // width and left positions are set dynamically
-.m1vs1-games__game__cmp-cell__bar {
+.m11-games__game__cmp-cell__bar {
     position: absolute;
     height: 100%;
     z-index: -1;
 }
 
 // single cmp cell
-.m1vs1-games__header__single-cmp-cell {
-    @extend .m1vs1-games__header__cmp-cell;
+.m11-games__header__single-cmp-cell {
+    @extend .m11-games__header__cmp-cell;
     flex-basis: 60px;
 }
 
-.m1vs1-games__game__single-cmp-cell {
-    @extend .m1vs1-games__game__cmp-cell;
+.m11-games__game__single-cmp-cell {
+    @extend .m11-games__game__cmp-cell;
     flex-basis: 60px;
 }
 
-.m1vs1-games__game__single-cmp-cell__a {
-    @extend .m1vs1-games__game__cmp-cell__a;
+.m11-games__game__single-cmp-cell__a {
+    @extend .m11-games__game__cmp-cell__a;
     text-align: center;
     padding-right: 10px;
 }
 
-.m1vs1-games__game__single-cmp-cell__bar {
-    @extend .m1vs1-games__game__cmp-cell__bar;
+.m11-games__game__single-cmp-cell__bar {
+    @extend .m11-games__game__cmp-cell__bar;
     right: 10px;
 }
 
-.m1vs1-games__game__single-cmp-cell__bar--worse {
+.m11-games__game__single-cmp-cell__bar--worse {
     background-color: rgba(255,0,0,0.15);
     border-right: 1px solid rgba(255,0,0,0.8);
 }
 
-.m1vs1-games__game__cmp-cell__bar--worse {
+.m11-games__game__cmp-cell__bar--worse {
     background-color: rgba(255,0,0,0.15);
     border-left: 1px solid rgba(255,0,0,0.8);
 }
 
-.m1vs1-games__game__cmp-cell__bar--better {
+.m11-games__game__cmp-cell__bar--better {
     background-color: rgba(0,255,0,0.25);
     border-right: 1px solid rgba(0,255,0,1);
 }
@@ -203,15 +207,15 @@
 /*     border-left: 1px solid rgba(0,255,0,1); */
 /* } */
 
-.m1vs1-games__game__cmp-cell__na {
+.m11-games__game__cmp-cell__na {
     color: #aaa;
 }
 
-.m1vs1-games__game__cell__percent {
+.m11-games__game__cell__percent {
     color: #ccc;
 }
 
-.m1vs1-games__separator-cell {
+.m11-games__separator-cell {
     flex-basis: 40px;
 }
 

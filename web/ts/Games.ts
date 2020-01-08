@@ -72,7 +72,7 @@ export function shutdown() {
 function cmd_games_create_html_root(): Promise<any> {
     const html_root = document.createElement("div");
     //html_root.setAttribute("id", "duel-games");
-    html_root.className = "m1vs1-games";
+    html_root.className = "m11-games";
     return Promise.resolve(html_root);
 }
 
@@ -120,54 +120,62 @@ ${rows}
 
 function _html_render_games_header(a: GameData): string {
     return `
-<div class="m1vs1-games__header">
-    <div class="m1vs1-games__header__player-a-cell"><div>${a.name}</div></div>
-    <div class="m1vs1-games__header__cmp-cell">frags</div>
-    <div class="m1vs1-games__header__cell">opponent</div>
-    <div class="m1vs1-games__header__map-cell">map</div>
-    <div class="m1vs1-games__header__when-cell">when</div>
+<div class="m11-games__header">
+    <!--<div class="m11-games__header__player-a-cell"><div>${a.name}</div></div>-->
+    <div class="m11-games__header__when-cell">when</div>
+    <div class="m11-games__header__cmp-cell">frags</div>
+    <div class="m11-games__header__cell">opponent</div>
+    <div class="m11-games__header__map-cell">map</div>
+
+    <div class="m11-games__separator-cell"></div>
+
     <!--<div class="duel-games__header__cmp-cell">dmg%</div>-->
-    <!--<div class="m1vs1-games__header__cmp-cell">frags %</div>-->
-    <div class="m1vs1-games__header__cmp-cell m1vs1-games__cell--narrow">dmg %</div>
-    <!--<div class="m1vs1-games__header__cmp-cell">dmg/min</div>-->
-    <div class="m1vs1-games__header__cmp-cell">rl/min</div>
-    <div class="m1vs1-games__header__cmp-cell">lg/min</div>
-    <div class="m1vs1-games__header__cmp-cell m1vs1-games__cell--narrow">lg acc</div>
-    <div class="m1vs1-games__separator-cell"></div>
-    <div class="m1vs1-games__header__cmp-cell m1vs1-games__cell--narrow">ra</div>
-    <div class="m1vs1-games__header__cmp-cell m1vs1-games__cell--narrow">ya</div>
-    <div class="m1vs1-games__header__cmp-cell m1vs1-games__cell--narrow">mh</div>
-    <!--<div class="m1vs1-games__header__cmp-cell">speed</div>-->
-    <!--<div class="m1vs1-games__header__single-cmp-cell">speed</div>-->
+    <!--<div class="m11-games__header__cmp-cell">frags %</div>-->
+    <div class="m11-games__header__cmp-cell m11-games__cell--narrow">dmg %</div>
+    <!--<div class="m11-games__header__cmp-cell">dmg/min</div>-->
+    <div class="m11-games__header__cmp-cell">rl/min</div>
+    <div class="m11-games__header__cmp-cell">lg/min</div>
+    <div class="m11-games__header__cmp-cell m11-games__cell--narrow">lg acc</div>
+
+    <div class="m11-games__separator-cell"></div>
+
+    <div class="m11-games__header__cmp-cell m11-games__cell--narrow">ra</div>
+    <div class="m11-games__header__cmp-cell m11-games__cell--narrow">ya</div>
+    <div class="m11-games__header__cmp-cell m11-games__cell--narrow">mh</div>
+    <!--<div class="m11-games__header__cmp-cell">speed</div>-->
+    <!--<div class="m11-games__header__single-cmp-cell">speed</div>-->
 </div>
 `;
 }
 
 function _html_render_games_row(a: GameData, b: GameData): string {
     return `
-<div class="m1vs1-games__game ${a.frags > b.frags && "m1vs1-games__game--win"}">
-    <div class="m1vs1-games__game__player-a-cell"><div>${a.name}</div></div>
-    <div class="m1vs1-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
-    <div class="m1vs1-games__game__player-b-cell"><div>${b.name}</div></div>
-    <div class="m1vs1-games__game__map-cell"><div>${a.map}</div></div>
-    <div class="m1vs1-games__game__when-cell">${_time_ago(a.date)}</div>
+<div class="m11-games__game ${a.frags > b.frags && "m11-games__game--win"}">
+    <!--<div class="m11-games__game__player-a-cell"><div>${a.name}</div></div>-->
+    <div class="m11-games__game__when-cell">${_time_ago(a.date)}</div>
+    <div class="m11-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
+    <div class="m11-games__game__player-b-cell"><div>${b.name}</div></div>
+    <div class="m11-games__game__map-cell"><div>${a.map}</div></div>
+
+    <div class="m11-games__separator-cell"></div>
+
     <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
-    <!--<div class="m1vs1-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>-->
-    <div class="m1vs1-games__game__cmp-cell m1vs1-games__cell--narrow">${_cmp_damage_percent(a, b)}</div>
-    <!--<div class="m1vs1-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>-->
-    <!--<div class="m1vs1-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>-->
-    <!--<div class="m1vs1-games__game__cmp-cell">${_cmp_lg_damage_minute_diff(a, b)}</div>-->
-    <div class="m1vs1-games__game__cmp-cell">${_cmp_rl_damage_minute(a, b)}</div>
-    <div class="m1vs1-games__game__cmp-cell">${_cmp_lg_damage_minute(a, b)}</div>
-    <div class="m1vs1-games__game__cmp-cell m1vs1-games__cell--narrow">${_cmp_lg_accuracy_percent(a, b)}</div>
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>-->
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_damage_percent(a, b)}</div>
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>-->
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>-->
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_lg_damage_minute_diff(a, b)}</div>-->
+    <div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute(a, b)}</div>
+    <div class="m11-games__game__cmp-cell">${_cmp_lg_damage_minute(a, b)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_lg_accuracy_percent(a, b)}</div>
 
-    <div class="m1vs1-games__separator-cell"></div>
+    <div class="m11-games__separator-cell"></div>
 
-    <div class="m1vs1-games__game__cmp-cell m1vs1-games__cell--narrow">${_cmp_ra(a, b)}</div>
-    <div class="m1vs1-games__game__cmp-cell m1vs1-games__cell--narrow">${_cmp_ya(a, b)}</div>
-    <div class="m1vs1-games__game__cmp-cell m1vs1-games__cell--narrow">${_cmp_mh(a, b)}</div>
-    <!--<div class="m1vs1-games__game__cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
-    <!--<div class="m1vs1-games__game__single-cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ra(a, b)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ya(a, b)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_mh(a, b)}</div>
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
+    <!--<div class="m11-games__game__single-cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
 </div>
 `;
 }
@@ -502,13 +510,13 @@ function _cmp(a: string, b: string, bar: number, mul: number = 40, is_percent: b
   }
   let percent_span = "";
   if (is_percent) {
-    percent_span = `<span class="m1vs1-games__game__cell__percent">%</span>`;
+    percent_span = `<span class="m11-games__game__cell__percent">%</span>`;
   }
   return `
-<div class="m1vs1-games__game__cmp-cell__a">${a}${percent_span}</div>
-<div class="m1vs1-games__game__cmp-cell__separator"></div>
-<div class="m1vs1-games__game__cmp-cell__b">${b}${percent_span}</div>
-<div class="m1vs1-games__game__cmp-cell__bar ${bar <= 0 ? "m1vs1-games__game__cmp-cell__bar--better" : "m1vs1-games__game__cmp-cell__bar--worse"}" style="${bar_style}"></div>
+<div class="m11-games__game__cmp-cell__a">${a}${percent_span}</div>
+<div class="m11-games__game__cmp-cell__separator"></div>
+<div class="m11-games__game__cmp-cell__b">${b}${percent_span}</div>
+<div class="m11-games__game__cmp-cell__bar ${bar <= 0 ? "m11-games__game__cmp-cell__bar--better" : "m11-games__game__cmp-cell__bar--worse"}" style="${bar_style}"></div>
 `;
 }
 
@@ -521,11 +529,11 @@ function _single_cmp(a: string, bar: number, mul: number = 32, is_percent: boole
     // }
     let percent_span = "";
     if (is_percent) {
-        percent_span = `<span class="m1va1-games__game__cell__percent">%</span>`;
+        percent_span = `<span class="m11-games__game__cell__percent">%</span>`;
     }
     return `
-<div class="m1vs1-games__game__single-cmp-cell__a">${a}${percent_span}</div>
-<div class="m1vs1-games__game__single-cmp-cell__bar ${bar <= 0 ? "m1vs1-games__game__cmp-cell__bar--better" : "m1vs1-games__game__single-cmp-cell__bar--worse"}" style="${bar_style}"></div>
+<div class="m11-games__game__single-cmp-cell__a">${a}${percent_span}</div>
+<div class="m11-games__game__single-cmp-cell__bar ${bar <= 0 ? "m11-games__game__cmp-cell__bar--better" : "m11-games__game__single-cmp-cell__bar--worse"}" style="${bar_style}"></div>
 `;
 }
 
@@ -540,7 +548,7 @@ function _single_cmp(a: string, bar: number, mul: number = 32, is_percent: boole
 // }
 
 function _cmp_na(): string {
-  return `<div class="m1vs1-games__game__cmp-cell__na">n/a</div>`;
+  return `<div class="m11-games__game__cmp-cell__na">n/a</div>`;
 }
 
 function _time_ago(date: string) {

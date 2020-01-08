@@ -164,6 +164,6 @@ function _games_chart_draw(html_root: HTMLElement, points: [number, number][], m
 
   // circles
   points.forEach(([x, y]) => {
-    draw.circle().radius(CHART_CIRCLE_RADIUS).attr({cx: x, cy: y}).addClass("dots");
+    draw.circle().radius(CHART_CIRCLE_RADIUS).attr({cx: x, cy: y}).addClass("dots");//.on("mouseover", () => {alert(1);});
   });
 }
