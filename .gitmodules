@@ -1,0 +1,3 @@
+[submodule "statscraper"]
+	path = statscraper
+	url = https://github.com/andrestone/statscraper
