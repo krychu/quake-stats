@@ -43,8 +43,10 @@ my $dev_config = {
     postgresql_dbname    => 'quakestats',
 
     postgresql_schema    => File::Spec->catfile(dirname(__FILE__), '../sql/schema.sql'),
-    sample_data          => File::Spec->catfile(dirname(__FILE__), '../sampledata/games')
+    sample_data          => File::Spec->catfile(dirname(__FILE__), '../sampledata/games'),
 
+    scrape_delay         => 5 * 60, # secs, delay before scraping new stats from qtv
+    ingest_delay         => 60, # secs, delay before checking and ingesting new stats
     # log_job_apps => ['Stderr'],
     # log_job_details => ['Stderr'],
     # log_job_reviews => ['Stderr'],
