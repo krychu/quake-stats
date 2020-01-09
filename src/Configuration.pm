@@ -5,7 +5,7 @@ use warnings;
 use lib '../src';
 use Configuration qw($cfg);
 use File::Basename;
-use File::Spec;
+use File::Spec::Functions;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw($cfg);
@@ -42,16 +42,16 @@ my $dev_config = {
     postgresql_password  => '',
     postgresql_dbname    => 'quakestats',
 
-    postgresql_schema    => File::Spec->catfile(dirname(__FILE__), '../sql/schema.sql'),
-    sample_data          => File::Spec->catfile(dirname(__FILE__), '../sampledata/games'),
+    postgresql_schema    => catfile(dirname(__FILE__), '../sql/schema.sql'),
 
-    scrape_delay         => 5 * 60, # secs, delay before scraping new stats from qtv
+    stats_path           => catfile(dirname(__FILE__), '../statscraper/stats/duel/all_maps'),
+    sample_data          => catfile(dirname(__FILE__), '../sampledata/games'),
+
+    scrape_delay         => 15 * 60, # secs, delay before scraping new stats from qtv
     ingest_delay         => 60, # secs, delay before checking and ingesting new stats
-    # log_job_apps => ['Stderr'],
-    # log_job_details => ['Stderr'],
-    # log_job_reviews => ['Stderr'],
 
-    # nonempty_review_job_interval => '2 minutes',
+    log_run_ingest       => ['Stderr'],
+    log_run_statscraper  => ['Stderr'],
 };
 
 our $cfg = $dev_config;

@@ -18,6 +18,7 @@ CREATE TABLE games
   dm                   INTEGER,
   duration             INTEGER,
   demo                 TEXT,
+  file                 TEXT,
   created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' )
 );
 
