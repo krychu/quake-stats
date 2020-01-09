@@ -1,0 +1,53 @@
+@import "./_vars.scss";
+
+body {
+    font-family: $font-1;
+}
+
+h2 {
+    margin-top: 40px;
+}
+
+#status-container {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+.status-line {
+    display: flex;
+}
+
+.status-line__name {
+    flex-basis: 50%;
+}
+
+.status-line__value {
+    flex-basis: 50%;
+}
+
+.status-line__value--green {
+    color: green;
+}
+
+.status-line__value--red {
+    color: red;
+}
+
+.status-line-separator {
+    height: 20px;
+}
+
+.server-line {
+    display: flex;
+}
+
+.server-line__host {
+    flex-basis: 100%;
+}
+
+.server-line__game-cnt {
+    flex-basis: 50px;
+}
