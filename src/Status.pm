@@ -42,7 +42,7 @@ sub game_cnt {
             qq{
               SELECT COUNT(*)
               FROM games
-              WHERE created_at > now() AT TIME ZONE 'utc' - interval '$hours_cnt hours'
+              WHERE created_at > now() AT TIME ZONE 'utc' - interval '$hours_cnt hours';
             }
             )->[0];
     } else {
@@ -59,15 +59,28 @@ sub game_cnt {
 }
 
 sub servers {
+    my $hours_cnt = shift;
+
     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});
 
-    my $servers = $dbh->selectall_arrayref(
-        q{
-          SELECT hostname, ip, port, COUNT(*) game_cnt
-          FROM games
-          GROUP BY hostname, ip, port
-          ORDER BY hostname;
-        }, { Slice => {} });
+    my $servers;
+
+    if ($hours_cnt) {
+        $servers = $dbh->selectall_arrayref(
+            qq{
+              SELECT hostname, COUNT(*) as game_cnt
+              FROM games
+              WHERE created_at > now() AT TIME ZONE 'utc' - interval '$hours_cnt hours'
+              GROUP BY hostname;
+            }, { Slice => {} });
+    } else {
+        $servers = $dbh->selectall_arrayref(
+            qq{
+              SELECT hostname, COUNT(*) as game_cnt
+              FROM games
+              GROUP BY hostname;
+            }, { Slice => {} });
+    }
 
     $dbh->disconnect or die "Can't disconnect";
 

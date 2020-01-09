@@ -101,6 +101,6 @@ function _on_click(e: any): void {
 
   if (ee != null) {
     const name = ee.getElementsByClassName("duel-players__player__name-cell")[0].innerText;
-    location.href = `/${name}`;
+    location.href = `/1vs1/${name}`;
   }
 }

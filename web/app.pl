@@ -22,14 +22,17 @@ get '/status' => sub {
     my $c = shift;
 
     $c->stash(
-        status_webapp => Status::status_webapp(),
+        status_webapp      => Status::status_webapp(),
         status_statscraper => Status::status_statscraper(),
-        status_ingestion => Status::status_ingestion(),
-        game_cnt => Status::game_cnt(),
-        game_cnt_24h => Status::game_cnt(24),
-        game_cnt_1h => Status::game_cnt(1),
-        servers => Status::servers(),
+        status_ingestion   => Status::status_ingestion(),
+        game_cnt           => Status::game_cnt(),
+        game_cnt_24h       => Status::game_cnt(24),
+        game_cnt_1h        => Status::game_cnt(1),
+        servers            => Status::servers(),
+        servers_24h        => Status::servers(24),
+        servers_1h         => Status::servers(1),
         );
+
     $c->render(template => 'status');
 };
 
@@ -213,6 +216,8 @@ __DATA__
       <div class="server-line">
         <div class="server-line__host"><%= $server->{hostname} %></div>
         <div class="server-line__game-cnt"><%= $server->{game_cnt} %></div>
+        <div class="server-line__game-cnt"><%= $servers_24h->{$server->{game_cnt}} %></div>
+        <div class="server-line__game-cnt"><%= $servers_1h->{$server->{game_cnt}} %></div>
       </div>
 % }
 

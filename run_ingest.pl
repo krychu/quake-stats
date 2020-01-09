@@ -33,9 +33,10 @@ while (1) {
     sleep($cfg->{ingest_delay});
 }
 
+# Return absolute paths to all stat files, sorted by date (most recent first).
 sub get_stat_abs_paths {
     my @abs_paths = read_dir($cfg->{stats_path}, prefix => 1);
-    @abs_paths = sort {(stat $a)[10] <=> (stat $b)[10]} @abs_paths;
+    @abs_paths = sort {(stat $b)[10] <=> (stat $a)[10]} @abs_paths;
 
     return \@abs_paths;
 }
