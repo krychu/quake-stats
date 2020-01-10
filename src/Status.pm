@@ -67,7 +67,7 @@ sub file_cnt {
 }
 
 sub disk_space {
-    return `du -csh $cfg->{stats_path} | grep total | awk '{print $1;}'`;
+    return `du -csh $cfg->{stats_path} | grep total | awk '{print \$1;}'`;
 }
 
 # Returns total game counts given a server hash returned by servers(). Apart
