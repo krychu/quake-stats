@@ -36,22 +36,23 @@ our @EXPORT_OK = qw($cfg);
 my $dev_config = {
     #$prod_config->%*,
 
-    postgresql_host      => 'localhost',
-    postgresql_port      => 5432,
-    postgresql_user      => 'postgres',
-    postgresql_password  => '',
-    postgresql_dbname    => 'quakestats',
+    postgresql_host         => 'localhost',
+    postgresql_port         => 5432,
+    postgresql_user         => 'postgres',
+    postgresql_password     => '',
+    postgresql_dbname       => 'quakestats',
 
-    postgresql_schema    => catfile(dirname(__FILE__), '../sql/schema.sql'),
+    postgresql_schema       => catfile(dirname(__FILE__), '../sql/schema.sql'),
 
-    stats_path           => catfile(dirname(__FILE__), '../statscraper/stats/duel/all_maps'),
-    sample_data          => catfile(dirname(__FILE__), '../sampledata/games'),
+    stats_path              => catfile(dirname(__FILE__), '../statscraper/stats/duel/all_maps'),
+    sample_data             => catfile(dirname(__FILE__), '../sampledata/games'),
 
-    scrape_delay         => 15 * 60, # secs, delay before scraping new stats from qtv
-    ingest_delay         => 60, # secs, delay before checking and ingesting new stats
+    scrape_delay            => 15 * 60, # secs, delay before scraping new stats from qtv
+    ingest_delay            => 60, # secs, delay before checking and ingesting new stats
 
-    log_run_ingest       => ['Stderr'],
-    log_run_statscraper  => ['Stderr'],
+    log_run_ingest          => ['Stderr'],
+    log_run_statscraper     => ['Stderr'],
+    log_run_scrape_badplace => ['Stderr'],
 };
 
 our $cfg = $dev_config;
