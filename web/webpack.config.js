@@ -15,7 +15,7 @@ module.exports = (env, options) => ({
   // entry: {
   //     './src/app.js': ['./src/app.ts'].concat(glob.sync('./vendor/**/*.js'))
   // },
-  entry: [ './css/app.scss', './css/status.scss', './ts/app.ts' ],
+  entry: [ './css/app.scss', './ts/app.ts' ],
   output: {
     filename: 'app.js',
     path: path.resolve(__dirname, './public')
@@ -38,8 +38,7 @@ module.exports = (env, options) => ({
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({ filename: 'app.css' }),
-    new MiniCssExtractPlugin({ filename: 'status.css' })
+    new MiniCssExtractPlugin({ filename: 'app.css' })
     //new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
   ]
 });
