@@ -165,7 +165,7 @@ __DATA__
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quake World Stats - Status</title>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata|Audiowide|Bree+Serif|Odibee+Sans|Titillium+Web&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/status.css"/>
+    <link rel="stylesheet" href="/app.css"/>
 
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
