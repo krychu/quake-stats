@@ -11,7 +11,8 @@ h2 {
 #status-container {
     display: flex;
     flex-direction: column;
-    width: 350px;
+    //width: 350px;
+    max-width: 1400px;
     margin: 0 auto;
     margin-top: 100px;
 }
@@ -21,11 +22,11 @@ h2 {
 }
 
 .status-line__name {
-    flex-basis: 50%;
+    flex-basis: 250px;
 }
 
 .status-line__value {
-    flex-basis: 50%;
+    //flex-basis: 50%;
 }
 
 .status-line__value--green {
@@ -45,9 +46,16 @@ h2 {
 }
 
 .server-line__host {
-    flex-basis: 100%;
+    flex-basis: 400px;
 }
 
 .server-line__game-cnt {
-    flex-basis: 50px;
+    flex-basis: 100px;
+    text-align: right;
+}
+
+.server-line--header {
+    color: $grey-2;
+    //text-transform: uppercase;
+    margin-bottom: 5px;
 }
