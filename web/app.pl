@@ -8,6 +8,11 @@ use Proc::Find;
 use PG;
 use Status;
 
+get '/' => sub {
+    my $c = shift;
+    $c->redirect_to('/1vs1');
+};
+
 get '/1vs1' => sub {
     my $c = shift;
     $c->render(template => '1vs1index');
