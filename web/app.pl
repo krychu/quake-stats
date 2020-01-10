@@ -237,7 +237,7 @@ __DATA__
         <div class="server-line__game-cnt server-line--header">1h</div>
       </div>
 
-% for my $hostname (keys %$servers) {
+% for my $hostname (sort keys %$servers) {
       <div class="server-line">
         <div class="server-line__host"><%= $hostname %></div>
         <div class="server-line__game-cnt"><%= $servers->{$hostname}->{total} %></div>
