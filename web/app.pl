@@ -8,6 +8,11 @@ use Proc::Find;
 use PG;
 use Status;
 
+get '/' => sub {
+    my $c = shift;
+    $c->redirect_to('/1vs1');
+};
+
 get '/1vs1' => sub {
     my $c = shift;
     $c->render(template => '1vs1index');
@@ -21,16 +26,17 @@ get '/1vs1/:player' => sub {
 get '/status' => sub {
     my $c = shift;
 
+    my $servers = Status::servers(24, 1);
+    my $game_cnts = Status::agg_game_cnts($servers);
+
     $c->stash(
         status_webapp      => Status::status_webapp(),
         status_statscraper => Status::status_statscraper(),
         status_ingestion   => Status::status_ingestion(),
-        game_cnt           => Status::game_cnt(),
-        game_cnt_24h       => Status::game_cnt(24),
-        game_cnt_1h        => Status::game_cnt(1),
-        servers            => Status::servers(),
-        servers_24h        => Status::servers(24),
-        servers_1h         => Status::servers(1),
+        servers            => $servers,
+        game_cnts          => $game_cnts,
+        file_cnt           => Status::file_cnt(),
+        disk_space         => Status::disk_space(),
         );
 
     $c->render(template => 'status');
@@ -179,23 +185,6 @@ __DATA__
       <h2>QuakeStats Status</h2>
 
       <div class="status-line">
-        <div class="status-line__name">total games</div>
-        <div class="status-line__value"><%= $game_cnt %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">added in last 1h</div>
-        <div class="status-line__value"><%= $game_cnt_1h %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">added in last 24h</div>
-        <div class="status-line__value"><%= $game_cnt_24h %></div>
-      </div>
-
-      <div class="status-line-separator"></div>
-
-      <div class="status-line">
         <div class="status-line__name">webapp</div>
         <div class="status-line__value <%= $status_webapp eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $status_webapp %></div>
       </div>
@@ -210,14 +199,50 @@ __DATA__
         <div class="status-line__value <%= $status_ingestion eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $status_ingestion %></div>
       </div>
 
-      <h2>Servers</h2>
+      <div class="status-line-separator"></div>
 
-% for my $server (@$servers) {
+      <div class="status-line">
+        <div class="status-line__name">file count</div>
+        <div class="status-line__value"><%= $file_cnt %></div>
+      </div>
+
+      <div class="status-line">
+        <div class="status-line__name">disk space</div>
+        <div class="status-line__value"><%= $disk_space %></div>
+      </div>
+
+      <div class="status-line">
+        <div class="status-line__name">total games</div>
+        <div class="status-line__value"><%= $game_cnts->{total} %></div>
+      </div>
+
+      <div class="status-line">
+        <div class="status-line__name">added in last 24h</div>
+        <div class="status-line__value"><%= $game_cnts->{24} %></div>
+      </div>
+
+      <div class="status-line">
+        <div class="status-line__name">added in last 1h</div>
+        <div class="status-line__value"><%= $game_cnts->{1} %></div>
+      </div>
+
+      <!-- <h2>Servers</h2> -->
+
+      <div class="status-line-separator"></div>
+
+      <div class="server-line server-line--header">
+        <div class="server-line__host">server</div>
+        <div class="server-line__game-cnt server-line--header">total</div>
+        <div class="server-line__game-cnt server-line--header">24h</div>
+        <div class="server-line__game-cnt server-line--header">1h</div>
+      </div>
+
+% for my $hostname (keys %$servers) {
       <div class="server-line">
-        <div class="server-line__host"><%= $server->{hostname} %></div>
-        <div class="server-line__game-cnt"><%= $server->{game_cnt} %></div>
-        <div class="server-line__game-cnt"><%= $servers_24h->{$server->{game_cnt}} %></div>
-        <div class="server-line__game-cnt"><%= $servers_1h->{$server->{game_cnt}} %></div>
+        <div class="server-line__host"><%= $hostname %></div>
+        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{total} %></div>
+        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{24} %></div>
+        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{1} %></div>
       </div>
 % }
 
