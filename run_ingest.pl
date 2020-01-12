@@ -13,12 +13,15 @@ use File::Basename;
 use File::Spec::Functions;
 use File::Slurp;
 use DBD::Pg;
-use JSON::Parse qw(json_file_to_perl);
+use JSON::Parse qw(parse_json);#qw(json_file_to_perl);
 use Syntax::Keyword::Try;
 use Configuration qw($cfg);
+use Encode qw(decode encode);
 use Log::Any::Adapter;
 use Log::Any '$log', prefix => '[run_ingest] ';
 Log::Any::Adapter->set(@{ $cfg->{log_run_ingest} });
+
+my $chartbl = quake_chartbl();
 
 while (1) {
     try {
@@ -55,7 +58,9 @@ sub insert_stat_files {
 
     my $cnt = 0;
     for my $abs_path (@$abs_paths) {
-        my $json = json_file_to_perl($abs_path);
+        my $txt = read_file($abs_path);
+        $txt = decode_names($txt);
+        my $json = parse_json($txt);
         my $file = basename($abs_path);
         last if is_already_added($dbh, $file, $json);
 
@@ -173,4 +178,49 @@ sub insert_game_player {
         $player->{weapons}->{lg}->{pickups}->{taken},
         $player->{weapons}->{lg}->{damage}->{enemy}
         );
+}
+
+sub quake_chartbl {
+    my @tbl;
+
+    for (my $i=0; $i<32; $i++) {
+        $tbl[$i] = $tbl[$i + 128] = '#';
+    }
+
+    for (my $i=32; $i<128; $i++) {
+        $tbl[$i] = $tbl[$i + 128] = chr($i);
+    }
+
+    # special cases
+
+    # dot
+    $tbl[5] = $tbl[14] = $tbl[15] = $tbl[28] = $tbl[46] = '.';
+    $tbl[5 + 128] = $tbl[14 + 128] = $tbl[28 + 128] = $tbl[46 + 128] = '.';
+
+    # numbers
+    for (my $i=18; $i<28; $i++) {
+        $tbl[$i] = $tbl[$i + 128] = chr($i + 30);
+    }
+
+    # brackets
+    $tbl[16] = $tbl[16 + 128] = '[';
+    $tbl[17] = $tbl[17 + 128] = ']';
+    $tbl[29] = $tbl[29 + 128] = $tbl[128] = '(';
+    $tbl[31] = $tbl[31 + 128] = $tbl[130] = ')';
+
+    # left arrow
+    $tbl[127] = '>';
+    # right arrow
+    $tbl[141] = '<';
+
+    # '='
+    $tbl[30] = $tbl[129] = $tbl[30 + 128] = '=';
+
+    return \@tbl;
+}
+
+sub decode_names {
+    my $txt = shift;
+    $txt =~ s/(\\u00(..))/$chartbl->[hex($2)]/ge;
+    return $txt;
 }

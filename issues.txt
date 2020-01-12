@@ -1,12 +1,12 @@
 Open issues
 --------------------------------------------------------------------------------
+- Bug: Not all new files are ingested
 - Opponents: Make dmg bars longer
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages
 - Don't show tables if there's no data (or no page)
 - Add header / logo
 - Docker
-- Bug: encoding of player names
 - Contextual help: tooltips?
 - Hover over games chart highlights related game
 - Label games chart
@@ -18,6 +18,9 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (12.01.2020) Bug: encoding of player names
++ (09.01.2020) Add status page
++ (07.01.2020) Scrape / ingest data from qtv
 + (19.12.2019) Style: Sections, font, size
 + (18.12.2019) BPS recent games chart
 + (11.12.2019) Duel Players: index page at /1vs1
