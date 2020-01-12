@@ -18,6 +18,7 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (13.01.2020) Scraper for qtv
 + (12.01.2020) Bug: encoding of player names
 + (09.01.2020) Add status page
 + (07.01.2020) Scrape / ingest data from qtv
