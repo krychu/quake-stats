@@ -5,74 +5,90 @@ use warnings;
 use lib ".";
 use Proc::Find;
 use File::Slurp;
+use Filesys::DiskUsage qw(du);
 use Configuration qw($cfg);
 
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-    status_webapp
-    status_statscraper
-    status_ingestion
+    run_status
     agg_game_cnts
-    servers
+    game_cnts
     file_cnt
-    disk_space
+    disk_usage
     );
 
-sub status_webapp {
-    return Proc::Find::proc_exists(cmndline => 'perl ./run_webapp.pl') ? "running" : "not running";
+sub run_status {
+    my ($running, $notrunning) = ('running', 'not running');
+    return {
+        run_webapp          => Proc::Find::proc_exists(cmndline => 'perl ./run_webapp.pl') ? $running : $notrunning,
+        run_scrape_qtv      => Proc::Find::proc_exists(cmndline => 'perl ./run_scrape_qtv.pl') ? $running : $notrunning,
+        run_scrape_badplace => Proc::Find::proc_exists(cmndline => 'perl ./run_scrape_badplace.pl') ? $running : $notrunning,
+        run_scrape_quake1pl => Proc::Find::proc_exists(cmndline => 'perl ./run_scrape_quake1pl.pl') ? $running : $notrunning,
+        run_ingest          => Proc::Find::proc_exists(cmndline => 'perl ./run_ingest.pl') ? $running : $notrunning
+    }
 }
 
-sub status_statscraper {
-    return Proc::Find::proc_exists(cmndline => 'perl ./run_statscraper.pl') ? "running" : "not running";
-}
-
-sub status_ingestion {
-    return Proc::Find::proc_exists(cmndline => 'perl ./run_ingest.pl') ? "running" : "not running";
-}
-
-# Returns the total number of games. If 'hours_cnt' is specified returns the
-# number of games within these last number of hours.
-# sub game_cnt {
-#     my $hours_cnt = shift;
-
-#     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});
-
-#     my $game_cnt;
-
-#     if ($hours_cnt) {
-#         $game_cnt = $dbh->selectrow_arrayref(
-#             qq{
-#               SELECT COUNT(*)
-#               FROM games
-#               WHERE created_at > now() AT TIME ZONE 'utc' - interval '$hours_cnt hours';
-#             }
-#             )->[0];
-#     } else {
-#         $game_cnt = $dbh->selectrow_arrayref(
-#             qq{
-#               SELECT COUNT(*)
-#               FROM games;
-#             })->[0];
-#     }
-
-#     $dbh->disconnect or die "Can't disconnect";
-
-#     return $game_cnt;
+# sub file_cnt {
+#     my @paths = read_dir($cfg->{stats_path}, prefix => 1);
+#     return scalar(@paths);
 # }
 
-sub file_cnt {
-    my @paths = read_dir($cfg->{stats_path}, prefix => 1);
-    return scalar(@paths);
+# Returns disk usage.
+#
+# {
+#   total: {file_cnt => 10, size => 4.7, 24 => 8},
+#   path1: {file_cnt => 7, size => 3.21, 24 => 5},
+#   ...
+# }
+sub disk_usage {
+    my @hour_cnts = @_;
+
+    my @paths = ($cfg->{data_qtv}, $cfg->{data_badplace}, $cfg->{data_quake1pl});
+
+    # per-path stats
+    my %du;
+    for my $path (@paths) {
+        if (-d $path) {
+            my @files = read_dir($path, prefix => 1);
+            $du{$path} = {
+                file_cnt => scalar(@files),
+                size     => sprintf("%.2f", du({blocks => 1, exclude => qr/^\./}, $path) / 1048576.0),
+            };
+
+            for my $hour_cnt (@hour_cnts) {
+                my $recent_cnt = 0;
+                for my $file (@files) {
+                    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,$blksize,$blocks) = stat($file);
+                    $recent_cnt++ if ((time() - $mtime) < (24*$hour_cnt*60));
+                }
+                $du{$path}->{$hour_cnt} = $recent_cnt;
+            }
+        } else {
+            $du{$path} = {file_cnt => 0, size => 0};
+            ($du{$path}->{$_} = 0) for (@hour_cnts);
+        }
+    }
+
+    # total
+    $du{total} = {file_cnt => 0, size => 0};
+    ($du{total}->{$_} = 0) for (@hour_cnts);
+    for my $path (grep {$_ ne 'total'} keys(%du)) {
+        $du{total}->{file_cnt} += $du{$path}->{file_cnt};
+        $du{total}->{size} += $du{$path}->{size};
+        ($du{total}->{$_} += $du{$path}->{$_}) for (@hour_cnts);
+    }
+
+    my %du_short_paths;
+    for my $path (@paths) {
+        $du_short_paths{$path =~ s/.+?\/(data)/$1/r} = $du{$path};
+    }
+    $du_short_paths{total} = $du{total};
+
+    return \%du_short_paths;
 }
 
-sub disk_space {
-    return `du -csh $cfg->{stats_path} | grep total | awk '{print \$1;}'`;
-}
-
-# Returns total game counts given a server hash returned by servers(). Apart
-# from the grant total it also returns totals for each hour cnt included in the
-# servers hash:
+# Returns game counts given a hash returned by servers():
 #
 # {
 #   "total": 304,
@@ -105,12 +121,12 @@ sub agg_game_cnts {
 #
 # Total is included by default. Other counts are included one per each attribute
 # passed to the sub.
-sub servers {
+sub game_cnts {
     my @hours_cnts = @_;
 
-    my $servers = _servers();
+    my $servers = _game_cnts(); # get total
     for my $hours_cnt (@hours_cnts) {
-        my $servers_h = _servers($hours_cnt);
+        my $servers_h = _game_cnts($hours_cnt);
         for my $server (keys %$servers) {
             $servers->{$server}->{$hours_cnt} = exists $servers_h->{$server}->{$hours_cnt} ? $servers_h->{$server}->{$hours_cnt} : 0;
         }
@@ -119,7 +135,7 @@ sub servers {
     return $servers;
 }
 
-sub _servers {
+sub _game_cnts {
     my $hours_cnt = shift;
 
     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});

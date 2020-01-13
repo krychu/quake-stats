@@ -26,17 +26,14 @@ get '/1vs1/:player' => sub {
 get '/status' => sub {
     my $c = shift;
 
-    my $servers = Status::servers(24, 1);
-    my $game_cnts = Status::agg_game_cnts($servers);
+    my $game_cnts = Status::game_cnts(24, 1);
+    my $agg_game_cnts = Status::agg_game_cnts($game_cnts);
 
     $c->stash(
-        status_webapp      => Status::status_webapp(),
-        status_statscraper => Status::status_statscraper(),
-        status_ingestion   => Status::status_ingestion(),
-        servers            => $servers,
+        run_status         => Status::run_status(),
         game_cnts          => $game_cnts,
-        file_cnt           => Status::file_cnt(),
-        disk_space         => Status::disk_space(),
+        agg_game_cnts      => $agg_game_cnts,
+        disk_usage         => Status::disk_usage(24, 1),
         );
 
     $c->render(template => 'status');
@@ -184,51 +181,43 @@ __DATA__
 
       <h2>QuakeStats Status</h2>
 
+      <h3># Processes</h3>
+% for my $run_script ('run_webapp', 'run_ingest', 'run_scrape_qtv', 'run_scrape_badplace', 'run_scrape_quake1pl') {
       <div class="status-line">
-        <div class="status-line__name">webapp</div>
-        <div class="status-line__value <%= $status_webapp eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $status_webapp %></div>
+        <div class="status-line__name"><%= $run_script =~ s/run_//r %></div>
+        <div class="status-line__value <%= $run_status->{$run_script} eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $run_status->{$run_script} %></div>
+      </div>
+% }
+
+      <h3># Scrape (disk)</h3>
+
+      <div class="scraper-line scraper-line--header">
+        <div class="scraper-line__name">data path</div>
+        <div class="scraper-line__value scraper-line--header">total files</div>
+        <div class="scraper-line__value scraper-line--header">24h</div>
+        <div class="scraper-line__value scraper-line--header">1h</div>
+        <div class="scraper-line__value scraper-line--header">size (MB)</div>
       </div>
 
-      <div class="status-line">
-        <div class="status-line__name">statscraper</div>
-        <div class="status-line__value <%= $status_statscraper eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $status_statscraper %></div>
+% for my $data_path (grep {$_ ne 'total'} keys(%$disk_usage)) {
+      <div class="scraper-line">
+        <div class="scraper-line__name"><%= $data_path %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{$data_path}->{file_cnt} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{$data_path}->{24} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{$data_path}->{1} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{$data_path}->{size} %></div>
+      </div>
+% }
+
+      <div class="scraper-line scraper-line--avg">
+        <div class="scraper-line__name">total</div>
+        <div class="scraper-line__value"><%= $disk_usage->{total}->{file_cnt} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{total}->{24} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{total}->{1} %></div>
+        <div class="scraper-line__value"><%= $disk_usage->{total}->{size} %></div>
       </div>
 
-      <div class="status-line">
-        <div class="status-line__name">ingestion</div>
-        <div class="status-line__value <%= $status_ingestion eq 'running' ? 'status-line__value--green' : 'status-line__value--red' %>"><%= $status_ingestion %></div>
-      </div>
-
-      <div class="status-line-separator"></div>
-
-      <div class="status-line">
-        <div class="status-line__name">file count</div>
-        <div class="status-line__value"><%= $file_cnt %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">disk space</div>
-        <div class="status-line__value"><%= $disk_space %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">total games</div>
-        <div class="status-line__value"><%= $game_cnts->{total} %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">added in last 24h</div>
-        <div class="status-line__value"><%= $game_cnts->{24} %></div>
-      </div>
-
-      <div class="status-line">
-        <div class="status-line__name">added in last 1h</div>
-        <div class="status-line__value"><%= $game_cnts->{1} %></div>
-      </div>
-
-      <!-- <h2>Servers</h2> -->
-
-      <div class="status-line-separator"></div>
+      <h3># Ingest (db)</h3>
 
       <div class="server-line server-line--header">
         <div class="server-line__host">server</div>
@@ -237,14 +226,22 @@ __DATA__
         <div class="server-line__game-cnt server-line--header">1h</div>
       </div>
 
-% for my $hostname (sort keys %$servers) {
+% for my $hostname (sort keys %$game_cnts) {
       <div class="server-line">
         <div class="server-line__host"><%= $hostname %></div>
-        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{total} %></div>
-        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{24} %></div>
-        <div class="server-line__game-cnt"><%= $servers->{$hostname}->{1} %></div>
+        <div class="server-line__game-cnt"><%= $game_cnts->{$hostname}->{total} %></div>
+        <div class="server-line__game-cnt"><%= $game_cnts->{$hostname}->{24} %></div>
+        <div class="server-line__game-cnt"><%= $game_cnts->{$hostname}->{1} %></div>
       </div>
 % }
+
+      <div class="server-line server-line--avg">
+        <div class="server-line__host">total</div>
+        <div class="server-line__game-cnt"><%= $agg_game_cnts->{total} %></div>
+        <div class="server-line__game-cnt"><%= $agg_game_cnts->{24} %></div>
+        <div class="server-line__game-cnt"><%= $agg_game_cnts->{1} %></div>
+      </div>
+
 
     </div>
 

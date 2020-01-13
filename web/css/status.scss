@@ -5,7 +5,11 @@ body {
 }
 
 h2 {
-    margin-top: 40px;
+    //margin-top: 40px;
+}
+
+h3 {
+    margin-top: 60px;
 }
 
 #status-container {
@@ -19,6 +23,10 @@ h2 {
 
 .status-line {
     display: flex;
+}
+
+.status-line--indented {
+    margin-left: 40px;
 }
 
 .status-line__name {
@@ -41,6 +49,30 @@ h2 {
     height: 20px;
 }
 
+/* scraper table */
+.scraper-line {
+    @extend .server-line;
+}
+
+.scraper-line__name {
+    @extend .server-line__host;
+    //flex-basis: 250px;
+}
+
+.scraper-line__value {
+    @extend .server-line__game-cnt;
+}
+
+.scraper-line--header {
+    @extend .server-line--header;
+}
+
+.scraper-line--avg {
+    @extend .server-line--avg;
+    width: 800px !important;
+}
+
+/* server table */
 .server-line {
     display: flex;
 }
@@ -58,4 +90,13 @@ h2 {
     color: $grey-2;
     //text-transform: uppercase;
     margin-bottom: 5px;
+}
+
+.server-line--avg {
+    width: 700px;
+    /* background-color: $grey-3; */
+    padding-top: 5px;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+    font-weight: bold;
 }

@@ -1,5 +1,6 @@
 Open issues
 --------------------------------------------------------------------------------
+- Make ingestion work with multiple data paths
 - Refactor: $stat_urls should return absolute txt path
 - Refactor: use ternary op for is_success
 - Bug: Some txts in qtv cannot be retrieved
@@ -20,6 +21,7 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (13.01.2020) Make status page use multiple data paths
 + (13.01.2020) Scraper for quake1.pl
 - (13.01.2020) Bug: Not all new files are ingested
 + (13.01.2020) Scraper for qtv
