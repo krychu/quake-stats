@@ -199,7 +199,7 @@ __DATA__
         <div class="scraper-line__value scraper-line--header">size (MB)</div>
       </div>
 
-% for my $data_path (grep {$_ ne 'total'} keys(%$disk_usage)) {
+% for my $data_path (grep {$_ ne 'total'} sort(keys(%$disk_usage))) {
       <div class="scraper-line">
         <div class="scraper-line__name"><%= $data_path %></div>
         <div class="scraper-line__value"><%= $disk_usage->{$data_path}->{file_cnt} %></div>

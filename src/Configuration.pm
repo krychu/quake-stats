@@ -6,7 +6,6 @@ use lib '../src';
 use Configuration qw($cfg);
 use File::Basename;
 use File::Spec::Functions;
-use Cwd qw(realpath);
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw($cfg);
@@ -43,14 +42,13 @@ my $dev_config = {
     postgresql_password     => '',
     postgresql_dbname       => 'quakestats',
 
-    postgresql_schema       => realpath(catfile(dirname(__FILE__), '..', 'sql', 'schema.sql')),
+    postgresql_schema       => catfile(dirname(__FILE__), '..', 'sql', 'schema.sql'),
 
-    #stats_path              => catfile(dirname(__FILE__), '../statscraper/stats/duel/all_maps'),
-    sample_data             => realpath(catdir(dirname(__FILE__), '..', 'sampledata', 'games')),
+    sample_data             => catdir(dirname(__FILE__), '..', 'sampledata', 'games'),
 
-    data_qtv                => realpath(catdir(dirname(__FILE__), '..', 'data', 'qtv')),
-    data_badplace           => realpath(catdir(dirname(__FILE__), '..', 'data', 'badplace')),
-    data_quake1pl           => realpath(catdir(dirname(__FILE__), '..', 'data', 'quake1pl')),
+    data_qtv                => catdir(dirname(__FILE__), '..', 'data', 'qtv'),
+    data_badplace           => catdir(dirname(__FILE__), '..', 'data', 'badplace'),
+    data_quake1pl           => catdir(dirname(__FILE__), '..', 'data', 'quake1pl'),
 
     scrape_delay            => 15 * 60, # secs, delay before scraping new stats from qtv
     ingest_delay            => 60, # secs, delay before checking and ingesting new stats
