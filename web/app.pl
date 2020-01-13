@@ -18,7 +18,7 @@ get '/1vs1' => sub {
     $c->render(template => '1vs1index');
 };
 
-get '/1vs1/:player' => sub {
+get '/1vs1/*player' => sub {
     my $c = shift;
     $c->render(template => '1vs1');
 };
