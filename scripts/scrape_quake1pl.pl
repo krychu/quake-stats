@@ -20,7 +20,7 @@ use Configuration qw($cfg);
 use Data::Dumper;
 use Log::Any::Adapter;
 use Log::Any '$log', prefix => '[scrape_quake1pl] ';
-Log::Any::Adapter->set(@{ $cfg->{log_run_scrape_quake1pl} });
+Log::Any::Adapter->set(@{ $cfg->{log_scrape_quake1pl} });
 
 my $base_address = 'https://quake1.pl/demos';
 

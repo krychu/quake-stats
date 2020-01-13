@@ -57,10 +57,10 @@ my $dev_config = {
 
     fetch_file_delay        => 3, # secs, delay before fetching files
 
-    log_run_ingest          => ['Stderr'],
-    log_run_statscraper     => ['Stderr'],
-    log_run_scrape_badplace => ['Stderr'],
-    log_run_scrape_quake1pl => ['Stderr'],
+    log_ingest              => ['Stderr'],
+    log_scrape_qtv          => ['Stderr'],
+    log_scrape_badplace     => ['Stderr'],
+    log_scrape_quake1pl     => ['Stderr'],
 };
 
 our $cfg = $dev_config;

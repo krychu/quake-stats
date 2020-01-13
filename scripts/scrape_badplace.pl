@@ -20,7 +20,7 @@ use Configuration qw($cfg);
 use Data::Dumper;
 use Log::Any::Adapter;
 use Log::Any '$log', prefix => '[scrape_badplace] ';
-Log::Any::Adapter->set(@{ $cfg->{log_run_scrape_badplace} });
+Log::Any::Adapter->set(@{ $cfg->{log_scrape_badplace} });
 
 my $base_address = "https://badplace.eu";
 

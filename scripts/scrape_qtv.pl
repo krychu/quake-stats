@@ -21,7 +21,7 @@ use URI::Encode;
 use Log::Any::Adapter;
 use Log::Any '$log', prefix => '[scrape_qtv] ';
 use Data::Dumper;
-Log::Any::Adapter->set(@{ $cfg->{log_run_scrape_badplace} });
+Log::Any::Adapter->set(@{ $cfg->{log_scrape_badplace} });
 
 my $qtv_api_servers = 'http://qtvapi.quakeworld.nu/api/v1/servers';
 

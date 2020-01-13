@@ -221,7 +221,7 @@ __DATA__
 
       <div class="server-line server-line--header">
         <div class="server-line__host">server</div>
-        <div class="server-line__game-cnt server-line--header">total</div>
+        <div class="server-line__game-cnt server-line--header">total games</div>
         <div class="server-line__game-cnt server-line--header">24h</div>
         <div class="server-line__game-cnt server-line--header">1h</div>
       </div>
