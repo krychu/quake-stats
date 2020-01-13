@@ -47,18 +47,13 @@ sub fetch_server_stat_files {
     my $stat_urls = scrape_stat_urls(get_page($server_url));
     my ($ok_cnt, $bad_cnt, $existed_cnt) = (0, 0, 0);
     for my $stat_url (@$stat_urls) {
-        my ($txt, $url) = @$stat_url;
-        my $file_path = catfile($cfg->{data_badplace}, $txt);
+        my ($file_path, $url) = @$stat_url;
         if (-s $file_path) {
             $existed_cnt++;
         } else {
             sleep($cfg->{fetch_file_delay});
-            my $r = getstore($url, catfile($cfg->{data_badplace}, $txt));
-            if (is_success($r)) {
-                $ok_cnt++;
-            } else {
-                $bad_cnt++;
-            }
+            my $r = getstore($url, $file_path);
+            is_success($r) ? $ok_cnt++ : $bad_cnt++;
             if (($ok_cnt + $bad_cnt + $existed_cnt) % 100 == 0) {
                 $log->info("  existed: $existed_cnt, fetched (ok): $ok_cnt, fetched (fail): $bad_cnt");
             }
@@ -98,9 +93,8 @@ sub scrape_server_urls {
 sub scrape_stat_urls {
     my $page = shift;
 
-    #my @urls = $page =~ m/href="(.+?downloadfile.+?)">(.+?)</g;
     my @urls = $page =~ m/viewgame.+?>(.+?\.txt).+?href="(.+?downloadfile.+?)"/sg; # [txt, url, txt, url, ...]
     @urls = split_by(2, @urls); # ([txt, url], [txt, url], ...)
-    @urls = map { [$_->[0], $base_address . $_->[1]] } @urls;
+    @urls = map { [catfile($cfg->{data_badplace}, $_->[0]), $base_address . $_->[1]] } @urls;
     return \@urls;
 }

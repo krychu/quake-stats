@@ -61,19 +61,13 @@ sub fetch_server_stat_files {
     my $stat_urls = scrape_stat_urls(get_page($server_url . '/demos'), $server_url);
     my  ($ok_cnt, $bad_cnt, $existed_cnt) = (0, 0, 0);
     for my $stat_url (@$stat_urls) {
-        my ($txt, $url) = @$stat_url;
-        my $file_path = catfile($cfg->{data_qtv}, $txt);
+        my ($file_path, $url) = @$stat_url;
         if (-s $file_path) {
             $existed_cnt++;
         } else {
             sleep($cfg->{fetch_file_delay});
-            my $r = getstore($url, catfile($cfg->{data_qtv}, $txt));
-            $log->info("  [new], url: $url, file: " . catfile($cfg->{data_qtv}, $txt));
-            if (is_success($r)) {
-                $ok_cnt++;
-            } else {
-                $bad_cnt++;
-            }
+            my $r = getstore($url, $file_path);
+            is_success($r) ? $ok_cnt++ : $bad_cnt++;
             if (($ok_cnt + $bad_cnt + $existed_cnt) % 100 == 0) {
                 $log->info("  existed: $existed_cnt, fetched (ok): $ok_cnt, fetched (fail): $bad_cnt");
             }
@@ -88,7 +82,7 @@ sub scrape_stat_urls {
 
     my $encoder = URI::Encode->new();
     my @urls = $page =~ /demos\/(.+?\.txt)/g;
-    @urls = map { [$encoder->decode($_), $server_url . "/dl/demos/$_"] } @urls;
+    @urls = map { [catfile($cfg->{data_qtv}, $encoder->decode($_)), $server_url . "/dl/demos/$_"] } @urls;
     return \@urls;
 }
 
