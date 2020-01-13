@@ -7,12 +7,9 @@ use File::Basename;
 use File::Spec::Functions;
 use Configuration qw($cfg);
 
-my $dirname = catfile(dirname(__FILE__), 'statscraper');
+my $dirname = catfile(dirname(__FILE__), 'scripts');
 
 while (1) {
-    qx/cd $dirname; python3 scrape.py/;
+    qx/cd $dirname; .\/scrape_quake1pl.pl/;
     sleep($cfg->{scrape_delay});
 }
-
-#my $dirname_stats = catfile($dirname, 'statscraper', 'stats', 'duel', 'all_maps');
-

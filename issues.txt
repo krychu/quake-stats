@@ -1,6 +1,8 @@
 Open issues
 --------------------------------------------------------------------------------
-- Bug: Not all new files are ingested
+- Refactor: $stat_urls should return absolute txt path
+- Refactor: use ternary op for is_success
+- Bug: Some txts in qtv cannot be retrieved
 - Opponents: Make dmg bars longer
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages
@@ -18,6 +20,8 @@ Open issues
 
 Done
 --------------------------------------------------------------------------------
++ (13.01.2020) Scraper for quake1.pl
+- (13.01.2020) Bug: Not all new files are ingested
 + (13.01.2020) Scraper for qtv
 + (12.01.2020) Bug: encoding of player names
 + (09.01.2020) Add status page
