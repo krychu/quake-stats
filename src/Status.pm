@@ -60,7 +60,7 @@ sub disk_usage {
                 my $recent_cnt = 0;
                 for my $file (@files) {
                     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,$blksize,$blocks) = stat($file);
-                    $recent_cnt++ if ((time() - $mtime) < (24*$hour_cnt*60));
+                    $recent_cnt++ if ((time() - $mtime) < ($hour_cnt*60*60));
                 }
                 $du{$path}->{$hour_cnt} = $recent_cnt;
             }
