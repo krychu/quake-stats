@@ -78,7 +78,7 @@ sub insert_stat_files {
         $cnt++;
     }
 
-    $log->info("New stat files added: $cnt, files skept: $skip_cnt (unrecognized format)\n");
+    $log->info("New stat files added: $cnt, files skept: $skip_cnt (unsupported format)\n");
 
     $sth_game->finish or die "Cannot finish the game statement";
     $sth_game_player->finish or die "Cannot finish the game_player statement";
