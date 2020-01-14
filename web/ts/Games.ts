@@ -131,6 +131,8 @@ function _html_render_games_header(a: GameData): string {
 
     <!--<div class="duel-games__header__cmp-cell">dmg%</div>-->
     <!--<div class="m11-games__header__cmp-cell">frags %</div>-->
+    <!--<div class="m11-games__header__cmp-cell m11-games__cell">FPM</div>-->
+    <!--<div class="m11-games__header__cmp-cell m11-games__cell">K/D</div>-->
     <div class="m11-games__header__cmp-cell m11-games__cell--narrow">dmg %</div>
     <!--<div class="m11-games__header__cmp-cell">dmg/min</div>-->
     <div class="m11-games__header__cmp-cell">rl/min</div>
@@ -161,6 +163,8 @@ function _html_render_games_row(a: GameData, b: GameData): string {
 
     <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
     <!--<div class="m11-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>-->
+    <!-- <div class="m11-games__game__cmp-cell m11-games__cell">${_cmp_frags_minute(a, b)}</div>-->
+    <!-- <div class="m11-games__game__cmp-cell m11-games__cell">${_cmp_kill_death(a, b)}</div>-->
     <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_damage_percent(a, b)}</div>
     <!--<div class="m11-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>-->
     <!--<div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>-->
@@ -204,6 +208,23 @@ function _cmp_frags(a: GameData, b: GameData): string {
 //   return _cmp(a_gt, b_gt, bar);
 // }
 
+function _cmp_frags_minute(a: GameData, b: GameData): string {
+    if (a.frags == null || b.frags == null) {
+        return _cmp_na();
+    }
+
+    const [a_fpm, b_fpm] = [a.frags / a.tl, b.frags / a.tl];
+
+    let bar = 0;
+    if (a_fpm > b_fpm) {
+      bar = Math.max((1.0 - a_fpm / b_fpm)/8.0, -1.0);
+    } else if (b_fpm > a_fpm) {
+      bar = Math.min((b_fpm / a_fpm - 1.0)/8.0, 1.0);
+    }
+
+    return _cmp(a_fpm.toFixed(1).toString(), b_fpm.toFixed(1).toString(), bar);
+}
+
 function _cmp_frags_percent(a: GameData, b: GameData): string {
   if (a.frags == null || b.frags == null) {
     return _cmp_na();
@@ -220,6 +241,28 @@ function _cmp_frags_percent(a: GameData, b: GameData): string {
   const bar = 2.0 * b_frags - 1.0;
 
   return _cmp(_frac_to_percent(a_frags), _frac_to_percent(b_frags), bar);
+}
+
+function _cmp_kill_death(a: GameData, b: GameData): string {
+  let a_kd = a.deaths ? a.kills / a.deaths : 1;
+  let b_kd = b.deaths ? b.kills / b.deaths : 1;
+
+  let bar = 0;
+  if (a_kd > b_kd) {
+    if (b_kd === 0) {
+      bar = -1.0;
+    } else {
+      bar = Math.max((1.0 - a_kd / b_kd)/8.0, -1.0);
+    }
+  } else if (b_kd > a_kd) {
+    if (a_kd === 0) {
+      bar = 1.0;
+    } else {
+      bar = Math.min((b_kd / a_kd - 1.0)/8.0, 1.0);
+    }
+  }
+
+  return _cmp(a_kd.toFixed(1).toString(), b_kd.toFixed(1).toString(), bar);
 }
 
 // damage proportionn

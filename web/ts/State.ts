@@ -244,6 +244,8 @@ interface GameData {
   ra: number;
   ya: number;
   speed_avg: number;
+  kills: number;
+  deaths: number;
 }
 
 //type CmdFunc = (data?: any): void

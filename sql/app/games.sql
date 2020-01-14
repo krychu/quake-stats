@@ -34,7 +34,9 @@ WITH recent_game_ids AS (
            health_100,
            ra,
            ya,
-           speed_avg
+           speed_avg,
+           kills,
+           deaths
     FROM game_players
     WHERE game_id IN ( SELECT id FROM recent_game_ids )
 ), recent_games_full AS (
@@ -57,6 +59,8 @@ SELECT game_id,
        health_100,
        ra,
        ya,
-       speed_avg
+       speed_avg,
+       kills,
+       deaths
 FROM recent_games_full
 ORDER BY raw_date desc, game_id, name <> $1;
