@@ -17,37 +17,7 @@ CREATE TABLE duels
   file                 TEXT,
   created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' ),
 
-  a_name               TEXT,
-  a_top_color          INTEGER,
-  a_bottom_color       INTEGER,
-  a_ping               INTEGER,
-  a_frags              INTEGER,
-  a_spawn_frags        INTEGER,
-  a_kd                 REAL,
-  a_fpm                REAL,
-  a_dpm                REAL,
-  a_rl_dpm             REAL,
-  a_lg_dpm             REAL,
-  a_lg_acc             REAL,
-
-  a_name               TEXT,
-  a_top_color          INTEGER,
-  a_bottom_color       INTEGER,
-  a_ping               INTEGER,
-  a_frags              INTEGER,
-  a_kills              INTEGER,
-  a_deaths             INTEGER,
-  a_spawn_frags        INTEGER,
-  a_suicides           INTEGER,
-  a_dmg_taken          INTEGER,
-  a_dmg_given          INTEGER,
-  a_speed_avg          INTEGER,
-  a_ra                 INTEGER,
-  a_ya                 INTEGER,
-  a_mh                 INTEGER,
-  a_rl_attacks         INTEGER,
-  a_rl_dmg             INTEGER,
-  a_rl_kills
+  pl_name
 );
 
 CREATE SEQUENCE games_id_seq;
