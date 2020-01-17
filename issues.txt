@@ -18,6 +18,7 @@ Open issues
 - Filters for player/map
 - Q: Development section needed?
 - Q: Frags, Damage, Weapon sections?
+- Q: Should dmg given subtract self damage?
 
 Done
 --------------------------------------------------------------------------------
