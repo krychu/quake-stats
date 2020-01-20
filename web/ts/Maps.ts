@@ -57,7 +57,8 @@ function _html_remove_maps(element: HTMLElement) {
 function _html_render_maps(player: string, data: MapData[], element: HTMLElement) {
   const title = _html_render_title();
   let rows = _html_render_maps_header(player);
-  rows += data.map((map) => _html_render_map_row(player, map)).join("");
+  const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+  rows += data.map((map) => _html_render_map_row(player, map, max_game_cnt)).join("");
   const html = `
 ${title}
 ${rows}
@@ -91,53 +92,53 @@ function _html_render_maps_header(player: string): string {
 `;
 }
 
-function _html_render_map_row(player: string, map: MapData): string {
+function _html_render_map_row(player: string, d: MapData, max_game_cnt: number): string {
   return `
 <div class="m11-maps__row m11-maps__row--map">
   <!--<div class="m11-maps__player-a-cell m11-maps__cell--map"><div>${player}</div></div>-->
   <!--<div class="m11-maps__vs-cell m11-maps__cell--map">vs</div>-->
   <!--<div class="m11-maps__player-b-cell m11-maps__cell--map">opponent</div>-->
-  <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${map.map}</div>
-  ${_game_cnts(map)}
-  <div class="m11-maps__cell m11-maps__cell--map">${map.opponent_cnt}</div>
-  ${_cmp_avg_avg_win_probability(map)}
-  ${_cmp_avg_avg_frag_proportion(map)}
-  ${_cmp_avg_avg_dmg_proportion(map)}
-  ${_cmp_avg_avg_dmg_per_minute(map)}
+  <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${d.map}</div>
+  ${_game_cnts(d, max_game_cnt)}
+  <div class="m11-maps__cell m11-maps__cell--map">${d.opponent_cnt}</div>
+  ${_cmp_avg_win_percent(d)}
+  ${_cmp_avg_frag_percent(d)}
+  ${_cmp_avg_dmg_percent(d)}
+  ${_cmp_avg_dmg_minute(d)}
 </div>
 `;
 }
 
-function _game_cnts(map: MapData): string {
-  const val = map.game_cnt;
-  const bar = map.game_cnt / map.max_game_cnt;
+function _game_cnts(d: MapData, max_game_cnt: number): string {
+  const val = d.game_cnt;
+  const bar = d.game_cnt / max_game_cnt;
   return _val_with_bar(val.toString(), bar, 80);
 }
 
-function _cmp_avg_avg_win_probability(map: Pick<MapData, "avg_avg_win_probability" | "avg_avg_win_probability_b">): string {
-  const a = map.avg_avg_win_probability;
-  const b = map.avg_avg_win_probability_b;
+function _cmp_avg_win_percent(d: Pick<MapData, "a_win_percent" | "b_win_percent">): string {
+  const a = d.a_win_percent;
+  const b = d.b_win_percent;
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar);
 }
 
-function _cmp_avg_avg_frag_proportion(map: Pick<MapData, "avg_avg_frag_proportion" | "avg_avg_frag_proportion_b">): string {
-  const a = map.avg_avg_frag_proportion;
-  const b = map.avg_avg_frag_proportion_b;
+function _cmp_avg_frag_percent(d: Pick<MapData, "a_avg_frag_percent" | "b_avg_frag_percent">): string {
+  const a = d.a_avg_frag_percent;
+  const b = d.b_avg_frag_percent;
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar);
 }
 
-function _cmp_avg_avg_dmg_proportion(map: Pick<MapData, "avg_avg_dmg_proportion" | "avg_avg_dmg_proportion_b">): string {
-  const a = map.avg_avg_dmg_proportion;
-  const b = map.avg_avg_dmg_proportion_b;
+function _cmp_avg_dmg_percent(d: Pick<MapData, "a_avg_dmg_percent" | "b_avg_dmg_percent">): string {
+  const a = d.a_avg_dmg_percent;
+  const b = d.b_avg_dmg_percent;
   const bar = (50 - a) / 50.0;
   return _cmp(a.toString(), b.toString(), bar);
 }
 
-function _cmp_avg_avg_dmg_per_minute(map: Pick<MapData, "avg_avg_dmg_per_minute" | "avg_avg_dmg_per_minute_b">): string {
-  const a = map.avg_avg_dmg_per_minute;
-  const b = map.avg_avg_dmg_per_minute_b;
+function _cmp_avg_dmg_minute(d: Pick<MapData, "a_avg_dmg_minute" | "b_avg_dmg_minute">): string {
+  const a = d.a_avg_dmg_minute;
+  const b = d.b_avg_dmg_minute;
   let bar = 0;
   if (a > b) {
     bar = Math.max(1.0 - a / b, -1.0);
@@ -175,6 +176,3 @@ function _val_with_bar(a: string, bar: number, mul: number = 32): string {
 </div>
 `;
 }
-
-//  <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${map.map}</div>
-

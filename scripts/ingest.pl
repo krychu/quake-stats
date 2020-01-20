@@ -80,7 +80,7 @@ sub insert_stat_files {
         }
 
         # txt pre-processing
-        decode_names($txt);
+        $txt = decode_names($txt);
 
         # json pre-processing
         my $json = parse_json($txt);
@@ -101,82 +101,7 @@ sub insert_game {
     my ($record_0, $record_1, $file, $sth_game) = @_;
 
     for my $r ($record_0, $record_1) {
-        $sth_game->execute(
-            @{$r}{
-                qw(date
-                   map
-                   hostname
-                   mode
-                   tl
-                   dm
-                   duration
-                   demo
-                   file
-
-                   a_win
-                   a_loss
-                   a_draw
-
-                   a_name
-                   a_top_color
-                   a_bottom_color
-                   a_ping
-                   a_frags
-                   a_spawn_frags
-                   a_suicides
-                   a_kills
-                   a_deaths
-                   a_spree_max
-                   a_dmg_given
-                   a_dmg_taken
-                   a_rl_attacks
-                   a_rl_hits
-                   a_rl_virtual
-                   a_rl_kills
-                   a_rl_deaths
-                   a_rl_dmg_given
-                   a_rl_dmg_taken
-                   a_lg_attacks
-                   a_lg_hits
-                   a_lg_kills
-                   a_lg_deaths
-                   a_lg_dmg_given
-                   a_lg_dmg_taken
-                   a_ra
-                   a_ya
-                   a_mh
-                   a_speed_avg
-
-                   b_name
-                   b_top_color
-                   b_bottom_color
-                   b_ping
-                   b_frags
-                   b_spawn_frags
-                   b_suicides
-                   b_kills
-                   b_deaths
-                   b_spree_max
-                   b_dmg_given
-                   b_dmg_taken
-                   b_rl_attacks
-                   b_rl_hits
-                   b_rl_virtual
-                   b_rl_kills
-                   b_rl_deaths
-                   b_rl_dmg_given
-                   b_rl_dmg_taken
-                   b_lg_attacks
-                   b_lg_hits
-                   b_lg_kills
-                   b_lg_deaths
-                   b_lg_dmg_given
-                   b_lg_dmg_taken
-                   b_ra
-                   b_ya
-                   b_mh
-                   b_speed_avg)
-            });
+        $sth_game->execute( @{$r}{ @{columns()} } );
     }
 }
 
@@ -194,11 +119,11 @@ sub prepare_records {
         dm                   => $json->{dm},
         duration             => $json->{duration},
         demo                 => $json->{demo},
-        file                 => $json->{file},
+        file                 => $file,
 
-        a_win                => $a_json->{stats}{frags} > $b_json->{stats}{frags},
-        a_loss               => $a_json->{stats}{frags} < $b_json->{stats}{frags},
-        a_draw               => $a_json->{stats}{frags} == $b_json->{stats}{frags},
+        # a_win                => $a_json->{stats}{frags} > $b_json->{stats}{frags} ? 1 : 0,
+        # a_loss               => $a_json->{stats}{frags} < $b_json->{stats}{frags} ? 1 : 0,
+        # a_draw               => $a_json->{stats}{frags} == $b_json->{stats}{frags} ? 1 : 0,
 
         a_name               => $a_json->{name},
         a_top_color          => $a_json->{'top-color'},
@@ -268,174 +193,104 @@ sub prepare_records {
 
         my $new_key = $key =~ s/^a_/b_/r;
         if ($new_key eq $key) {
-            $new_key = $key =~ s/^b_/a/r;
+            $new_key = $key =~ s/^b_/a_/r;
         }
         if ($new_key ne $key) {
             $record_1->{$new_key} = $record_0->{$key};
         }
-
-
     }
 
-    my $record_1 = {
-        date                 => $record_0->{date},
-        map                  => $record_0->{map},
-        hostname             => $record_0->{hostname},
-        mode                 => $record_0->{mode},
-        tl                   => $record_0->{tl},
-        dm                   => $record_0->{dm},
-        duration             => $record_0->{duration},
-        demo                 => $record_0->{demo},
-        file                 => $record_0->{file},
+    # $record_1->{a_win} = $record_0->{a_loss};
+    # $record_1->{a_loss} = $record_0->{a_win};
 
-        a_win                => $record_0->{a_loss},
-        a_loss               => $record_0->{a_win},
-        a_draw               => $record_0->{a_draw},
-
-        a_name               => $record_0->{b_name},
-        a_top_color          => $record_0->{b_top_player},
-        a_bottom_color       => $record_0->{b_bottom_color},
-        a_ping               => $record_0->{b_ping},
-        a_frags              => $record_0->{},
-        a_spawn_frags        => $a_json->{stats}{'spawn-frags'},
-        a_suicides           => $a_json->{stats}{suicides},
-        a_kills              => $a_json->{stats}{kills},
-        a_deaths             => $a_json->{stats}{deaths},
-        a_spree_max          => $a_json->{spree}{max},
-        a_dmg_given          => $a_json->{dmg}{given}, # should it subtract self?
-        a_dmg_taken          => $a_json->{dmg}{taken},
-        a_rl_attacks         => $a_json->{weapons}{rl}{acc}{attacks},
-        a_rl_hits            => $a_json->{weapons}{rl}{acc}{hits},
-        a_rl_virtual         => $a_json->{weapons}{rl}{acc}{virtual},
-        a_rl_kills           => $a_json->{weapons}{rl}{kills}{enemy}, # what is total and self here?
-        a_rl_deaths          => $a_json->{weapons}{rl}{deaths},
-        a_rl_dmg_given       => $a_json->{weapons}{rl}{damage}{enemy},
-        a_rl_dmg_taken       => $b_json->{weapons}{rl}{damage}{enemy},
-        a_lg_attacks         => $a_json->{weapons}{lg}{acc}{attacks},
-        a_lg_hits            => $a_json->{weapons}{lg}{acc}{hits},
-        a_lg_kills           => $a_json->{weapons}{lg}{kills}{enemy},
-        a_lg_deaths          => $a_json->{weapons}{lg}{deaths},
-        a_lg_dmg_given       => $a_json->{weapons}{lg}{damage}{enemy},
-        a_lg_dmg_taken       => $b_json->{weapons}{lg}{damage}{enemy},
-        a_ra                 => $a_json->{items}{ra}{took},
-        a_ya                 => $a_json->{items}{ya}{took},
-        a_mh                 => $a_json->{items}{health_100}{took},
-        a_speed_avg          => round($a_json->{speed}{avg}),
-
-        b_name               => $b_json->{name},
-        b_top_color          => $b_json->{'top-color'},
-        b_bottom_color       => $b_json->{'bottom-color'},
-        b_ping               => $b_json->{ping},
-        b_frags              => $b_json->{stats}{frags},
-        b_spawn_frags        => $b_json->{stats}{'spawn-frags'},
-        b_suicides           => $b_json->{stats}{suicides},
-        b_kills              => $b_json->{stats}{kills},
-        b_deaths             => $b_json->{stats}{deaths},
-        b_spree_max          => $b_json->{spree}{max},
-        b_dmg_given          => $b_json->{dmg}{given}, # should it subtract self?
-        b_dmg_taken          => $b_json->{dmg}{taken},
-        b_rl_attacks         => $b_json->{weapons}{rl}{acc}{attacks},
-        b_rl_hits            => $b_json->{weapons}{rl}{acc}{hits},
-        b_rl_virtual         => $b_json->{weapons}{rl}{acc}{virtual},
-        b_rl_kills           => $b_json->{weapons}{rl}{kills}{enemy}, # what is total and self here?
-        b_rl_deaths          => $b_json->{weapons}{rl}{deaths},
-        b_rl_dmg_given       => $b_json->{weapons}{rl}{damage}{enemy},
-        b_rl_dmg_taken       => $a_json->{weapons}{rl}{damage}{enemy},
-        b_lg_attacks         => $b_json->{weapons}{lg}{acc}{attacks},
-        b_lg_hits            => $b_json->{weapons}{lg}{acc}{hits},
-        b_lg_kills           => $b_json->{weapons}{lg}{kills}{enemy},
-        b_lg_deaths          => $b_json->{weapons}{lg}{deaths},
-        b_lg_dmg_given       => $b_json->{weapons}{lg}{damage}{enemy},
-        b_lg_dmg_taken       => $a_json->{weapons}{lg}{damage}{enemy},
-        b_ra                 => $b_json->{items}{ra}{took},
-        b_ya                 => $b_json->{items}{ya}{took},
-        b_mh                 => $b_json->{items}{health_100}{took},
-        b_speed_avg          => round($b_json->{speed}{avg})
-    };
+    return ($record_0, $record_1);
 }
 
 sub prepare_sth_game {
     my $dbh = shift;
 
+    my @columns = @{columns()};
+    my $columns_str = join(",", @columns);
+    my $vars_str = join(",", map { '$' . $_ } 1 .. scalar(@columns));
     return $dbh->prepare(
-        q{
-        INSERT INTO games (
-          date,
-          map,
-          hostname,
-          mode,
-          tl,
-          dm,
-          duration,
-          demo,
-          file,
-
-          a_win,
-          a_loss,
-          a_draw,
-
-          a_name,
-          a_top_color,
-          a_bottom_color,
-          a_ping,
-          a_frags,
-          a_spawn_frags,
-          a_suicides,
-          a_kills,
-          a_deaths,
-          a_spree_max,
-          a_dmg_given,
-          a_dmg_taken,
-          a_rl_attacks,
-          a_rl_hits,
-          a_rl_virtual,
-          a_rl_kills,
-          a_rl_deaths,
-          a_rl_dmg_given,
-          a_rl_dmg_taken,
-          a_lg_attacks,
-          a_lg_hits,
-          a_lg_kills,
-          a_lg_deaths,
-          a_lg_dmg_given,
-          a_lg_dmg_taken,
-          a_ra,
-          a_ya,
-          a_mh,
-          a_speed_avg,
-
-          b_name,
-          b_top_color,
-          b_bottom_color,
-          b_ping,
-          b_frags,
-          b_spawn_frags,
-          b_suicides,
-          b_kills,
-          b_deaths,
-          b_spree_max,
-          b_dmg_given,
-          b_dmg_taken,
-          b_rl_attacks,
-          b_rl_hits,
-          b_rl_virtual,
-          b_rl_kills,
-          b_rl_deaths,
-          b_rl_dmg_given,
-          b_rl_dmg_taken,
-          b_lg_attacks,
-          b_lg_hits,
-          b_lg_kills,
-          b_lg_deaths,
-          b_lg_dmg_given,
-          b_lg_dmg_taken,
-          b_ra,
-          b_ya,
-          b_mh,
-          b_speed_avg
-        )
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56,$57,$58,$59,$60,$61,$62,$63,$64,$65,$66,$67);
+        qq{
+        INSERT INTO games ($columns_str)
+        VALUES ($vars_str);
         });
+}
+
+sub columns {
+    return [qw{
+            date
+            map
+            hostname
+            mode
+            tl
+            dm
+            duration
+            demo
+            file
+
+            a_name
+            a_top_color
+            a_bottom_color
+            a_ping
+            a_frags
+            a_spawn_frags
+            a_suicides
+            a_kills
+            a_deaths
+            a_spree_max
+            a_dmg_given
+            a_dmg_taken
+            a_rl_attacks
+            a_rl_hits
+            a_rl_virtual
+            a_rl_kills
+            a_rl_deaths
+            a_rl_dmg_given
+            a_rl_dmg_taken
+            a_lg_attacks
+            a_lg_hits
+            a_lg_kills
+            a_lg_deaths
+            a_lg_dmg_given
+            a_lg_dmg_taken
+            a_ra
+            a_ya
+            a_mh
+            a_speed_avg
+
+            b_name
+            b_top_color
+            b_bottom_color
+            b_ping
+            b_frags
+            b_spawn_frags
+            b_suicides
+            b_kills
+            b_deaths
+            b_spree_max
+            b_dmg_given
+            b_dmg_taken
+            b_rl_attacks
+            b_rl_hits
+            b_rl_virtual
+            b_rl_kills
+            b_rl_deaths
+            b_rl_dmg_given
+            b_rl_dmg_taken
+            b_lg_attacks
+            b_lg_hits
+            b_lg_kills
+            b_lg_deaths
+            b_lg_dmg_given
+            b_lg_dmg_taken
+            b_ra
+            b_ya
+            b_mh
+            b_speed_avg
+            }];
 }
 
 sub format_ok {

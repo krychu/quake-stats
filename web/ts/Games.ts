@@ -1,30 +1,12 @@
-import { state, Duel, GameData, Cmd } from "./State";
+import { state, GameData, Cmd } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
-//import * as utils from "./Utils";
-
-// export interface CmdFetchGames {
-//   player?: string;
-//   num_games?: number;
-// }
-//export function cmd_fetch_games(args: CmdFetchGames) {
 
 const commands: [string, Cmd][] = [
-    //[ "games_fetch_data",            cmd_games_fetch_data ],
-    // [ "games_create_html_root",      cmd_games_create_html_root ],
-    // [ "games_attach_html_root",      cmd_games_attach_html_root ],
-    // WE CAN NIX THIS ONE AND HAVE RENDER ONLY WHICH PUTS STUFF INSIDE AN ELEMENT WITH THE GIVEN ID
-    //[ "games_find_html_root",        cmd_games_find_html_root ],
     [ "games_create_html_root",      cmd_games_create_html_root ],
     [ "games_attach_html_root",      cmd_games_attach_html_root ],
     [ "games_render_data",           cmd_games_render_data ],
-
-    //[ "games_data_gset",             cmd_games_data_gset ],
-    //[ "games_html_root_gset",        cmd_games_html_root_gset ],
 ];
-
-// cmd_state_set_game_data
-// cmd_state_set_game_html_root
 
 export function init() {
     cmd.add_cmds(commands);
@@ -108,9 +90,10 @@ function _html_remove_games(element: HTMLElement) {
     log.log("IMPLEMENT ME: _html_remove_games");
 }
 
-function _html_render_games(data: Duel[], element: HTMLElement) {
-  let rows = _html_render_games_header(data[0][0]);
-  rows += data.map(([a, b]) => _html_render_games_row(a, b)).join("");
+function _html_render_games(data: GameData[], element: HTMLElement) {
+  let rows = _html_render_games_header(data[0]);
+  //rows += data.map(([a, b]) => _html_render_games_row(data)).join("");
+  rows += data.map((g) => _html_render_games_row(g)).join("");
   const html = `
 ${rows}
 `;
@@ -118,10 +101,10 @@ ${rows}
     element.insertAdjacentHTML("beforeend", html);
 }
 
-function _html_render_games_header(a: GameData): string {
+function _html_render_games_header(g: GameData): string {
     return `
 <div class="m11-games__header">
-    <!--<div class="m11-games__header__player-a-cell"><div>${a.name}</div></div>-->
+    <!--<div class="m11-games__header__player-a-cell"><div>${g.a_name}</div></div>-->
     <div class="m11-games__header__when-cell">when</div>
     <div class="m11-games__header__cmp-cell">frags</div>
     <div class="m11-games__header__cell">opponent</div>
@@ -150,46 +133,39 @@ function _html_render_games_header(a: GameData): string {
 `;
 }
 
-function _html_render_games_row(a: GameData, b: GameData): string {
+function _html_render_games_row(g: GameData): string {
     return `
-<div class="m11-games__game ${a.frags > b.frags && "m11-games__game--win"}">
-    <!--<div class="m11-games__game__player-a-cell"><div>${a.name}</div></div>-->
-    <div class="m11-games__game__when-cell">${_time_ago(a.date)}</div>
-    <div class="m11-games__game__cmp-cell">${_cmp_frags(a, b)}</div>
-    <div class="m11-games__game__player-b-cell"><div>${b.name}</div></div>
-    <div class="m11-games__game__map-cell"><div>${a.map}</div></div>
+<div class="m11-games__game ${g.a_frags > g.b_frags && "m11-games__game--win"}">
+    <!--<div class="m11-games__game__player-a-cell"><div>${g.a_name}</div></div>-->
+    <div class="m11-games__game__when-cell">${_time_ago(g.date)}</div>
+    <div class="m11-games__game__cmp-cell">${_cmp_frags(g)}</div>
+    <div class="m11-games__game__player-b-cell"><div>${g.b_name}</div></div>
+    <div class="m11-games__game__map-cell"><div>${g.map}</div></div>
 
     <div class="m11-games__separator-cell"></div>
 
-    <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(a, b)}</div>-->
-    <!--<div class="m11-games__game__cmp-cell">${_cmp_frags_percent(a, b)}</div>-->
-    <!-- <div class="m11-games__game__cmp-cell m11-games__cell">${_cmp_frags_minute(a, b)}</div>-->
-    <!-- <div class="m11-games__game__cmp-cell m11-games__cell">${_cmp_kill_death(a, b)}</div>-->
-    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_damage_percent(a, b)}</div>
-    <!--<div class="m11-games__game__cmp-cell">${_cmp_damage_minute(a, b)}</div>-->
-    <!--<div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute_diff(a, b)}</div>-->
-    <!--<div class="m11-games__game__cmp-cell">${_cmp_lg_damage_minute_diff(a, b)}</div>-->
-    <div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute(a, b)}</div>
-    <div class="m11-games__game__cmp-cell">${_cmp_lg_damage_minute(a, b)}</div>
-    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_lg_accuracy_percent(a, b)}</div>
+    <!--<div class="duel-games__game__cmp-cell">${_cmp_damage_percent(g)}</div>-->
+    <!--<div class="m11-games__game__cmp-cell">${_cmp_frags_percent(g)}</div>-->
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_damage_percent(g)}</div>
+    <div class="m11-games__game__cmp-cell">${_cmp_rl_damage_minute(g)}</div>
+    <div class="m11-games__game__cmp-cell">${_cmp_lg_damage_minute(g)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_lg_accuracy_percent(g)}</div>
 
     <div class="m11-games__separator-cell"></div>
 
-    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ra(a, b)}</div>
-    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ya(a, b)}</div>
-    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_mh(a, b)}</div>
-    <!--<div class="m11-games__game__cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
-    <!--<div class="m11-games__game__single-cmp-cell">${_cmp_speed_diff(a, b)}</div>-->
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ra(g)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_ya(g)}</div>
+    <div class="m11-games__game__cmp-cell m11-games__cell--narrow">${_cmp_mh(g)}</div>
 </div>
 `;
 }
 
-function _cmp_frags(a: GameData, b: GameData): string {
-  if (a.frags == null || b.frags == null) {
+function _cmp_frags(g: GameData): string {
+  if (g.a_frags == null || g.a_frags == null) {
     return _cmp_na();
   }
 
-  const [a_frags, b_frags] = [Math.max(a.frags, 0), Math.max(b.frags, 0)];
+  const [a_frags, b_frags] = [Math.max(g.a_frags, 0), Math.max(g.b_frags, 0)];
 
   // bar is in the range [-1; 1]
   let bar = 0;
@@ -197,40 +173,15 @@ function _cmp_frags(a: GameData, b: GameData): string {
     bar = 2.0 * (b_frags / (a_frags + b_frags) - 0.5);
   }
 
-  return _cmp(a.frags.toString(), b.frags.toString(), bar);
+  return _cmp(g.a_frags.toString(), g.b_frags.toString(), bar);
 }
 
-// function _cmp_damage_gt(a: GameData, b: GameData): string {
-//   let [a_gt, b_gt, bar] = [0, 0, 0];
-//   a_gt = a.damage_given / Math.max(a.damage_taken, 1);
-//   b_gt = b.damage_given / Math.max(b.damage_taken, 1);
-
-//   return _cmp(a_gt, b_gt, bar);
-// }
-
-function _cmp_frags_minute(a: GameData, b: GameData): string {
-    if (a.frags == null || b.frags == null) {
-        return _cmp_na();
-    }
-
-    const [a_fpm, b_fpm] = [a.frags / a.tl, b.frags / a.tl];
-
-    let bar = 0;
-    if (a_fpm > b_fpm) {
-      bar = Math.max((1.0 - a_fpm / b_fpm)/8.0, -1.0);
-    } else if (b_fpm > a_fpm) {
-      bar = Math.min((b_fpm / a_fpm - 1.0)/8.0, 1.0);
-    }
-
-    return _cmp(a_fpm.toFixed(1).toString(), b_fpm.toFixed(1).toString(), bar);
-}
-
-function _cmp_frags_percent(a: GameData, b: GameData): string {
-  if (a.frags == null || b.frags == null) {
+function _cmp_frags_percent(g: GameData): string {
+  if (g.a_frags == null || g.b_frags == null) {
     return _cmp_na();
   }
 
-  let [a_frags, b_frags] = [Math.max(a.frags, 0), Math.max(b.frags, 0)];
+  let [a_frags, b_frags] = [Math.max(g.a_frags, 0), Math.max(g.b_frags, 0)];
   if (a_frags + b_frags === 0) {
     return _cmp_na();
   }
@@ -243,306 +194,86 @@ function _cmp_frags_percent(a: GameData, b: GameData): string {
   return _cmp(_frac_to_percent(a_frags), _frac_to_percent(b_frags), bar);
 }
 
-function _cmp_kill_death(a: GameData, b: GameData): string {
-  let a_kd = a.deaths ? a.kills / a.deaths : 1;
-  let b_kd = b.deaths ? b.kills / b.deaths : 1;
-
-  let bar = 0;
-  if (a_kd > b_kd) {
-    if (b_kd === 0) {
-      bar = -1.0;
-    } else {
-      bar = Math.max((1.0 - a_kd / b_kd)/8.0, -1.0);
-    }
-  } else if (b_kd > a_kd) {
-    if (a_kd === 0) {
-      bar = 1.0;
-    } else {
-      bar = Math.min((b_kd / a_kd - 1.0)/8.0, 1.0);
-    }
-  }
-
-  return _cmp(a_kd.toFixed(1).toString(), b_kd.toFixed(1).toString(), bar);
-}
-
 // damage proportionn
-function _cmp_damage_percent(a: GameData, b: GameData): string {
-  if (a.damage_given == null || b.damage_given == null) {
+function _cmp_damage_percent(g: GameData): string {
+  if (g.a_dmg_percent == null || g.b_dmg_percent == null) {
     return _cmp_na();
   }
 
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  if (a.damage_given + b.damage_given !== 0) {
-    a_dmg = a.damage_given / (a.damage_given + b.damage_given);
-    b_dmg = 1.0 - a_dmg;
-    bar = 2.0 * b_dmg - 1.0;
-  }
-  return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar);
+  const bar = 2.0 * (g.b_dmg_percent / 100.0) - 1.0;
+  return _cmp(g.a_dmg_percent.toString(), g.b_dmg_percent.toString(), bar);
 }
 
-function _cmp_lg_damage_percent(a: GameData, b: GameData): string {
-  if (a.lg_damage == null || b.lg_damage == null) {
+function _cmp_lg_accuracy_percent(g: GameData): string {
+  if (g.a_lg_acc_percent == null || g.b_lg_acc_percent == null) {
     return _cmp_na();
   }
 
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //const total = a.lg_damage + a.rl_damage + b.lg_damage + b.rl_damage;
-  const total = a.lg_damage + b.lg_damage;
-  if (total !== 0) {
-    a_dmg = a.lg_damage / total;
-    b_dmg = b.lg_damage / total;
-    //bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-    bar = 2.0 * b_dmg - 1.0;
-  }
-  return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar);
+  const bar = 2.0 * (g.b_lg_acc_percent / (g.a_lg_acc_percent + g.b_lg_acc_percent)) - 1.0;
+  return _cmp(g.a_lg_acc_percent.toString(), g.b_lg_acc_percent.toString(), bar);
 }
 
-function _cmp_rl_damage_percent(a: GameData, b: GameData): string {
-  if (a.rl_damage == null || b.rl_damage == null) {
+function _cmp_rl_damage_minute(g: GameData): string {
+  if (g.a_rl_dmg_minute == null || g.b_rl_dmg_minute == null) {
     return _cmp_na();
   }
 
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //const total = a.lg_damage + a.rl_damage + b.lg_damage + b.rl_damage;
-  const total = a.rl_damage + b.rl_damage;
-  if (total !== 0) {
-    a_dmg = a.rl_damage / total;
-    b_dmg = b.rl_damage / total;
-    //bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-    bar = 2.0 * b_dmg - 1.0;
-  }
-  return _cmp(_frac_to_percent(a_dmg), _frac_to_percent(b_dmg), bar); // 32, true
-  //return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
-}
-
-// damage g/t - alternative to dmg percent
-// currently *_gt functions have wrong bar formulas
-function _cmp_damage_gt(a: GameData, b: GameData): string {
-  if (a.damage_given == null || b.damage_given == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given + b.damage_given !== 0) {
-  a_dmg = a.damage_given / Math.max(a.damage_taken, 1);
-  b_dmg = b.damage_given / Math.max(b.damage_taken, 1);
-  bar = 2.0 * ((b_dmg - 0.5) / 1.5) - 1.0;
-  bar = Math.max(Math.min(bar, 1.0), -1.0);
-    //bar = 2.0 * b_dmg - 1.0;
-  //}
-  return _cmp(a_dmg.toFixed(1).toString(), b_dmg.toFixed(1).toString(), bar);
-}
-
-function _cmp_lg_damage_gt(a: GameData, b: GameData): string {
-  if (a.lg_damage == null || b.lg_damage == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  a_dmg = a.lg_damage / Math.max(b.lg_damage, 1);
-  b_dmg = b.lg_damage / Math.max(a.lg_damage, 1);
-  //a_dmg = a.lg_damage / a.tl;
-  //b_dmg = b.lg_damage / a.tl;
-  bar = 2.0 * ((b_dmg - 0.5) / 1.5) - 1.0;
-  bar = Math.max(Math.min(bar, 1.0), -1.0);
-
-  return _cmp(a_dmg.toFixed(1).toString(), b_dmg.toFixed(1).toString(), bar);
-}
-
-function _cmp_rl_damage_gt(a: GameData, b: GameData): string {
-  if (a.rl_damage == null || b.rl_damage == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  a_dmg = a.rl_damage / Math.max(b.rl_damage);
-  b_dmg = b.rl_damage / Math.max(a.rl_damage);
-  bar = 2.0 * ((b_dmg - 0.5) / 1.5) - 1.0;
-  bar = Math.max(Math.min(bar, 1.0), -1.0);
-
-  return _cmp(a_dmg.toFixed(1).toString(), b_dmg.toFixed(1).toString(), bar);
-}
-
-function _cmp_lg_accuracy_percent(a: GameData, b: GameData): string {
-  if (a.lg_accuracy == null || b.lg_accuracy == null) {
-    return _cmp_na();
-  }
-
-  let [a_acc, b_acc, bar] = [0, 0, 0];
-  if (a.lg_accuracy != null && b.lg_accuracy != null) {
-    a_acc = a.lg_accuracy;
-    b_acc = b.lg_accuracy;
-    bar = 2.0 * b_acc / (a_acc + b_acc) - 1.0;
-  }
-  return _cmp(_frac_to_percent(a_acc), _frac_to_percent(b_acc), bar);
-}
-
-function _cmp_damage_minute(a: GameData, b: GameData): string {
-  if (a.damage_given == null || b.damage_given == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given != null && b.damage_given != null) {
-    a_dmg = a.damage_given / a.tl;
-    b_dmg = b.damage_given / a.tl;
-  //bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-  bar = 0;
+  const [a_dmg, b_dmg] = [g.a_rl_dmg_minute, g.b_rl_dmg_minute];
+  let bar = 0;
   if (a_dmg > b_dmg) {
     bar = Math.max(1.0 - a_dmg / b_dmg, -1.0);
   } else if (b_dmg > a_dmg) {
     bar = Math.min(b_dmg / a_dmg - 1.0, 1.0);
   }
-  //}
-  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
+  return _cmp(a_dmg.toString(), b_dmg.toString(), bar);
 }
 
-function _cmp_rl_damage_minute(a: GameData, b: GameData): string {
-  if (a.rl_damage == null || b.rl_damage == null) {
+function _cmp_lg_damage_minute(g: GameData): string {
+  if (g.a_lg_dmg_minute == null || g.b_lg_dmg_minute == null) {
     return _cmp_na();
   }
 
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given != null && b.damage_given != null) {
-    a_dmg = a.rl_damage / a.tl;
-    b_dmg = b.rl_damage / a.tl;
-  bar = 0;
+  const [a_dmg, b_dmg] = [g.a_lg_dmg_minute, g.b_lg_dmg_minute];
+  let bar = 0;
   if (a_dmg > b_dmg) {
     bar = Math.max(1.0 - a_dmg / b_dmg, -1.0);
   } else if (b_dmg > a_dmg) {
     bar = Math.min(b_dmg / a_dmg - 1.0, 1.0);
   }
-//    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-  //}
-  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
+  return _cmp(a_dmg.toString(), b_dmg.toString(), bar);
 }
 
-function _cmp_rl_damage_minute_diff(a: GameData, b: GameData): string {
-  if (a.rl_damage == null || b.rl_damage == null) {
+function _cmp_ra(g: GameData): string {
+  if (g.a_ra == null && g.b_ra == null) {
     return _cmp_na();
   }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given != null && b.damage_given != null) {
-  a_dmg = a.rl_damage / a.tl;
-  b_dmg = b.rl_damage / a.tl;
-  bar = 0;
-  if (a_dmg > b_dmg) {
-    bar = Math.max(1.0 - a_dmg / b_dmg, -1.0);
-  } else if (b_dmg > a_dmg) {
-    bar = Math.min(b_dmg / a_dmg - 1.0, 1.0);
-  }
-  //    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-  //}
-  //return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
-  const dmg_diff = (a_dmg - b_dmg).toFixed(0);
-    //return _cmp((dmg_diff > 0 ? "+" : "") + dmg_diff.toString(), "", bar);
-    return _cmp((a_dmg > b_dmg ? "+" : "") + dmg_diff, "", bar);
+  const bar = 2.0 * g.b_ra / (g.a_ra + g.b_ra) - 1.0;
+  return _cmp(g.a_ra.toString(), g.b_ra.toString(), bar);
 }
 
-function _cmp_lg_damage_minute(a: GameData, b: GameData): string {
-  if (a.lg_damage == null || b.lg_damage == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given != null && b.damage_given != null) {
-    a_dmg = a.lg_damage / a.tl;
-    b_dmg = b.lg_damage / a.tl;
-  bar = 0;
-  if (a_dmg > b_dmg) {
-    bar = Math.max(1.0 - a_dmg / b_dmg, -1.0);
-  } else if (b_dmg > a_dmg) {
-    bar = Math.min(b_dmg / a_dmg - 1.0, 1.0);
-  }
-//    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-  //}
-  return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
-}
-
-function _cmp_lg_damage_minute_diff(a: GameData, b: GameData): string {
-  if (a.lg_damage == null || b.lg_damage == null) {
-    return _cmp_na();
-  }
-
-  let [a_dmg, b_dmg, bar] = [0, 0, 0];
-  //if (a.damage_given != null && b.damage_given != null) {
-  a_dmg = a.lg_damage / a.tl;
-  b_dmg = b.lg_damage / a.tl;
-  bar = 0;
-  if (a_dmg > b_dmg) {
-    bar = Math.max(1.0 - a_dmg / b_dmg, -1.0);
-  } else if (b_dmg > a_dmg) {
-    bar = Math.min(b_dmg / a_dmg - 1.0, 1.0);
-  }
-  //    bar = 2.0 * b_dmg / (a_dmg + b_dmg) - 1.0;
-  //}
-  //return _cmp(a_dmg.toFixed(0).toString(), b_dmg.toFixed(0).toString(), bar);
-  const dmg_diff = (a_dmg - b_dmg).toFixed(0);
-    //return _cmp((dmg_diff > 0 ? "+" : "") + dmg_diff.toString(), "", bar);
-    return _cmp((a_dmg > b_dmg ? "+" : "") + dmg_diff, "", bar);
-}
-
-function _cmp_ra(a: GameData, b: GameData): string {
-  if (a.ra == null && b.ra == null) {
-    return _cmp_na();
-  }
-  const a_ra = a.ra || 0;
-  const b_ra = b.ra || 0;
-  const bar = 2.0 * b_ra / (a_ra + b_ra) - 1.0;
-  return _cmp(a_ra.toString(), b_ra.toString(), bar);
-}
-
-function _cmp_ya(a: GameData, b: GameData): string {
-    if (a.ya == null && b.ya == null) {
+function _cmp_ya(g: GameData): string {
+    if (g.a_ya == null && g.b_ya == null) {
         return _cmp_na();
     }
-    const a_ya = a.ya || 0;
-    const b_ya = b.ya || 0;
-    const bar = 2.0 * b_ya / (a_ya + b_ya) - 1.0;
-    return _cmp(a_ya.toString(), b_ya.toString(), bar);
+    const bar = 2.0 * g.b_ya / (g.a_ya + g.b_ya) - 1.0;
+    return _cmp(g.a_ya.toString(), g.b_ya.toString(), bar);
 }
 
-function _cmp_mh(a: GameData, b: GameData): string {
-  if (a.health_100 == null && b.health_100 == null) {
+function _cmp_mh(g: GameData): string {
+  if (g.a_mh == null && g.b_mh == null) {
     return _cmp_na();
   }
-  const a_mh = a.health_100 || 0;
-  const b_mh = b.health_100 || 0;
-  const bar = 2.0 * b_mh / (a_mh + b_mh) - 1.0;
-  return _cmp(a_mh.toString(), b_mh.toString(), bar);
+  const bar = 2.0 * g.b_mh / (g.a_mh + g.b_mh) - 1.0;
+  return _cmp(g.a_mh.toString(), g.b_mh.toString(), bar);
 }
 
-function _cmp_speed(a: GameData, b: GameData): string {
-  if (a.speed_avg == null && b.speed_avg == null) {
+function _cmp_speed(g: GameData): string {
+  if (g.a_speed_avg == null && g.b_speed_avg == null) {
     return _cmp_na();
   }
-  const a_speed = a.speed_avg || 0;
-  const b_speed = b.speed_avg || 0;
-  const bar = 2.0 * b_speed / (a_speed + b_speed) - 1.0;
-  return _cmp(a_speed.toFixed(0).toString(), b_speed.toFixed(0).toString(), bar);
+  const bar = 2.0 * g.b_speed_avg / (g.a_speed_avg + g.b_speed_avg) - 1.0;
+  return _cmp(g.a_speed_avg.toString(), g.b_speed_avg.toString(), bar);
 }
-
-function _cmp_speed_diff(a: GameData, b: GameData): string {
-  if (a.speed_avg == null || b.speed_avg == null) {
-    return _cmp_na();
-  }
-  const bar = Math.max(Math.min((b.speed_avg - a.speed_avg) / 100.0, 1.0), -1.0);
-  //return _cmp_diff((a.speed_avg - b.speed_avg).toFixed(0).toString(), bar);
-  const speed_diff = (a.speed_avg - b.speed_avg).toFixed(0);
-    //return _cmp((speed_diff > 0 ? "+" : "") + speed_diff.toString(), "", bar);
-    //return _cmp((a.speed_avg > b.speed_avg ? "+" : "") + speed_diff, "", bar);
-    return _single_cmp((a.speed_avg > b.speed_avg ? "+" : "") + speed_diff, bar);
-}
-
-// function _cmp_pickups(a: GameData, b: GameData): string {
-//   let [a_pick, b_pick, bar] = [0, 0, 0];
-//   const [ra, ya, mh] = [1.0, 0.7, 0.5];
-//   a_pick = a.ra * ra + a.health_100 * mh + a.ya * ya;
-//   b_pick = b.ra * ra + b.health_100 * mh + b.ya * ya;
-//   bar = 2.0 * b_pick / (a_pick + b_pick) - 1.0;
-//   return _cmp(a_pick.toFixed(0).toString(), b_pick.toFixed(0).toString(), bar);
-// }
 
 function _cmp(a: string, b: string, bar: number, mul: number = 40, is_percent: boolean = false): string {
   //const mul = 32;
@@ -614,17 +345,3 @@ function _time_ago(date: string) {
 function _frac_to_percent(a: number): string {
   return (a * 100.0).toFixed(0).toString();
 }
-
-// [-1; 1]
-// function _frags(a: GameData, b: GameData): number {
-//   if (a.frags + b.frags === 0) {
-//     return 0;
-//   }
-
-//   return 2.0 * (b.frags / (a.frags + b.frags) - 0.5);
-// }
-
-
-// function _fragsCss(n: number): string {
-// //  if HERE
-// }

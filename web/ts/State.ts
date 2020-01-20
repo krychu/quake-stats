@@ -97,7 +97,7 @@ interface State {
     player: string | null;
     data: {
       game_cnt: number;
-      games: Duel[];
+      games: GameData[];
       opponents: OpponentData[];
       maps: MapData[];
       game_cnts: [string, number][];
@@ -184,68 +184,69 @@ interface Maps {
   html_root: HTMLElement | null;
 }
 
-type Duel = [GameData, GameData];
+//type Duel = [GameData, GameData];
 
 export interface OpponentData {
-  name_b: string;
+  name: string;
   game_cnt: number;
-  max_game_cnt: number;
-  win_cnt: number;
-  loss_cnt: number;
-  avg_frag_proportion: number;
-  avg_frag_proportion_b: number;
-  max_frag_proportion: number;
-  min_frag_proportion: number;
-  avg_lg_accuracy: number;
-  avg_lg_accuracy_b: number;
-  avg_dmg_proportion: number;
-  avg_dmg_proportion_b: number;
-  avg_dmg_per_minute: number;
-  avg_dmg_per_minute_b: number;
+
+  a_win_percent: number;
+  a_avg_frag_percent: number;
+  a_avg_dmg_percent: number;
+  a_avg_lg_acc_percent: number;
+
+  b_win_percent: number;
+  b_avg_frag_percent: number;
+  b_avg_dmg_percent: number;
+  b_avg_lg_acc_percent: number;
+
   most_frequent_map: string;
-  avg_win_probability: number;
-  avg_win_probability_b: number;
 }
 
 export interface MapData {
   map: string;
   game_cnt: number;
-  max_game_cnt: number;
   opponent_cnt: number;
-  avg_avg_win_probability: number;
-  avg_avg_win_probability_b: number;
-  avg_avg_frag_proportion: number;
-  avg_avg_frag_proportion_b: number;
-  max_max_frag_proportion: number;
-  min_min_frag_proportion: number;
-  avg_avg_lg_accuracy: number;
-  avg_avg_lg_accuracy_b: number;
-  avg_avg_dmg_proportion: number;
-  avg_avg_dmg_proportion_b: number;
-  avg_avg_dmg_per_minute: number;
-  avg_avg_dmg_per_minute_b: number;
+
+  a_win_percent: number;
+  a_avg_frag_percent: number;
+  a_avg_dmg_percent: number;
+  a_avg_dmg_minute: number;
+
+  b_win_percent: number;
+  b_avg_frag_percent: number;
+  b_avg_dmg_percent: number;
+  b_avg_dmg_minute: number;
 }
 
 interface GameData {
   // this order should stay sync with the UI design
   game_id: number;
-  name: string;
-  map: string;
-  tl: number;
   raw_date: number;
   date: string;
-  frags: number;
-  rl_damage: number;
-  lg_damage: number;
-  lg_accuracy: number;
-  damage_given: number;
-  damage_taken: number;
-  health_100: number;
-  ra: number;
-  ya: number;
-  speed_avg: number;
-  kills: number;
-  deaths: number;
+  map: string;
+
+  a_name: string;
+  a_frags: number;
+  a_dmg_percent: number;
+  a_rl_dmg_minute: number;
+  a_lg_dmg_minute: number;
+  a_lg_acc_percent: number;
+  a_ra: number;
+  a_ya: number;
+  a_mh: number;
+  a_speed_avg: number;
+
+  b_name: string;
+  b_frags: number;
+  b_dmg_percent: number;
+  b_rl_dmg_minute: number;
+  b_lg_dmg_minute: number;
+  b_lg_acc_percent: number;
+  b_ra: number;
+  b_ya: number;
+  b_mh: number;
+  b_speed_avg: number;
 }
 
 //type CmdFunc = (data?: any): void
@@ -332,7 +333,7 @@ function cmd_state_set_game_cnts(data: [string, number][]): Promise<any> {
   return Promise.resolve();
 }
 
-function cmd_state_set_games(data: Duel[]): Promise<any> {
+function cmd_state_set_games(data: GameData[]): Promise<any> {
   state.duel_player.data.games = data;
   return Promise.resolve();
 }
@@ -364,4 +365,4 @@ function cmd_state_set_duel_players(data: DPS_PlayerData[]): Promise<void> {
   return Promise.resolve();
 }
 
-export { state, ScheduledCmd, GameData, Duel, DPS_PlayerData, Cmd };
+export { state, ScheduledCmd, GameData, DPS_PlayerData, Cmd };

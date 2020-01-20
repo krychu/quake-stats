@@ -58,8 +58,10 @@ function _html_render_opponents(player: string, data: OpponentData[], element: H
   const title = _html_render_title();
   let rows = _html_render_opponents_header(player);
   //rows += _html_render_avg_top5_row(player, data, "avg (top 5)");
-  rows += _html_render_avg_row(player, data, "avg (all)");
-  rows += data.map((opponent) => _html_render_opponent_row(player, opponent)).join("");
+  const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+
+  //rows += _html_render_avg_row(player, data, "avg (all)");
+  rows += data.map((opponent) => _html_render_opponent_row(player, opponent, max_game_cnt)).join("");
   const html = `
 ${title}
 ${rows}
@@ -92,106 +94,72 @@ function _html_render_opponents_header(player: string): string {
 `;
 }
 
-function _html_render_opponent_row(player: string, opponent: OpponentData): string {
+function _html_render_opponent_row(player: string, opponent: OpponentData, max_game_cnt: number): string {
   return `
 <div class="m11-opponents__row m11-opponents__row--opponent">
   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--opponent"><div>${player}</div></div>-->
   <!--<div class="m11-opponents__vs-cell">vs</div>-->
-  <div class="m11-opponents__player-b-cell m11-opponents__cell--opponent">${opponent.name_b}</div>
-  ${_game_cnts(opponent)}
-  ${_cmp_avg_win_probability(opponent)}
-  ${_cmp_avg_frag_proportion(opponent)}
-  ${_cmp_avg_dmg_proportion(opponent)}
-  ${_cmp_avg_lg_accuracy(opponent)}
+  <div class="m11-opponents__player-b-cell m11-opponents__cell--opponent">${opponent.name}</div>
+  ${_game_cnts(opponent, max_game_cnt)}
+  ${_cmp_avg_win_rate(opponent)}
+  ${_cmp_avg_frag_percent(opponent)}
+  ${_cmp_avg_dmg_percent(opponent)}
+  ${_cmp_avg_lg_acc_percent(opponent)}
   <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--map">${opponent.most_frequent_map}</div>
 </div>
 `;
 }
 
-function _html_render_avg_row(player: string, data: OpponentData[], name = "avg"): string {
-  // These are averages of averages but the names are don't reflect it so that
-  // they can be used as names of object properties.
-  const avg_win_probability = Math.round(data.reduce((a, d) => a + d.avg_win_probability, 0) / data.length);
-  const avg_win_probability_b = 100 - avg_win_probability;
-  const avg_frag_proportion = Math.round(data.reduce((a, d) => a + d.avg_frag_proportion, 0) / data.length);
-  const avg_frag_proportion_b = 100 - avg_frag_proportion;
-  const avg_dmg_proportion = Math.round(data.reduce((a, d) => a + d.avg_dmg_proportion, 0) / data.length);
-  const avg_dmg_proportion_b = 100 - avg_dmg_proportion;
-  const avg_lg_accuracy = Math.round(data.reduce((a, d) => a + d.avg_lg_accuracy, 0) / data.length);
-  const avg_lg_accuracy_b = Math.round(data.reduce((a, d) => a + d.avg_lg_accuracy_b, 0) / data.length);
-
-  return `
- <div class="m11-opponents__row m11-opponents__row--avg">
-   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--avg"><div>${player}</div></div>-->
-   <!--<div class="m11-opponents__vs-cell">vs</div>-->
-   <div class="m11-opponents__player-b-cell m11-opponents__cell--avg">${name}</div>
-   ${_game_cnts({game_cnt: 0, max_game_cnt: 1}, true)}
-   ${_cmp_avg_win_probability({avg_win_probability, avg_win_probability_b}, true)}
-   ${_cmp_avg_frag_proportion({avg_frag_proportion, avg_frag_proportion_b}, true)}
-   ${_cmp_avg_dmg_proportion({avg_dmg_proportion, avg_dmg_proportion_b}, true)}
-   ${_cmp_avg_lg_accuracy({avg_lg_accuracy, avg_lg_accuracy_b}, true)}
-   <div class="m11-opponents__cell m11-opponents__cell--map m11-opponents__cell--avg"></div>
- </div>
-`;
-}
-
-function _html_render_avg_top5_row(player: string, data: OpponentData[], name = "avg top5"): string {
-  return _html_render_avg_row(player, data.slice(0, 5), name);
-}
-
-function _game_cnts(d: Pick<OpponentData, "game_cnt" | "max_game_cnt">, avg = false): string {
-  if (avg) {
-    return _val_with_bar("", 0, undefined, avg);
-  }
+function _game_cnts(d: Pick<OpponentData, "game_cnt">, max_game_cnt: number): string {
   const val = d.game_cnt;
-  const bar = d.game_cnt / d.max_game_cnt;
-  return _val_with_bar(val.toString(), bar, 80, avg);
+  const bar = d.game_cnt / max_game_cnt;
+  return _val_with_bar(val.toString(), bar, 80);
 }
 
-function _cmp_avg_win_probability(d: Pick<OpponentData, "avg_win_probability" | "avg_win_probability_b">, avg = false): string {
-  const a = d.avg_win_probability;
-  const b = d.avg_win_probability_b;
+function _cmp_avg_win_rate(d: Pick<OpponentData, "a_win_percent" | "b_win_percent">): string {
+  const a = d.a_win_percent;
+  const b = d.b_win_percent;
   if (a == null || b == null) {
     return _cmp_na();
   }
   const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
+  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
 }
 
-function _cmp_avg_frag_proportion(d: Pick<OpponentData, "avg_frag_proportion" | "avg_frag_proportion_b">, avg = false): string {
-  const a = d.avg_frag_proportion;
-  const b = d.avg_frag_proportion_b;
+function _cmp_avg_frag_percent(d: Pick<OpponentData, "a_avg_frag_percent" | "b_avg_frag_percent">): string {
+  const a = d.a_avg_frag_percent;
+  const b = d.b_avg_frag_percent;
   if (a == null || b == null) {
     return _cmp_na();
   }
   const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
+  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
 }
 
-function _cmp_avg_dmg_proportion(d: Pick<OpponentData, "avg_dmg_proportion" | "avg_dmg_proportion_b">, avg = false): string {
-  const a = d.avg_dmg_proportion;
-  const b = d.avg_dmg_proportion_b;
+function _cmp_avg_dmg_percent(d: Pick<OpponentData, "a_avg_dmg_percent" | "b_avg_dmg_percent">): string {
+  const a = d.a_avg_dmg_percent;
+  const b = d.b_avg_dmg_percent;
   if (a == null || b == null) {
     return _cmp_na();
   }
   const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
+  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
 }
 
-function _cmp_avg_lg_accuracy(d: Pick<OpponentData, "avg_lg_accuracy" | "avg_lg_accuracy_b">, avg = false): string {
-  const a = d.avg_lg_accuracy;
-  const b = d.avg_lg_accuracy_b;
+function _cmp_avg_lg_acc_percent(d: Pick<OpponentData, "a_avg_lg_acc_percent" | "b_avg_lg_acc_percent">): string {
+  const a = d.a_avg_lg_acc_percent;
+  const b = d.b_avg_lg_acc_percent;
   if (a == null || b == null) {
     return _cmp_na();
   }
   const bar = 2.0 * b / (a + b) - 1.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined, avg);
+  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
 }
 
 /*
  * avg indicates if we're rendering an row with averages.
  */
-function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false, avg = false): string {
+function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false): string {
   //const mul = 32;
   const bar_width = Math.abs(bar) * mul;
   let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
@@ -200,26 +168,26 @@ function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false, a
   }
   let percent_span = "";
   if (is_percent) {
-    percent_span = `<span class="m11-opponents__cell__percent ${avg ? "m11-opponents__cell__percent--avg" : ""}">%</span>`;
+    percent_span = `<span class="m11-opponents__cell__percent">%</span>`;
   }
 
   return `
-<div class="m11-opponents__cmp-cell m11-opponents__cell--opponent ${avg ? "m11-opponents__cmp-cell--avg" : ""}">
-  <div class="m11-opponents__cmp-cell__a ${avg ? "m11-opponents__cmp-cell__a--avg" : ""}">${a}${percent_span}</div>
-  <div class="m11-opponents__cmp-cell__separator ${avg ? "m11-opponents__cmp-cell__separator--avg" : ""}"></div>
-  <div class="m11-opponents__cmp-cell__b ${avg ? "m11-opponents__cmp-cell__b--avg" : ""}">${b}${percent_span}</div>
-  <div class="m11-opponents__cmp-cell__bar ${bar <= 0 ? "m11-opponents__cmp-cell__bar--better" : "m11-opponents__cmp-cell__bar--worse"} ${avg ? "m11-opponents__cmp-cell__bar--avg" : ""}" style="${bar_style}"></div>
+<div class="m11-opponents__cmp-cell m11-opponents__cell--opponent">
+  <div class="m11-opponents__cmp-cell__a">${a}${percent_span}</div>
+  <div class="m11-opponents__cmp-cell__separator"></div>
+  <div class="m11-opponents__cmp-cell__b">${b}${percent_span}</div>
+  <div class="m11-opponents__cmp-cell__bar ${bar <= 0 ? "m11-opponents__cmp-cell__bar--better" : "m11-opponents__cmp-cell__bar--worse"}" style="${bar_style}"></div>
 </div>
 `;
 }
 
-function _val_with_bar(a: string, bar: number, mul: number = 32, avg = false): string {
+function _val_with_bar(a: string, bar: number, mul: number = 32): string {
   const bar_width = Math.abs(bar) * mul;
   const bar_style = `width: ${bar_width}px;`;
   return `
-<div class="m11-opponents__bar-cell ${avg ? "m11-opponents__bar-cell--avg" : ""}">
-  <div class="m11-opponents__bar-cell__value ${avg ? "m11-opponents__bar-cell__value--avg" : ""}">${a}</div>
-  <div class="m11-opponents__bar-cell__bar ${avg ? "m11-opponents__bar-cell__bar--avg" : ""}" style="${bar_style}"></div>
+<div class="m11-opponents__bar-cell">
+  <div class="m11-opponents__bar-cell__value">${a}</div>
+  <div class="m11-opponents__bar-cell__bar" style="${bar_style}"></div>
 </div>
 `;
 }

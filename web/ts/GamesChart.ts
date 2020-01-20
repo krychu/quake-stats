@@ -1,4 +1,4 @@
-import { state, Duel, Cmd }from "./State";
+import { state, GameData, Cmd }from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 //import * as SVG from "svgjs";
@@ -100,8 +100,8 @@ function cmd_gchart_render_data(): Promise<any> {
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
-function _games_chart_diffs(games: Duel[]): number[] {
-  return games.map(([a, b]) => a.frags - b.frags);
+function _games_chart_diffs(games: GameData[]): number[] {
+  return games.map((g) => g.a_frags - g.b_frags);
 }
 
 function _games_chart_max_y(diffs: number[]): number {

@@ -61,7 +61,7 @@ get '/api/1vs1/:player/games/:cnt' => sub {
 get '/api/1vs1/:player/opponents' => sub {
     my $c = shift;
     my $player = $c->stash('player');
-    my $interval_str = '4 months';
+    my $interval_str = '94 months';
     my $opponents = PG::get_opponents($player, $interval_str);
     $c->render(json => $opponents);
 };
@@ -70,7 +70,7 @@ get '/api/1vs1/:player/opponents' => sub {
 get '/api/1vs1/:player/maps' => sub {
     my $c = shift;
     my $player = $c->stash('player');
-    my $interval_str = '4 months';
+    my $interval_str = '94 months';
     my $maps = PG::get_maps($player, $interval_str);
     $c->render(json => $maps);
 };
