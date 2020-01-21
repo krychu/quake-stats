@@ -121,10 +121,6 @@ sub prepare_records {
         demo                 => $json->{demo},
         file                 => $file,
 
-        # a_win                => $a_json->{stats}{frags} > $b_json->{stats}{frags} ? 1 : 0,
-        # a_loss               => $a_json->{stats}{frags} < $b_json->{stats}{frags} ? 1 : 0,
-        # a_draw               => $a_json->{stats}{frags} == $b_json->{stats}{frags} ? 1 : 0,
-
         a_name               => $a_json->{name},
         a_top_color          => $a_json->{'top-color'},
         a_bottom_color       => $a_json->{'bottom-color'},
