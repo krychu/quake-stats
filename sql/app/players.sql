@@ -1,9 +1,8 @@
--- 1vs1 player list
+-- 1vs1 player list.
 --
 -- Placeholders
 -- ------------
--- $1 Player name
--- $2 Time interval as string, e.g., '4 months'
+-- $1 Time interval as string, e.g., '4 months'
 
 SELECT
   a_name AS name,
@@ -14,8 +13,8 @@ SELECT
 FROM games
 WHERE mode = 'duel'
   AND dm = 3
-  AND date > NOW() AT TIME ZONE 'utc' - INTERVAL '2 weeks'
+  AND date > NOW() AT TIME ZONE 'utc' - INTERVAL $1
 GROUP BY a_name
 -- HAVING count(*) > 10 HERE
-ORDER BY a_name asc
+ORDER BY game_cnt DESC --a_name asc
 LIMIT 10000;

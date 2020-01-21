@@ -1,24 +1,14 @@
--- Recent duel games.
---
--- Placeholders
--- ------------
--- $1 Game count
+-- Game counts per day.
 --
 
 SELECT
-id AS game_id,
-date AS raw_date,
-TO_CHAR(NOW() - date, 'DD:HH24:MM:SS') AS date,
-map,
-
-a_name,
-a_frags,
-
-b_name,
-b_frags
+  COUNT(*) AS game_cnt,
+  date_trunc('day', date) AS day_bucket,
+  to_char(max(date), 'Dy') AS day_name
 FROM games
 WHERE
-dm = 3
-AND mode = 'duel'
-ORDER BY date DESC
-LIMIT $1;
+  mode = 'duel'
+  AND dm = 3
+  AND date > NOW() AT TIME ZONE 'utc' - interval '2 months'
+GROUP BY day_bucket
+ORDER BY day_bucket DESC;
