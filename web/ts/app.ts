@@ -37,7 +37,7 @@ function main_duel_players() {
     cmd,
     data,
     activity,
-    //gamesshort,
+    gamesshort,
     players
   ];
 

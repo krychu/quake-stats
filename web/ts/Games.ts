@@ -1,4 +1,5 @@
 import { state, GameData, Cmd } from "./State";
+import { time_ago } from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
@@ -137,7 +138,7 @@ function _html_render_games_row(g: GameData): string {
     return `
 <div class="m11-games__game ${g.a_frags > g.b_frags && "m11-games__game--win"}">
     <!--<div class="m11-games__game__player-a-cell"><div>${g.a_name}</div></div>-->
-    <div class="m11-games__game__when-cell">${_time_ago(g.date)}</div>
+    <div class="m11-games__game__when-cell">${time_ago(g.date)}</div>
     <div class="m11-games__game__cmp-cell">${_cmp_frags(g)}</div>
     <div class="m11-games__game__player-b-cell"><div>${g.b_name}</div></div>
     <div class="m11-games__game__map-cell"><div>${g.map}</div></div>
@@ -325,22 +326,22 @@ function _cmp_na(): string {
   return `<div class="m11-games__game__cmp-cell__na">n/a</div>`;
 }
 
-function _time_ago(date: string) {
-    const parts = date.split(":").map(part => parseInt(part));
-    const units = ["d", "h", "m"];
+// function _time_ago(date: string) {
+//     const parts = date.split(":").map(part => parseInt(part));
+//     const units = ["d", "h", "m"];
 
-    for (let i=0; i<units.length; i++) {
-      if (!isNaN(parts[i]) && parts[i] !== 0.0) {
-        // if (units[i] === "d" && parts[i] > 365) {
-        //   return Math.floor(parts[i] / 365).toString() + "y+";
-        // } else {
-          return parts[i] + units[i];
-        //}
-      }
-    }
+//     for (let i=0; i<units.length; i++) {
+//       if (!isNaN(parts[i]) && parts[i] !== 0.0) {
+//         // if (units[i] === "d" && parts[i] > 365) {
+//         //   return Math.floor(parts[i] / 365).toString() + "y+";
+//         // } else {
+//           return parts[i] + units[i];
+//         //}
+//       }
+//     }
 
-    return "?";
-}
+//     return "?";
+// }
 
 function _frac_to_percent(a: number): string {
   return (a * 100.0).toFixed(0).toString();

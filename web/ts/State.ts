@@ -157,8 +157,11 @@ interface State {
 // }
 
 interface DPS_PlayerData {
-  name: string;
-  game_cnt: number;
+    name: string;
+    game_cnt: number;
+    a_win_percent: number;
+    b_win_percent: number;
+    last_game_date: string;
 }
 
 /**

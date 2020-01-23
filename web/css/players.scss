@@ -1,45 +1,104 @@
 @import '_vars';
 
-.duel-players {
+.m11-players {
     display: flex;
     flex-direction: column;
+    flex-basis: 700px;
 }
 
-.duel-players__header {
+.m11-players__header {
     display: flex;
     text-transform: uppercase;
     margin-bottom: $vgap-normal;
     //justify-content: center;
 }
 
-.duel-players__header__cell {
-    @extend .duel-players__player__cell;
+.m11-players__header__cell {
+    @extend .m11-players__cell;
+
+    justify-content: center !important;
+    box-sizing: unset !important;
+    padding-right: unset !important;
 }
 
-.duel-players__header__name-cell {
-    @extend .duel-players__player__name-cell;
+.m11-players__header__name-cell {
+    @extend .m11-players__name-cell;
 }
 
-.duel-players__player {
+.m11-players__header__cmp-cell {
+    @extend .m11-players__cmp-cell;
+}
+
+.m11-players__player {
     display: flex;
     //justify-content: center;
 }
 
-.duel-players__player:hover {
+.m11-players__player:hover {
     cursor: pointer;
     //color: $table-hover-color;
     background-color: $table-hover-bg-color;
 }
 
-.duel-players__player__cell {
+.m11-players__cell {
     display: flex;
-    flex-basis: 50px;
+    flex-basis: 100px;
     margin: 0px 10px;
+
+    /* text right aligned but in the center */
+    justify-content: flex-end;
+    box-sizing: border-box;
+    padding-right: 45px;
 }
 
-.duel-players__player__name-cell {
+.m11-players__name-cell {
     display: flex;
     //flex-basis: 200px;
     //flex-basis: unset;
     width: 150px;
+
+    div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+    }
+}
+
+.m11-players__cmp-cell {
+    display: flex;
+    position: relative;
+    flex-basis: 120px;
+    justify-content: center;
+}
+
+.m11-players__cmp-cell__a {
+    flex: 1;
+    text-align: right;
+}
+
+.m11-players__cmp-cell__separator {
+    display: flex;
+    flex-basis: 20px;
+    justify-content: center;
+}
+
+.m11-players__cmp-cell__b {
+    flex: 1;
+}
+
+.m11-players__cmp-cell__bar {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.m11-players__cmp-cell__bar--worse {
+    background-color: rgba(255,0,0,0.15);
+    border-left: 1px solid rgba(255,0,0,0.8);
+}
+
+.m11-players__cmp-cell__bar--better {
+    background-color: rgba(0,255,0,0.25);
+    border-right: 1px solid rgba(0,255,0,1);
 }
