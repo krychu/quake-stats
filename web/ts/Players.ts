@@ -28,12 +28,12 @@ function cmd_duel_players_create_html_root(): Promise<any> {
 }
 
 function cmd_duel_players_attach_root_html(): Promise<void> {
-  if (state.duel_players.players.html_root == null || state.html_main == null) {
+  if (state.duel_players.players.html_root == null || state.html_main_2cols == null) {
     log.log("Players::cmd_duel_players_attach_root_html - state doesn't contain required data");
     return Promise.reject();
   }
 
-  state.html_main.appendChild(state.duel_players.players.html_root);
+  state.html_main_2cols.appendChild(state.duel_players.players.html_root);
   return Promise.resolve();
 }
 
@@ -72,7 +72,9 @@ function _html_render_players_header(): string {
   return `
 <div class="duel-players__header">
   <div class="duel-players__header__name-cell">name</div>
+  <div class="duel-players__header__cell">win%</div>
   <div class="duel-players__header__cell">games</div>
+  <div class="duel-players__header__cell">last game</div>
 </div>
 `;
 }
@@ -82,6 +84,8 @@ function _html_render_players_row(p: DPS_PlayerData): string {
 <div class="duel-players__player">
   <div class="duel-players__player__name-cell">${p.name}</div>
   <div class="duel-players__player__cell">${p.game_cnt}</div>
+  <div class="duel-players__player__cell">${p.game_cnt}</div>
+  <div class="duel-players__player__cell">${p.last_game_date}</div>
 </div>
 `;
 }

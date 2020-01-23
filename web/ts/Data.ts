@@ -11,7 +11,9 @@ const commands: [string, Cmd][] = [
   [ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
 
   // duel players
-  [ "data_fetch_duel_players",          cmd_data_fetch_duel_players ]
+  [ "data_fetch_activity",              cmd_data_fetch_activity ],
+  [ "data_fetch_duel_players",          cmd_data_fetch_duel_players ],
+  [ "data_fetch_gamesshort",            cmd_data_fetch_gamesshort ]
 ];
 
 export function init() {
@@ -102,8 +104,24 @@ function cmd_data_fetch_win_probabilities(): Promise<any> {
 /**
  * Duel Players
  */
+function cmd_data_fetch_activity(): Promise<any> {
+  return fetch(_api_url_activity())
+    .then((response) => response.json())
+    .then((json) => {
+      return json;
+    });
+}
+
 function cmd_data_fetch_duel_players(): Promise<any> {
   return fetch(_api_url_duel_players())
+    .then((response) => response.json())
+    .then((json) => {
+      return json;
+    });
+}
+
+function cmd_data_fetch_gamesshort(): Promise<any> {
+  return fetch(_api_url_gamesshort())
     .then((response) => response.json())
     .then((json) => {
       return json;
@@ -133,6 +151,14 @@ function _api_url_win_probabilities(player: string): string {
   return `/api/1vs1/${player}/win_probabilities`;
 }
 
+function _api_url_activity(): string {
+  return `/api/1vs1/activity`;
+}
+
 function _api_url_duel_players(): string {
   return `/api/1vs1/players`;
+}
+
+function _api_url_gamesshort(): string {
+  return `/api/1vs1/games`;
 }

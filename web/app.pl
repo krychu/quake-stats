@@ -41,14 +41,30 @@ get '/status' => sub {
 
 # API
 
-# Players
+# Main: Activity
+get '/api/1vs1/activity' => sub {
+    my $c = shift;
+    my $activity = PG::get_activity();
+    return $c->render(json => $activity);
+};
+
+# Main: Players
 get '/api/1vs1/players' => sub {
     my $c = shift;
-    my $players = PG::get_players();
+    my $interval_str = '94 months';
+    my $players = PG::get_players($interval_str);
     $c->render(json => $players);
 };
 
-# Recent games
+# Main: Recent games
+get '/api/1vs1/games' => sub {
+    my $c = shift;
+    my $game_cnt = 50;
+    my $games = PG::get_games_short($game_cnt);
+    $c->render(json => $games);
+};
+
+# Player: Recent games
 get '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
     my $player = $c->stash('player');
@@ -57,7 +73,7 @@ get '/api/1vs1/:player/games/:cnt' => sub {
     $c->render(json => $games);
 };
 
-# Opponents
+# Player: Opponents
 get '/api/1vs1/:player/opponents' => sub {
     my $c = shift;
     my $player = $c->stash('player');
@@ -66,7 +82,7 @@ get '/api/1vs1/:player/opponents' => sub {
     $c->render(json => $opponents);
 };
 
-# Maps
+# Player: Maps
 get '/api/1vs1/:player/maps' => sub {
     my $c = shift;
     my $player = $c->stash('player');
@@ -109,6 +125,7 @@ __DATA__
 
     <div id="main" class="main--players">
       <div id="players">duel</div>
+      <div id="main__2cols"></div>
     </div>
 
     <script type="module" src="/app.js"></script>

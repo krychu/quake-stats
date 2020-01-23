@@ -17,16 +17,35 @@ my %queries;
     $queries{select_1vs1_games} = $dbh->prepare(scalar(read_file('../sql/app/games.sql')));
     $queries{select_1vs1_opponents} = $dbh->prepare(scalar(read_file('../sql/app/opponents.sql')));
     $queries{select_1vs1_maps} = $dbh->prepare(scalar(read_file('../sql/app/maps.sql')));
-#    $queries{select_1vs1_players} = $dbh->prepare(scalar(read_file('../sql/app/players.sql')));
+
+    $queries{select_1vs1_activity} = $dbh->prepare(scalar(read_file('../sql/app/activity.sql')));
+    $queries{select_1vs1_games_short} = $dbh->prepare(scalar(read_file('../sql/app/games_short.sql')));
+    $queries{select_1vs1_players} = $dbh->prepare(scalar(read_file('../sql/app/players.sql')));
 
     sub get_dbh {
         return $dbh;
     }
 };
 
-sub get_players {
-    my $query = $queries{select_1vs1_players};
+sub get_activity {
+    my $query = $queries{select_1vs1_activity};
     $query->execute();
+    return $query->fetchall_arrayref({});
+}
+
+sub get_players {
+    my $interval_str = shift;
+
+    my $query = $queries{select_1vs1_players};
+    $query->execute($interval_str);
+    return $query->fetchall_arrayref({});
+}
+
+sub get_games_short {
+    my $game_cnt = shift;
+
+    my $query = $queries{select_1vs1_games_short};
+    $query->execute($game_cnt);
     return $query->fetchall_arrayref({});
 }
 

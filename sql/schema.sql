@@ -19,10 +19,6 @@ CREATE TABLE games
   created_at           TIMESTAMP DEFAULT ( now() AT TIME ZONE 'utc' ),
 
   -- player a
-  -- a_win                BOOLEAN,
-  -- a_loss               BOOLEAN,
-  -- a_draw               BOOLEAN,
-
   a_name               TEXT,
   a_top_color          INTEGER,
   a_bottom_color       INTEGER,

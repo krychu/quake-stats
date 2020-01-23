@@ -3,16 +3,19 @@ import * as log from "./Log";
 import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
+import * as gamesshort from "./GamesShort";
 import * as opponents from "./Opponents";
 import * as maps from "./Maps";
 import * as games_chart from "./GamesChart";
+import * as activity from "./Activity";
 import * as players from "./Players";
 
 declare const SV_PLAYER: string;
 declare const PAGE: string;
 
 const commands: [string, state.Cmd][] = [
-  [ "main_find_html_root",        cmd_main_find_html_root ]
+  [ "main_find_html_root",        cmd_main_find_html_root ],
+  [ "main_2cols_find_html_root",  cmd_main_2cols_find_html_root ]
 ];
 
 main();
@@ -33,6 +36,8 @@ function main_duel_players() {
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
     data,
+    activity,
+    //gamesshort,
     players
   ];
 
@@ -42,8 +47,19 @@ function main_duel_players() {
 
   cmd.add_cmds(commands);
 
+  // ui
   cmd.schedule_cmd("main_find_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_main_html_root", html_root);
+  });
+
+  cmd.schedule_cmd("main_2cols_find_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
+  });
+
+  cmd.schedule_cmd("activity_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_activity_html_root", html_root);
+    // since above is immediate we don't need to .then the one below
+    cmd.schedule_cmd("activity_attach_html_root");
   });
 
   cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
@@ -52,9 +68,25 @@ function main_duel_players() {
     cmd.schedule_cmd("duel_players_attach_html_root");
   });
 
+  cmd.schedule_cmd("gamesshort_create_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
+    cmd.schedule_cmd("gamesshort_attach_html_root");
+  });
+
+  // fetch and render data
+  cmd.schedule_cmd("data_fetch_activity").then((data) => {
+    cmd.schedule_cmd("state_set_activity", data);
+    cmd.schedule_cmd("activity_render_data");
+  });
+
   cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
     cmd.schedule_cmd("state_set_duel_players", data);
     cmd.schedule_cmd("duel_players_render_data");
+  });
+
+  cmd.schedule_cmd("data_fetch_gamesshort").then((data) => {
+    cmd.schedule_cmd("state_set_gamesshort", data);
+    cmd.schedule_cmd("gamesshort_render_data");
   });
 }
 
@@ -146,6 +178,17 @@ function cmd_main_find_html_root(): Promise<any> {
 
   if (!html_root) {
     log.log("main::cmd_main_find_html_root - can't find the main html root");
+    Promise.reject();
+  }
+
+  return Promise.resolve(html_root);
+}
+
+function cmd_main_2cols_find_html_root(): Promise<any> {
+  const html_root = document.getElementById("main__2cols");
+
+  if (!html_root) {
+    log.log("main::cmd_main_2cols_find_html_root - can't find the main 2cols html root");
     Promise.reject();
   }
 

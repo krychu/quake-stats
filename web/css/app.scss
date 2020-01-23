@@ -1,6 +1,7 @@
 @import "./_common.scss";
 @import "./players.scss";
 @import "./games.scss";
+@import "./gamesshort.scss";
 @import "./opponents.scss";
 @import "./maps.scss";
 @import "./games_chart.scss";
@@ -20,8 +21,13 @@
     margin-bottom: 100px;
 }
 
-.main--players {
-    max-width: 800px !important;
+// .main--players {
+//     max-width: 800px !important;
+// }
+
+#main__2cols {
+    display: flex;
+    flex-direction: row;
 }
 
 #player, #players {

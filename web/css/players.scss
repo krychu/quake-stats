@@ -39,5 +39,7 @@
 
 .duel-players__player__name-cell {
     display: flex;
-    flex-basis: 200px;
+    //flex-basis: 200px;
+    //flex-basis: unset;
+    width: 150px;
 }
