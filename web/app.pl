@@ -64,6 +64,15 @@ get '/api/1vs1/games' => sub {
     $c->render(json => $games);
 };
 
+# Player: Top-level stats
+get '/api/1vs1/:player/top' => sub {
+    my $c = shift;
+    my $player = $c->stash('player');
+    my $interval_str = '94 months';
+    my $top = PG::get_top($player, $interval_str);
+    $c->render(json => $top);
+};
+
 # Player: Recent games
 get '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
@@ -125,6 +134,7 @@ __DATA__
 
     <div id="main" class="main--players">
       <div id="players">duel</div>
+      <div id="main__activity"></div>
       <div id="main__2cols"></div>
     </div>
 

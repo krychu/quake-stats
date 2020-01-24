@@ -14,6 +14,7 @@ my %queries;
 {
     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});
 
+    $queries{select_1vs1_top} = $dbh->prepare(scalar(read_file('../sql/app/top_level.sql')));
     $queries{select_1vs1_games} = $dbh->prepare(scalar(read_file('../sql/app/games.sql')));
     $queries{select_1vs1_opponents} = $dbh->prepare(scalar(read_file('../sql/app/opponents.sql')));
     $queries{select_1vs1_maps} = $dbh->prepare(scalar(read_file('../sql/app/maps.sql')));
@@ -46,6 +47,14 @@ sub get_games_short {
 
     my $query = $queries{select_1vs1_games_short};
     $query->execute($game_cnt);
+    return $query->fetchall_arrayref({});
+}
+
+sub get_top {
+    my ($player, $interval_str) = @_;
+
+    my $query = $queries{select_1vs1_top};
+    $query->execute($player, $interval_str);
     return $query->fetchall_arrayref({});
 }
 

@@ -47,7 +47,11 @@ function main_duel_players() {
 
   cmd.add_cmds(commands);
 
-  // ui
+  // html: find
+  cmd.schedule_cmd("main_activity_find_html_root").then((html_root) => {
+    cmd.schedule_cmd("state_set_main_HERE") HERE
+  });
+
   cmd.schedule_cmd("main_find_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_main_html_root", html_root);
   });
@@ -56,8 +60,9 @@ function main_duel_players() {
     cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
   });
 
-  cmd.schedule_cmd("activity_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_activity_html_root", html_root);
+  // html: create
+  cmd.schedule_cmd("activity_create_html_root").then((html_roots) => {
+    cmd.schedule_cmd("state_set_activity_html_root", html_roots);
     // since above is immediate we don't need to .then the one below
     cmd.schedule_cmd("activity_attach_html_root");
   });
