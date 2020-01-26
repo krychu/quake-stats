@@ -14,8 +14,9 @@ declare const SV_PLAYER: string;
 declare const PAGE: string;
 
 const commands: [string, state.Cmd][] = [
-  [ "main_find_html_root",        cmd_main_find_html_root ],
-  [ "main_2cols_find_html_root",  cmd_main_2cols_find_html_root ]
+    [ "main_find_html_root",          cmd_main_find_html_root ],
+    [ "main_2cols_find_html_root",    cmd_main_2cols_find_html_root ],
+    [ "main_find_activity_html_root", cmd_main_find_activity_html_root ]
 ];
 
 main();
@@ -48,24 +49,24 @@ function main_duel_players() {
   cmd.add_cmds(commands);
 
   // html: find
-  cmd.schedule_cmd("main_activity_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_HERE") HERE
-  });
-
   cmd.schedule_cmd("main_find_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_main_html_root", html_root);
   });
+
+    cmd.schedule_cmd("main_find_activity_html_root").then((e) => {
+        cmd.schedule_cmd("state_set_activity_html_root", e);
+    });
 
   cmd.schedule_cmd("main_2cols_find_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
   });
 
   // html: create
-  cmd.schedule_cmd("activity_create_html_root").then((html_roots) => {
-    cmd.schedule_cmd("state_set_activity_html_root", html_roots);
-    // since above is immediate we don't need to .then the one below
-    cmd.schedule_cmd("activity_attach_html_root");
-  });
+  // cmd.schedule_cmd("activity_create_html_root").then((html_roots) => {
+  //   cmd.schedule_cmd("state_set_activity_html_root", html_roots);
+  //   // since above is immediate we don't need to .then the one below
+  //   cmd.schedule_cmd("activity_attach_html_root");
+  // });
 
   cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
     cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
@@ -178,24 +179,41 @@ function main_duel_player() {
   });
 }
 
-function cmd_main_find_html_root(): Promise<any> {
-  const html_root = document.getElementById("main");
+function cmd_main_find_html_root(): Promise<HTMLElement|null> {
+    return find_element("main");
+  // const html_root = document.getElementById("main");
 
-  if (!html_root) {
-    log.log("main::cmd_main_find_html_root - can't find the main html root");
-    Promise.reject();
-  }
+  // if (!html_root) {
+  //   log.log("main::cmd_main_find_html_root - can't find the main html root");
+  //   Promise.reject();
+  // }
 
-  return Promise.resolve(html_root);
+  // return Promise.resolve(html_root);
 }
 
-function cmd_main_2cols_find_html_root(): Promise<any> {
-  const html_root = document.getElementById("main__2cols");
+function cmd_main_find_activity_html_root(): Promise<HTMLElement|null> {
+    return find_element("main__activity");
+}
 
-  if (!html_root) {
-    log.log("main::cmd_main_2cols_find_html_root - can't find the main 2cols html root");
-    Promise.reject();
-  }
+function cmd_main_2cols_find_html_root(): Promise<HTMLElement|null> {
+    return find_element("main__2cols");
+  // const html_root = document.getElementById("main__2cols");
 
-  return Promise.resolve(html_root);
+  // if (!html_root) {
+  //   log.log("main::cmd_main_2cols_find_html_root - can't find the main 2cols html root");
+  //   Promise.reject();
+  // }
+
+  // return Promise.resolve(html_root);
+}
+
+function find_element(id: string): Promise<HTMLElement|null> {
+    const e = document.getElementById(id);
+
+    if (!e) {
+        log.log(`app::find_element - can't find element with id = ${id}`);
+        return Promise.reject();
+    }
+
+    return Promise.resolve(e);
 }

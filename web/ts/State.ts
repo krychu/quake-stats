@@ -87,7 +87,7 @@ let state: State = {
     activity: {
       show_day_cnt: 40,
       html_root: null,
-      html_chart_root: null
+      //html_chart_root: null
     },
 
     players: {
@@ -133,7 +133,7 @@ interface State {
     activity: {
       show_day_cnt: number;
       html_root: HTMLElement | null;
-      html_chart_root: HTMLElement | null;
+      //html_chart_root: HTMLElement | null;
     },
     players: {
       html_root: HTMLElement | null;
@@ -402,9 +402,9 @@ function cmd_state_set_win_probabilities(data: any[]): Promise<any> {
 /**
  * Duel Players
  */
-function cmd_state_set_activity_html_root(roots: HTMLElement[]): Promise<void> {
-  state.duel_players.activity.html_root = roots[0];
-  state.duel_players.activity.html_chart_root = roots[1];
+function cmd_state_set_activity_html_root(root: HTMLElement): Promise<void> {
+    state.duel_players.activity.html_root = root;
+  //state.duel_players.activity.html_chart_root = roots[1];
   return Promise.resolve();
 }
 function cmd_state_set_activity(data: DayActivity[]): Promise<void> {

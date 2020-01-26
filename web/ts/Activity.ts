@@ -4,7 +4,7 @@ import * as log from "./Log";
 import * as SVG from "svg.js";
 
 const commands: [string, Cmd][] = [
-  [ "activity_create_html_root",      cmd_activity_create_html_root ],
+  //[ "activity_create_html_root",      cmd_activity_create_html_root ],
   [ "activity_attach_html_root",      cmd_activity_attach_html_root ],
   [ "activity_render_data",           cmd_activity_render_data ],
 ];
@@ -27,18 +27,18 @@ export function shutdown() {
 //   return Promise.resolve();
 // }
 
-function cmd_activity_create_html_root(): Promise<any> {
-  const html_root = document.createElement("div");
-  html_root.className = "m11-activity";
+// function cmd_activity_create_html_root(): Promise<any> {
+//   const html_root = document.createElement("div");
+//   html_root.className = "m11-activity";
 
-  const html_chart_root = document.createElement("div");
-  html_chart_root.className = "m11-activity-chart";
+//   const html_chart_root = document.createElement("div");
+//   html_chart_root.className = "m11-activity-chart";
 
-  //html_root.insertAdjacentHTML("beforeend", _html_render_title());
-  html_root.appendChild(html_chart_root);
+//   //html_root.insertAdjacentHTML("beforeend", _html_render_title());
+//   html_root.appendChild(html_chart_root);
 
-  return Promise.resolve([html_root, html_chart_root]);
-}
+//   return Promise.resolve([html_root, html_chart_root]);
+// }
 
 function cmd_activity_attach_html_root(): Promise<any> {
     if (state.duel_players.activity.html_root == null || state.html_main == null) {
@@ -73,8 +73,8 @@ function _html_remove_activity(element: HTMLElement) {
 }
 
 function _html_render_activity(data: DayActivity[], element: HTMLElement) {
-  const svg_width = (state.duel_players.activity.html_chart_root as HTMLElement).offsetWidth;
-  const svg_height = (state.duel_players.activity.html_chart_root as HTMLElement).offsetHeight;
+  const svg_width = (state.duel_players.activity.html_root as HTMLElement).offsetWidth;
+  const svg_height = (state.duel_players.activity.html_root as HTMLElement).offsetHeight;
 
   const game_cnt = state.duel_players.activity.show_day_cnt;
 
