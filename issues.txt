@@ -1,13 +1,16 @@
 Open issues
 --------------------------------------------------------------------------------
+- Show ra/mh only
+- Add demo download link and show it on hover only
+- Adopt bps' player name ordering
+- Change win% in player table to a single number, no bars
+- Add activity chart
 - Make ingestion work with multiple data paths
-- Refactor: $stat_urls should return absolute txt path
-- Refactor: use ternary op for is_success
 - Bug: Some txts in qtv cannot be retrieved
 - Opponents: Make dmg bars longer
 - Opponents: no averages if game cnt < 2
 - Bug: exclude n/a from calculating averages
-- Don't show tables if there's no data (or no page)
+- Don't show tables or page if there's no data
 - Add header / logo
 - Docker
 - Contextual help: tooltips?
@@ -19,6 +22,13 @@ Open issues
 - Q: Development section needed?
 - Q: Frags, Damage, Weapon sections?
 - Q: Should dmg given subtract self damage?
+
+Refactor
+--------
+- Refactor: design language
+- Refactor: commands should communicate via state, not pass arguments
+- Refactor: $stat_urls should return absolute txt path
+- Refactor: use ternary op for is_success
 
 Done
 --------------------------------------------------------------------------------

@@ -8,6 +8,7 @@ import * as opponents from "./Opponents";
 import * as maps from "./Maps";
 import * as games_chart from "./GamesChart";
 import * as activity from "./Activity";
+import * as header from "./Header";
 import * as players from "./Players";
 
 declare const SV_PLAYER: string;
@@ -39,7 +40,8 @@ function main_duel_players() {
     data,
     activity,
     gamesshort,
-    players
+    players,
+    header
   ];
 
   modules.forEach((m) => {
@@ -78,6 +80,78 @@ function main_duel_players() {
     cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
     cmd.schedule_cmd("gamesshort_attach_html_root");
   });
+
+  cmd.run(`
+    [header] create   html_root
+    [state]  set      header_html_root
+    [header] attach   html_root
+    [data]   request  xyz
+    >
+    [header] 
+`);
+
+  cmd.run(`
+    [html]   create   header_root
+    [state]  set      header_root
+    [html]   attach   header_root
+    [data]   request  xyz
+    [state]  set      xyz
+    [html]   render   header
+`);
+
+  cmd.run(`
+    [html]   create   header_root
+    [html]   attach   header_root
+    [data]   request  xyz
+    [html]   render   header
+`);
+
+  cmd.run(`
+    [html]   create       header_root $e
+    [state]  set          header_root $e
+    [html]   attach_main  $e $p
+    [data]   request      xyz $d
+    [state]  set          xyz $d
+    [html]   render       header
+  `);
+
+  SHOULD WE EXPLICITLY SET AND GET STUFF FROM STATE AND PASS TO RELEVANT COMMANDS
+
+  OR SHOULD WE ALLOW COMMANDS TO READ AND WRITE STATES INSIDE THEIR IMPLEMENTATIONS?
+
+  cmd.run(`
+    header create_html_root
+    header attach_html_root
+    request h
+
+
+header_create_html_root
+    state_set_header_html_root
+    
+    store_save      header_root $e
+    attach_header   $e
+
+    [state]  set          header_root $e
+    [html]   attach_main  $e $p
+    [data]   request      xyz $d
+    [state]  set          xyz $d
+    [html]   render       header
+  `);
+
+  cmd.run(`
+    [html]   create       $e (#header)
+    [html]   attach       $e
+    [data]   request      links -> $d
+    [store]  set          $d -> xyz
+    [html]   render       $d -> header
+  `);
+
+  const e = html_create('#header');
+  html_attach(e);
+  const d = await data_request('links');
+  store_set('header.data', d);
+  html_render(d, e);
+
 
   // fetch and render data
   cmd.schedule_cmd("data_fetch_activity").then((data) => {

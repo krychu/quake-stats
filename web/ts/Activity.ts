@@ -76,15 +76,24 @@ function _html_render_activity(data: DayActivity[], element: HTMLElement) {
   const svg_width = (state.duel_players.activity.html_root as HTMLElement).offsetWidth;
   const svg_height = (state.duel_players.activity.html_root as HTMLElement).offsetHeight;
 
-  const game_cnt = state.duel_players.activity.show_day_cnt;
-
   const draw = SVG(element);
 
   for (let i=0; i<data.length; i++) {
-    draw.rect(10, 20).x(15*i);
-  }
+    data[i].game_cnt = Math.round(Math.random() * 380);
 
-  console.log(data);
-  console.log(element);
-  console.log("IMPLEMENT ME");
+    const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+    const game_divider = Math.max(max_game_cnt, 100);
+    const max_bar_height = 50; // in pixels
+
+    const bar_width = 15;
+    const bar_gap = 10;
+    const x = (bar_width + bar_gap) * i;
+    const bar_height = Math.round((data[i].game_cnt / game_divider) * max_bar_height);
+    const bar_y = max_bar_height - bar_height;
+
+    const text_y = max_bar_height + 2;
+
+    draw.rect(bar_width, bar_height).move(x, bar_y);
+    draw.text(data[i].day_name).move(x, text_y);
+  }
 }
