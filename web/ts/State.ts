@@ -2,8 +2,8 @@ import * as log from "./Log";
 import * as cmd from "./Cmd";
 
 const commands: [string, Cmd][] = [
-  [ "state_set_main_html_root",          cmd_state_set_main_html_root ],
-  [ "state_set_main_2cols_html_root",    cmd_state_set_main_2cols_html_root ],
+  // [ "state_set_main_html_root",          cmd_state_set_main_html_root ],
+  // [ "state_set_main_2cols_html_root",    cmd_state_set_main_2cols_html_root ],
   [ "state_set_games_html_root",         cmd_state_set_games_html_root ],
   [ "state_set_opponents_html_root",     cmd_state_set_opponents_html_root ],
   [ "state_set_maps_html_root",          cmd_state_set_maps_html_root ],
@@ -16,7 +16,7 @@ const commands: [string, Cmd][] = [
   [ "state_set_win_probabilities",       cmd_state_set_win_probabilities ],
 
   // duel players
-  [ "state_set_activity_html_root",      cmd_state_set_activity_html_root ],
+  //[ "state_set_activity_html_root",      cmd_state_set_activity_html_root ],
   [ "state_set_activity",                cmd_state_set_activity ],
   [ "state_set_duel_players_html_root",  cmd_state_set_duel_players_html_root ],
   [ "state_set_duel_players",            cmd_state_set_duel_players ],
@@ -38,8 +38,11 @@ let state: State = {
 
   cmds: {
     funcs: {},
-    buffer: []
+      buffer: [],
+      scripts: []
   },
+
+    header: null,
 
   duel_player: {
     player: null,
@@ -111,6 +114,8 @@ interface State {
   html_main: HTMLElement | null;
   html_main_2cols: HTMLElement | null;
   cmds: Cmds;
+
+  header: any;
 
   //duel_player: DuelPlayerState;
   duel_player: {
@@ -305,7 +310,8 @@ interface Cmds {
   //buffer: [{name: string, data?: any}];
   //buffer: Array<{name: string, data?: any}>;
   //buffer: {name: string, data?: any}[];
-  buffer: ScheduledCmd[];
+    buffer: ScheduledCmd[];
+    scripts: string[];
 }
 
 // interface HTML {
@@ -346,15 +352,15 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-function cmd_state_set_main_html_root(html_root: HTMLElement): Promise<void> {
-  state.html_main = html_root;
-  return Promise.resolve();
-}
+// function cmd_state_set_main_html_root(html_root: HTMLElement): Promise<void> {
+//   state.html_main = html_root;
+//   return Promise.resolve();
+// }
 
-function cmd_state_set_main_2cols_html_root(html_root: HTMLElement): Promise<void> {
-  state.html_main_2cols = html_root;
-  return Promise.resolve();
-}
+// function cmd_state_set_main_2cols_html_root(html_root: HTMLElement): Promise<void> {
+//   state.html_main_2cols = html_root;
+//   return Promise.resolve();
+// }
 
 function cmd_state_set_games_html_root(root: HTMLElement): Promise<any> {
   state.duel_player.games.html_root = root;
@@ -402,11 +408,12 @@ function cmd_state_set_win_probabilities(data: any[]): Promise<any> {
 /**
  * Duel Players
  */
-function cmd_state_set_activity_html_root(root: HTMLElement): Promise<void> {
-    state.duel_players.activity.html_root = root;
-  //state.duel_players.activity.html_chart_root = roots[1];
-  return Promise.resolve();
-}
+// function cmd_state_set_activity_html_root(root: HTMLElement): Promise<void> {
+//     state.duel_players.activity.html_root = root;
+//   //state.duel_players.activity.html_chart_root = roots[1];
+//   return Promise.resolve();
+// }
+
 function cmd_state_set_activity(data: DayActivity[]): Promise<void> {
   state.duel_players.data.activity = data;
   return Promise.resolve();
