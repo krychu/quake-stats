@@ -84,7 +84,7 @@ function _html_render_players_row(p: DPS_PlayerData): string {
   return `
 <div class="m11-players__player">
   <div class="m11-players__name-cell"><div>${p.name}</div></div>
-  ${_cmp_avg_win_rate(p)}
+  <div class="m11-players__cell">${p.a_win_percent}%</div>
   <div class="m11-players__cell">${p.game_cnt}</div>
   <div class="m11-players__cell">${time_ago(p.last_game_date)}</div>
 </div>
@@ -110,38 +110,38 @@ function _on_click(e: any): void {
   }
 }
 
-function _cmp_avg_win_rate(d: Pick<DPS_PlayerData, "a_win_percent" | "b_win_percent">): string {
-    const a = d.a_win_percent;
-    const b = d.b_win_percent;
-    if (a == null || b == null) {
-        return _cmp_na();
-    }
-    const bar = (50 - a) / 50.0;
-    return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-}
+// function _cmp_avg_win_rate(d: Pick<DPS_PlayerData, "a_win_percent" | "b_win_percent">): string {
+//     const a = d.a_win_percent;
+//     const b = d.b_win_percent;
+//     if (a == null || b == null) {
+//         return _cmp_na();
+//     }
+//     const bar = (50 - a) / 50.0;
+//     return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
+// }
 
-function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false): string {
-    //const mul = 32;
-    const bar_width = Math.abs(bar) * mul;
-    let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
-    if (bar >= 0) {
-        bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
-    }
-    let percent_span = "";
-    if (is_percent) {
-        percent_span = `<span class="m11-players__cell__percent">%</span>`;
-    }
+// function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false): string {
+//     //const mul = 32;
+//     const bar_width = Math.abs(bar) * mul;
+//     let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
+//     if (bar >= 0) {
+//         bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
+//     }
+//     let percent_span = "";
+//     if (is_percent) {
+//         percent_span = `<span class="m11-players__cell__percent">%</span>`;
+//     }
 
-    return `
-<div class="m11-players__cmp-cell">
-  <div class="m11-players__cmp-cell__a">${a}${percent_span}</div>
-  <div class="m11-players__cmp-cell__separator"></div>
-  <div class="m11-players__cmp-cell__b">${b}${percent_span}</div>
-  <div class="m11-players__cmp-cell__bar ${bar <= 0 ? "m11-players__cmp-cell__bar--better" : "m11-players__cmp-cell__bar--worse"}" style="${bar_style}"></div>
-</div>
-`;
-}
+//     return `
+// <div class="m11-players__cmp-cell">
+//   <div class="m11-players__cmp-cell__a">${a}${percent_span}</div>
+//   <div class="m11-players__cmp-cell__separator"></div>
+//   <div class="m11-players__cmp-cell__b">${b}${percent_span}</div>
+//   <div class="m11-players__cmp-cell__bar ${bar <= 0 ? "m11-players__cmp-cell__bar--better" : "m11-players__cmp-cell__bar--worse"}" style="${bar_style}"></div>
+// </div>
+// `;
+// }
 
-function _cmp_na(): string {
-    return `<div class="m11-players__cmp-cell m11-players__cmp-cell--na">n/a</div>`;
-}
+// function _cmp_na(): string {
+//     return `<div class="m11-players__cmp-cell m11-players__cmp-cell--na">n/a</div>`;
+// }
