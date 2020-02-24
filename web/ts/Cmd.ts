@@ -13,7 +13,7 @@ export function shutdown() {
 function step() {
   const { cmds } = state;
   while (cmds.buffer.length) {
-    const cmd = cmds.buffer.shift() as ScheduledCmd;
+      const cmd = cmds.buffer.shift() as ScheduledCmd;
     if (cmds.funcs[cmd.name]) {
       cmds.funcs[cmd.name](cmd.data).then((data?) => {
         cmd.resolve(data);
@@ -25,6 +25,12 @@ function step() {
       log.log("Games::step - command not found (" + cmd.name + ")");
     }
   }
+
+    while (cmds.scripts.length) {
+        const script = cmds.scripts.shift() as string;
+        run(script);
+    }
+
   window.requestAnimationFrame(step);
 }
 
@@ -58,3 +64,23 @@ export function schedule_cmd(name: string, data?: any) {
 // export function cmd_add_cmd(name: string, func: (data?: any) => void) {
   
 // }
+
+export function schedule(text: string) {
+    state.cmds.scripts.push(text);
+}
+
+async function run(text: string) {
+    const { cmds } = state;
+
+    const lines = text.split("\n");
+    for (let i=0; i<lines.length; i++) {
+        const cmd_name = lines[i].trim();
+        if (cmd_name.length) {
+            if (cmds.funcs[cmd_name]) {
+                await cmds.funcs[cmd_name]();
+            } else {
+                log.log("Cmd::run - command not found (" + cmd_name + ")");
+            }
+        }
+    }
+}

@@ -51,17 +51,23 @@ function main_duel_players() {
   cmd.add_cmds(commands);
 
   // html: find
-  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_html_root", html_root);
-  });
+  // cmd.schedule_cmd("main_find_html_root").then((html_root) => {
+  //   cmd.schedule_cmd("state_set_main_html_root", html_root);
+    // });
 
-    cmd.schedule_cmd("main_find_activity_html_root").then((e) => {
-        cmd.schedule_cmd("state_set_activity_html_root", e);
-    });
+    cmd.schedule(`
+      main_find_html_root
+      main_2cols_find_html_root
+      main_find_activity_html_root
+    `);
 
-  cmd.schedule_cmd("main_2cols_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
-  });
+    // cmd.schedule_cmd("main_find_activity_html_root").then((e) => {
+    //     cmd.schedule_cmd("state_set_activity_html_root", e);
+    // });
+
+  // cmd.schedule_cmd("main_2cols_find_html_root").then((html_root) => {
+  //   cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
+  // });
 
   // html: create
   // cmd.schedule_cmd("activity_create_html_root").then((html_roots) => {
@@ -81,77 +87,10 @@ function main_duel_players() {
     cmd.schedule_cmd("gamesshort_attach_html_root");
   });
 
-  cmd.run(`
-    [header] create   html_root
-    [state]  set      header_html_root
-    [header] attach   html_root
-    [data]   request  xyz
-    >
-    [header] 
-`);
-
-  cmd.run(`
-    [html]   create   header_root
-    [state]  set      header_root
-    [html]   attach   header_root
-    [data]   request  xyz
-    [state]  set      xyz
-    [html]   render   header
-`);
-
-  cmd.run(`
-    [html]   create   header_root
-    [html]   attach   header_root
-    [data]   request  xyz
-    [html]   render   header
-`);
-
-  cmd.run(`
-    [html]   create       header_root $e
-    [state]  set          header_root $e
-    [html]   attach_main  $e $p
-    [data]   request      xyz $d
-    [state]  set          xyz $d
-    [html]   render       header
-  `);
-
-  SHOULD WE EXPLICITLY SET AND GET STUFF FROM STATE AND PASS TO RELEVANT COMMANDS
-
-  OR SHOULD WE ALLOW COMMANDS TO READ AND WRITE STATES INSIDE THEIR IMPLEMENTATIONS?
-
-  cmd.run(`
-    header create_html_root
-    header attach_html_root
-    request h
-
-
-header_create_html_root
-    state_set_header_html_root
-    
-    store_save      header_root $e
-    attach_header   $e
-
-    [state]  set          header_root $e
-    [html]   attach_main  $e $p
-    [data]   request      xyz $d
-    [state]  set          xyz $d
-    [html]   render       header
-  `);
-
-  cmd.run(`
-    [html]   create       $e (#header)
-    [html]   attach       $e
-    [data]   request      links -> $d
-    [store]  set          $d -> xyz
-    [html]   render       $d -> header
-  `);
-
-  const e = html_create('#header');
-  html_attach(e);
-  const d = await data_request('links');
-  store_set('header.data', d);
-  html_render(d, e);
-
+   cmd.schedule(`
+      header_create_html_root
+      header_attach_html_root
+   `);
 
   // fetch and render data
   cmd.schedule_cmd("data_fetch_activity").then((data) => {
@@ -253,8 +192,10 @@ function main_duel_player() {
   });
 }
 
-function cmd_main_find_html_root(): Promise<HTMLElement|null> {
-    return find_element("main");
+async function cmd_main_find_html_root(): Promise<void> {
+    //return find_element("main");
+    state.state.html_main = document.getElementById("main");
+    return Promise.resolve();
   // const html_root = document.getElementById("main");
 
   // if (!html_root) {
@@ -265,12 +206,18 @@ function cmd_main_find_html_root(): Promise<HTMLElement|null> {
   // return Promise.resolve(html_root);
 }
 
-function cmd_main_find_activity_html_root(): Promise<HTMLElement|null> {
-    return find_element("main__activity");
+// function cmd_main_find_activity_html_root(): Promise<HTMLElement|null> {
+//     return find_element("main__activity");
+// }
+
+async function cmd_main_find_activity_html_root(): Promise<void> {
+    state.state.duel_players.activity.html_root = document.getElementById("main__activity");
+    return Promise.resolve();
 }
 
-function cmd_main_2cols_find_html_root(): Promise<HTMLElement|null> {
-    return find_element("main__2cols");
+async function cmd_main_2cols_find_html_root(): Promise<void> {
+    state.state.html_main_2cols = document.getElementById("main__2cols");
+    return Promise.resolve();
   // const html_root = document.getElementById("main__2cols");
 
   // if (!html_root) {
