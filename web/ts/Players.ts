@@ -72,11 +72,13 @@ function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
 
 function _html_render_players_header(): string {
   return `
-<div class="m11-players__header">
+<div class="table__header-row">
   <div class="m11-players__header__name-cell">name</div>
-  <div class="m11-players__header__cmp-cell">win%</div>
-  <div class="m11-players__header__cell">games</div>
-  <div class="m11-players__header__cell">last game</div>
+  <div class="table__header-cell table__cell--small">games</div>
+  <div class="table__header-cell table__cell--center-align">win%</div>
+  <div class="table__header-cell table__cell--center-align">FPG%</div>
+  <div class="table__header-cell table__cell--center-align table__cell--lg-header">LG acc</div>
+  <div class="table__header-cell table__cell--tiny table__cell--right-align">last</div>
 </div>
 `;
 }
@@ -85,9 +87,11 @@ function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number): stri
   return `
 <div class="m11-players__player">
   <div class="m11-players__name-cell"><div>${p.name}</div></div>
-  <div class="m11-players__cell">${p.a_win_percent}%</div>
-  <div class="m11-players__cell">${_game_cnts(p.game_cnt, max_game_cnt)}</div>
-  <div class="m11-players__cell">${time_ago(p.last_game_date)}</div>
+  ${_game_cnts(p.game_cnt, max_game_cnt)}
+  <div class="table__cell table__cell--center-right-align">${p.a_win_percent}%</div>
+  <div class="table__cell table__cell--center-right-align">${p.avg_frag_percent}%</div>
+  <div class="table__cell table__cell--center-right-align">${p.avg_lg_acc_percent}%</div>
+  <div class="table__cell table__cell--tiny table__cell--right-align">${time_ago(p.last_game_date)}</div>
 </div>
 `;
 }
@@ -113,16 +117,16 @@ function _on_click(e: any): void {
 
 function _game_cnts(game_cnt: number, max_game_cnt: number): string {
     const divider = Math.max(max_game_cnt, 30);
-    return _val_with_bar(game_cnt.toString(), game_cnt / divider, 40);
+    return _val_with_bar(game_cnt.toString(), game_cnt / divider, 70);
 }
 
 function _val_with_bar(a: string, bar: number, mul: number = 32): string {
     const bar_width = Math.abs(bar) * mul;
     const bar_style = `width: ${bar_width}px;`;
     return `
-<div class="m11-players__bar-cell">
-  <div class="m11-players__bar-cell__value">${a}</div>
-  <div class="m11-players__bar-cell__bar" style="${bar_style}"></div>
+<div class="table__bar-cell table__cell--small">
+  <div class="table__bar-cell__value">${a}</div>
+  <div class="table__bar-cell__bar" style="${bar_style}"></div>
 </div>
 `;
 }

@@ -22,3 +22,109 @@ $font-2: 'Titillium Web';
 $font-size-huge: 28px;
 $font-size-small: 14px;
 $font-size-tiny: 12px;
+
+
+/* common styles, probably should be moved later to a separate file */
+$cell-basis: 100px;
+$small-cell-basis: 80px;
+$tiny-cell-basis: 40px;
+
+.table__cell {
+    display: flex;
+    flex-basis: $cell-basis;
+    box-sizing: border-box;
+    margin: 0px 10px;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// center right-aligned cell
+
+.table__cell--center-right-align {
+    /* text right aligned but in the center */
+    justify-content: flex-end;
+    //box-sizing: border-box;
+    padding-right: 45px;
+}
+
+// .table__center-right-cell {
+//     @extend .table__cell;
+
+//     /* text right aligned but in the center */
+//     justify-content: flex-end;
+//     //box-sizing: border-box;
+//     padding-right: 45px;
+// }
+
+.table__cell--right-align {
+    justify-content: flex-end !important;
+}
+
+.table__cell--center-align {
+    justify-content: center !important;
+}
+
+.table__cell--right-align {
+    justify-content: flex-end !important;
+}
+
+.table__cell--tiny {
+    flex-basis: $tiny-cell-basis;
+}
+
+.table__cell--small {
+    flex-basis: $small-cell-basis;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// bar cell
+
+.table__bar-cell {
+    @extend .table__cell;
+    position: relative; // anchor for the bar
+}
+
+.table__bar-cell__value {
+}
+
+.table__bar-cell__bar {
+    position: absolute;
+    height: 100%;
+    left: 0px;
+    background-color: #eee;
+    z-index: -1;
+}
+
+// .table__bar-cell--small {
+//     flex-basis: $small-cell-basis;
+// }
+
+////////////////////////////////////////////////////////////////////////////////
+
+.table__header-row {
+    display: flex;
+    //justify-content: center;
+}
+
+.table__header-cell {
+    @extend .table__cell;
+
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+    //justify-content: center;
+    justify-content: flex-start;
+
+    // display: flex;
+    // text-transform: uppercase;
+    // margin-bottom: $vgap-normal;
+    // justify-content: center !important;
+    // box-sizing: unset !important;
+    // padding-right: unset !important;
+}
+
+// .table__header-cell--small {
+//     flex-basis: $small-cell-basis;
+// }
+
+.table__cell--lg-header {
+    padding-right: 25px;
+}

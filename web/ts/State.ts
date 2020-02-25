@@ -174,6 +174,8 @@ interface DPS_PlayerData {
     a_win_percent: number;
     b_win_percent: number;
     last_game_date: string;
+    avg_lg_acc_percent: number;
+    avg_frag_percent: number;
 }
 
 /**
