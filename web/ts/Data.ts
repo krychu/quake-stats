@@ -8,7 +8,8 @@ const commands: [string, Cmd][] = [
   [ "data_fetch_games",                 cmd_data_fetch_games ],
   [ "data_fetch_opponents",             cmd_data_fetch_opponents ],
   [ "data_fetch_maps",                  cmd_data_fetch_maps ],
-  [ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
+    [ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
+    [ "data_fetch_toplevel",            cmd_data_fetch_toplevel ],
 
   // duel players
   [ "data_fetch_activity",              cmd_data_fetch_activity ],
@@ -128,6 +129,19 @@ function cmd_data_fetch_gamesshort(): Promise<any> {
     });
 }
 
+function cmd_data_fetch_toplevel(): Promise<void> {
+    if (state.duel_player.player == null) {
+        log.log("Data::cmd_data_fetch_toplevel - player is null");
+        return Promise.reject();
+    }
+
+    return fetch(_api_url_toplevel(state.duel_player.player))
+        .then((response) => response.json())
+        .then((json) => {
+            state.duel_player.data.top_level = json;
+        });
+}
+
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
@@ -161,4 +175,8 @@ function _api_url_duel_players(): string {
 
 function _api_url_gamesshort(): string {
   return `/api/1vs1/games`;
+}
+
+function _api_url_toplevel(player: string): string {
+    return `/api/1vs1/${player}/top`;
 }

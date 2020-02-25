@@ -55,7 +55,7 @@ sub get_top {
 
     my $query = $queries{select_1vs1_top};
     $query->execute($player, $interval_str);
-    return $query->fetchall_arrayref({});
+    return $query->fetchall_arrayref({})->[0];
 }
 
 sub get_games {

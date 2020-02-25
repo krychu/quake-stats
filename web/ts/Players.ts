@@ -59,8 +59,9 @@ function _html_remove_players(element: HTMLElement) {
 }
 
 function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
-  let rows = _html_render_players_header();
-  rows += data.map((player) => _html_render_players_row(player)).join("");
+    let rows = _html_render_players_header();
+    const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+    rows += data.map((player) => _html_render_players_row(player, max_game_cnt)).join("");
   const html = `${rows}`;
 
   element.insertAdjacentHTML("beforeend", html);
@@ -80,12 +81,12 @@ function _html_render_players_header(): string {
 `;
 }
 
-function _html_render_players_row(p: DPS_PlayerData): string {
+function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number): string {
   return `
 <div class="m11-players__player">
   <div class="m11-players__name-cell"><div>${p.name}</div></div>
   <div class="m11-players__cell">${p.a_win_percent}%</div>
-  <div class="m11-players__cell">${p.game_cnt}</div>
+  <div class="m11-players__cell">${_game_cnts(p.game_cnt, max_game_cnt)}</div>
   <div class="m11-players__cell">${time_ago(p.last_game_date)}</div>
 </div>
 `;
@@ -108,6 +109,22 @@ function _on_click(e: any): void {
     const name = ee.getElementsByClassName("m11-players__name-cell")[0].innerText;
     location.href = `/1vs1/${name}`;
   }
+}
+
+function _game_cnts(game_cnt: number, max_game_cnt: number): string {
+    const divider = Math.max(max_game_cnt, 30);
+    return _val_with_bar(game_cnt.toString(), game_cnt / divider, 40);
+}
+
+function _val_with_bar(a: string, bar: number, mul: number = 32): string {
+    const bar_width = Math.abs(bar) * mul;
+    const bar_style = `width: ${bar_width}px;`;
+    return `
+<div class="m11-players__bar-cell">
+  <div class="m11-players__bar-cell__value">${a}</div>
+  <div class="m11-players__bar-cell__bar" style="${bar_style}"></div>
+</div>
+`;
 }
 
 // function _cmp_avg_win_rate(d: Pick<DPS_PlayerData, "a_win_percent" | "b_win_percent">): string {

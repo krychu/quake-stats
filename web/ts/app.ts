@@ -10,6 +10,7 @@ import * as games_chart from "./GamesChart";
 import * as activity from "./Activity";
 import * as header from "./Header";
 import * as players from "./Players";
+import * as toplevel from "./TopLevel";
 
 declare const SV_PLAYER: string;
 declare const PAGE: string;
@@ -113,11 +114,13 @@ function main_duel_player() {
   const modules = [
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
-    data,
+      data,
+      toplevel,
     games,
     opponents,
     maps,
-    games_chart
+      games_chart,
+      header
   ];
 
   modules.forEach((m) => {
@@ -128,9 +131,13 @@ function main_duel_player() {
 
   state.state.duel_player.player = SV_PLAYER;
 
-  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_html_root", html_root);
-  });
+    cmd.schedule(`
+      main_find_html_root
+    `);
+
+  // cmd.schedule_cmd("main_find_html_root").then((html_root) => {
+  //   cmd.schedule_cmd("state_set_main_html_root", html_root);
+  // });
 
   // Create and store games chart html root
   cmd.schedule_cmd("gchart_create_html_root").then((html_root) => {
@@ -160,12 +167,24 @@ function main_duel_player() {
     cmd.schedule_cmd("maps_attach_html_root");
   });
 
+    cmd.schedule(`
+      header_create_html_root
+      header_attach_html_root
+    `);
+
   // cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
   //   cmd.schedule_cmd("state_set_gchart_html_root", html_root);
   // })
 
   // Request, store and render recent games
-  cmd.schedule_cmd("data_fetch_games").then((data) => {
+    cmd.schedule(`
+      toplevel_create_html_root
+      toplevel_attach_html_root
+      data_fetch_toplevel
+      toplevel_render_data
+    `);
+
+    cmd.schedule_cmd("data_fetch_games").then((data) => {
     cmd.schedule_cmd("state_set_games", data);
     cmd.schedule_cmd("games_render_data");
     cmd.schedule_cmd("gchart_render_data");

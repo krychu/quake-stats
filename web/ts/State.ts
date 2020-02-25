@@ -53,8 +53,11 @@ let state: State = {
       opponents: [],
       maps: [],
       game_cnts: [],
-      win_probabilities: []
+        win_probabilities: [],
+        top_level: null
     },
+
+      top_level: null,
 
     games_chart: {
       game_cnt: 20,
@@ -126,8 +129,10 @@ interface State {
       opponents: OpponentData[];
       maps: MapData[];
       game_cnts: [string, number][];
-      win_probabilities: any[];
+        win_probabilities: any[];
+        top_level: any;
     };
+      top_level: any;
     games_chart: GamesChart;
     games: Games;
     opponents: Opponents;
