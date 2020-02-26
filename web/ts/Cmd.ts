@@ -75,7 +75,7 @@ async function run(text: string) {
     const lines = text.split("\n");
     for (let i=0; i<lines.length; i++) {
         const cmd_name = lines[i].trim();
-        if (cmd_name.length) {
+        if (cmd_name.length && !cmd_name.startsWith("//")) {
             if (cmds.funcs[cmd_name]) {
                 await cmds.funcs[cmd_name]();
             } else {

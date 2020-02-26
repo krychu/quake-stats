@@ -58,7 +58,7 @@ function main_duel_players() {
 
     cmd.schedule(`
       main_find_html_root
-      main_2cols_find_html_root
+      // main_2cols_find_html_root
       main_find_activity_html_root
     `);
 
@@ -83,10 +83,10 @@ function main_duel_players() {
     cmd.schedule_cmd("duel_players_attach_html_root");
   });
 
-  cmd.schedule_cmd("gamesshort_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
-    cmd.schedule_cmd("gamesshort_attach_html_root");
-  });
+  // cmd.schedule_cmd("gamesshort_create_html_root").then((html_root) => {
+  //   cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
+  //   cmd.schedule_cmd("gamesshort_attach_html_root");
+  // });
 
    cmd.schedule(`
       header_create_html_root
@@ -104,10 +104,10 @@ function main_duel_players() {
     cmd.schedule_cmd("duel_players_render_data");
   });
 
-  cmd.schedule_cmd("data_fetch_gamesshort").then((data) => {
-    cmd.schedule_cmd("state_set_gamesshort", data);
-    cmd.schedule_cmd("gamesshort_render_data");
-  });
+  // cmd.schedule_cmd("data_fetch_gamesshort").then((data) => {
+  //   cmd.schedule_cmd("state_set_gamesshort", data);
+  //   cmd.schedule_cmd("gamesshort_render_data");
+  // });
 }
 
 function main_duel_player() {

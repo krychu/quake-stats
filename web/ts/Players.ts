@@ -1,5 +1,16 @@
 import { state, DPS_PlayerData, Cmd } from "./State";
-import { time_ago } from "./Utils";
+import {
+    time_ago,
+    html_bar_cell,
+    html_header_bar_cell,
+    html_cell,
+    html_time_cell,
+    html_header_time_cell,
+    html_name_cell,
+    html_header_name_cell,
+    html_center_right_align_cell,
+    html_header_center_right_align_cell
+} from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
@@ -29,12 +40,12 @@ function cmd_duel_players_create_html_root(): Promise<any> {
 }
 
 function cmd_duel_players_attach_root_html(): Promise<void> {
-  if (state.duel_players.players.html_root == null || state.html_main_2cols == null) {
+  if (state.duel_players.players.html_root == null || state.html_main == null) {
     log.log("Players::cmd_duel_players_attach_root_html - state doesn't contain required data");
     return Promise.reject();
   }
 
-  state.html_main_2cols.appendChild(state.duel_players.players.html_root);
+  state.html_main.appendChild(state.duel_players.players.html_root);
   return Promise.resolve();
 }
 
@@ -61,7 +72,8 @@ function _html_remove_players(element: HTMLElement) {
 function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
     let rows = _html_render_players_header();
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
-    rows += data.map((player) => _html_render_players_row(player, max_game_cnt)).join("");
+    const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);
+    rows += data.map((player) => _html_render_players_row(player, max_game_cnt, max_opponent_cnt)).join("");
   const html = `${rows}`;
 
   element.insertAdjacentHTML("beforeend", html);
@@ -73,25 +85,27 @@ function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
 function _html_render_players_header(): string {
   return `
 <div class="table__header-row">
-  <div class="m11-players__header__name-cell">name</div>
-  <div class="table__header-cell table__cell--small">games</div>
-  <div class="table__header-cell table__cell--center-align">win%</div>
-  <div class="table__header-cell table__cell--center-align">FPG%</div>
-  <div class="table__header-cell table__cell--center-align table__cell--lg-header">LG acc</div>
-  <div class="table__header-cell table__cell--tiny table__cell--right-align">last</div>
+  ${html_header_name_cell("name")}
+  ${html_header_bar_cell("games")}
+  ${html_header_bar_cell("opponents")}
+  ${html_header_center_right_align_cell("winrate", 18)}
+  ${html_header_center_right_align_cell("fpg", 18)}
+  ${html_header_center_right_align_cell("LG acc", 33)}
+  ${html_header_time_cell("last")}
 </div>
 `;
 }
 
-function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number): string {
+function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number, max_opponent_cnt: number): string {
   return `
-<div class="m11-players__player">
-  <div class="m11-players__name-cell"><div>${p.name}</div></div>
-  ${_game_cnts(p.game_cnt, max_game_cnt)}
-  <div class="table__cell table__cell--center-right-align">${p.a_win_percent}%</div>
-  <div class="table__cell table__cell--center-right-align">${p.avg_frag_percent}%</div>
-  <div class="table__cell table__cell--center-right-align">${p.avg_lg_acc_percent}%</div>
-  <div class="table__cell table__cell--tiny table__cell--right-align">${time_ago(p.last_game_date)}</div>
+<div class="table__row">
+  ${html_name_cell(p.name)}
+  ${html_bar_cell(p.game_cnt, max_game_cnt)}
+  ${html_bar_cell(p.opponent_cnt, max_opponent_cnt, 10)}
+  ${html_center_right_align_cell(p.a_win_percent, "", true)}
+  ${html_center_right_align_cell(p.avg_frag_percent, "", true)}
+  ${html_center_right_align_cell(p.avg_lg_acc_percent, "", true)}
+  ${html_time_cell(p.last_game_date)}
 </div>
 `;
 }
@@ -103,66 +117,14 @@ function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number): stri
 function _on_click(e: any): void {
   let ee = null;
   for (let i = 0; i < e.path.length; i++) {
-    if (e.path[i].classList.contains("m11-players__player")) {
+    if (e.path[i].classList.contains("table__row")) {
       ee = e.path[i];
       break;
     }
   }
 
   if (ee != null) {
-    const name = ee.getElementsByClassName("m11-players__name-cell")[0].innerText;
+    const name = ee.getElementsByClassName("table__name-cell")[0].innerText;
     location.href = `/1vs1/${name}`;
   }
 }
-
-function _game_cnts(game_cnt: number, max_game_cnt: number): string {
-    const divider = Math.max(max_game_cnt, 30);
-    return _val_with_bar(game_cnt.toString(), game_cnt / divider, 70);
-}
-
-function _val_with_bar(a: string, bar: number, mul: number = 32): string {
-    const bar_width = Math.abs(bar) * mul;
-    const bar_style = `width: ${bar_width}px;`;
-    return `
-<div class="table__bar-cell table__cell--small">
-  <div class="table__bar-cell__value">${a}</div>
-  <div class="table__bar-cell__bar" style="${bar_style}"></div>
-</div>
-`;
-}
-
-// function _cmp_avg_win_rate(d: Pick<DPS_PlayerData, "a_win_percent" | "b_win_percent">): string {
-//     const a = d.a_win_percent;
-//     const b = d.b_win_percent;
-//     if (a == null || b == null) {
-//         return _cmp_na();
-//     }
-//     const bar = (50 - a) / 50.0;
-//     return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-// }
-
-// function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false): string {
-//     //const mul = 32;
-//     const bar_width = Math.abs(bar) * mul;
-//     let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
-//     if (bar >= 0) {
-//         bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
-//     }
-//     let percent_span = "";
-//     if (is_percent) {
-//         percent_span = `<span class="m11-players__cell__percent">%</span>`;
-//     }
-
-//     return `
-// <div class="m11-players__cmp-cell">
-//   <div class="m11-players__cmp-cell__a">${a}${percent_span}</div>
-//   <div class="m11-players__cmp-cell__separator"></div>
-//   <div class="m11-players__cmp-cell__b">${b}${percent_span}</div>
-//   <div class="m11-players__cmp-cell__bar ${bar <= 0 ? "m11-players__cmp-cell__bar--better" : "m11-players__cmp-cell__bar--worse"}" style="${bar_style}"></div>
-// </div>
-// `;
-// }
-
-// function _cmp_na(): string {
-//     return `<div class="m11-players__cmp-cell m11-players__cmp-cell--na">n/a</div>`;
-// }

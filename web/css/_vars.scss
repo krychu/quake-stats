@@ -27,13 +27,36 @@ $font-size-tiny: 12px;
 /* common styles, probably should be moved later to a separate file */
 $cell-basis: 100px;
 $small-cell-basis: 80px;
-$tiny-cell-basis: 40px;
+$tiny-cell-basis: 50px;
+
+////////////////////////////////////////////////////////////////////////////////
+
+.table__row, .table__header-row {
+    display: flex;
+    //justify-content: center;
+}
+
+.table__row:hover {
+    cursor: pointer;
+    //color: $table-hover-color;
+    background-color: $table-hover-bg-color;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// cell
 
 .table__cell {
     display: flex;
     flex-basis: $cell-basis;
     box-sizing: border-box;
     margin: 0px 10px;
+}
+
+.table__cell--header {
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+    //justify-content: center;
+    justify-content: flex-start;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,15 +68,6 @@ $tiny-cell-basis: 40px;
     //box-sizing: border-box;
     padding-right: 45px;
 }
-
-// .table__center-right-cell {
-//     @extend .table__cell;
-
-//     /* text right aligned but in the center */
-//     justify-content: flex-end;
-//     //box-sizing: border-box;
-//     padding-right: 45px;
-// }
 
 .table__cell--right-align {
     justify-content: flex-end !important;
@@ -75,6 +89,27 @@ $tiny-cell-basis: 40px;
     flex-basis: $small-cell-basis;
 }
 
+.table__cell--na {
+    color: #aaa;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// name cell
+
+.table__name-cell {
+    display: flex;
+    //flex-basis: 200px;
+    //flex-basis: unset;
+    width: 150px;
+
+    div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // bar cell
 
@@ -94,37 +129,10 @@ $tiny-cell-basis: 40px;
     z-index: -1;
 }
 
-// .table__bar-cell--small {
-//     flex-basis: $small-cell-basis;
-// }
-
 ////////////////////////////////////////////////////////////////////////////////
+// percent
 
-.table__header-row {
-    display: flex;
-    //justify-content: center;
-}
-
-.table__header-cell {
-    @extend .table__cell;
-
-    text-transform: uppercase;
-    margin-bottom: $vgap-normal;
-    //justify-content: center;
-    justify-content: flex-start;
-
-    // display: flex;
-    // text-transform: uppercase;
-    // margin-bottom: $vgap-normal;
-    // justify-content: center !important;
-    // box-sizing: unset !important;
-    // padding-right: unset !important;
-}
-
-// .table__header-cell--small {
-//     flex-basis: $small-cell-basis;
-// }
-
-.table__cell--lg-header {
-    padding-right: 25px;
+.table__cell__percent {
+    color: $grey-2;
+    padding-left: 4px;
 }

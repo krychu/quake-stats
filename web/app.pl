@@ -132,10 +132,9 @@ __DATA__
       const PAGE = 'duel_players';
     </script>
 
-    <div id="main" class="main--players">
+    <div id="main">
       <div id="players">duel</div>
       <div id="main__activity"></div>
-      <div id="main__2cols"></div>
     </div>
 
     <script type="module" src="/app.js"></script>
