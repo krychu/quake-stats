@@ -274,7 +274,8 @@ interface GameData {
   map: string;
 
   a_name: string;
-  a_frags: number;
+    a_frags: number;
+    a_frag_percent: number;
   a_dmg_percent: number;
   a_rl_dmg_minute: number;
   a_lg_dmg_minute: number;
@@ -285,7 +286,8 @@ interface GameData {
   a_speed_avg: number;
 
   b_name: string;
-  b_frags: number;
+    b_frags: number;
+    b_frag_percent: number;
   b_dmg_percent: number;
   b_rl_dmg_minute: number;
   b_lg_dmg_minute: number;

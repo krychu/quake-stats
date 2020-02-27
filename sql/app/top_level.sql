@@ -10,7 +10,7 @@ SELECT
   COUNT(*) AS game_cnt,
   COUNT(DISTINCT b_name) AS opponent_cnt,
   ROUND(((COUNT(*) FILTER (WHERE a_frags > b_frags))::FLOAT / GREATEST(COUNT(*), 1)) * 100) AS win_percent,
-  ROUND(AVG(a_frags::FLOAT / GREATEST((a_frags + b_frags), 1)) * 100) AS avg_frag_percent,
+  ROUND(AVG(GREATEST(a_frags,0)::FLOAT / GREATEST((GREATEST(a_frags,0) + GREATEST(b_frags,0)), 1)) * 100) AS avg_frag_percent,
   ROUND(SUM(a_frags)::NUMERIC / GREATEST(SUM(tl), 1), 1) AS avg_fpm,
   ROUND(SUM(a_kills)::NUMERIC / GREATEST(SUM(a_deaths), 1), 1) AS avg_kd,
   ROUND(AVG(a_lg_hits::NUMERIC / GREATEST(a_lg_attacks, 1)) * 100, 1) AS avg_lg_acc_percent,

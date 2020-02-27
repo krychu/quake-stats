@@ -1,9 +1,7 @@
 import { state, DPS_PlayerData, Cmd } from "./State";
 import {
-    time_ago,
     html_bar_cell,
     html_header_bar_cell,
-    html_cell,
     html_time_cell,
     html_header_time_cell,
     html_name_cell,
@@ -85,7 +83,7 @@ function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
 function _html_render_players_header(): string {
   return `
 <div class="table__header-row">
-  ${html_header_name_cell("name")}
+  ${html_header_name_cell("name", "table__name-cell--huge-left")}
   ${html_header_bar_cell("games")}
   ${html_header_bar_cell("opponents")}
   ${html_header_center_right_align_cell("winrate", 18)}
@@ -99,7 +97,7 @@ function _html_render_players_header(): string {
 function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number, max_opponent_cnt: number): string {
   return `
 <div class="table__row">
-  ${html_name_cell(p.name)}
+  ${html_name_cell(p.name, "table__name-cell--huge-left")}
   ${html_bar_cell(p.game_cnt, max_game_cnt)}
   ${html_bar_cell(p.opponent_cnt, max_opponent_cnt, 10)}
   ${html_center_right_align_cell(p.a_win_percent, "", true)}
