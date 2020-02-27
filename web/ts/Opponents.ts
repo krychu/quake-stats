@@ -1,4 +1,9 @@
 import { state, Cmd, OpponentData } from "./State";
+import {
+    html_name_cell,
+    html_bar_cell,
+    html_cmp_cell_100percent
+} from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
@@ -94,18 +99,20 @@ function _html_render_opponents_header(player: string): string {
 `;
 }
 
-function _html_render_opponent_row(player: string, opponent: OpponentData, max_game_cnt: number): string {
+function _html_render_opponent_row(player: string, d: OpponentData, max_game_cnt: number): string {
   return `
 <div class="m11-opponents__row m11-opponents__row--opponent">
   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--opponent"><div>${player}</div></div>-->
   <!--<div class="m11-opponents__vs-cell">vs</div>-->
-  <div class="m11-opponents__player-b-cell m11-opponents__cell--opponent">${opponent.name}</div>
-  ${_game_cnts(opponent, max_game_cnt)}
-  ${_cmp_avg_win_rate(opponent)}
-  ${_cmp_avg_frag_percent(opponent)}
-  ${_cmp_avg_dmg_percent(opponent)}
-  ${_cmp_avg_lg_acc_percent(opponent)}
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--map">${opponent.most_frequent_map}</div>
+
+  ${html_name_cell(d.name, "table__name-cell--huge-left")}
+  ${html_bar_cell(d.game_cnt, max_game_cnt)}
+  ${html_cmp_cell_100percent(d.a_win_percent, d.b_win_percent)}
+  ${html_cmp_cell_100percent(d.a_avg_frag_percent, d.b_avg_frag_percent)}
+  ${html_cmp_cell_100percent(d.a_avg_dmg_percent, d.b_avg_dmg_percent)}
+  ${_cmp_avg_dmg_percent(d)}
+  ${_cmp_avg_lg_acc_percent(d)}
+  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--map">${d.most_frequent_map}</div>
 </div>
 `;
 }
