@@ -133,7 +133,7 @@ __DATA__
     </script>
 
     <div id="main">
-      <div id="players">duel</div>
+      <div id="main__title">duel</div>
       <div id="main__activity"></div>
     </div>
 
@@ -171,7 +171,7 @@ __DATA__
     </script>
 
     <div id="main">
-      <div id="player"><a href="/1vs1">duel</a> / <%= $player %></div>
+      <div id="main__title"><a href="/1vs1">duel</a> / <%= $player %></div>
     </div>
 
     <script type="module" src="/app.js"></script>

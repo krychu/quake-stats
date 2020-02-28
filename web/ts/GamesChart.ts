@@ -49,7 +49,7 @@ function cmd_gchart_create_html_root(): Promise<HTMLElement[]> {
 
 function _html_render_title(): string {
   return `
-<div class="m11-games-chart__title">
+<div class="section_title--games-chart">
 Last games
 </div>
 `;

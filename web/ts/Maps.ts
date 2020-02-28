@@ -1,4 +1,13 @@
 import { state, Cmd, MapData } from "./State";
+import {
+    html_name_cell,
+    html_bar_cell,
+    html_cmp_cell_100percent,
+    html_cmp_cell_clamped_ratio,
+    html_header_name_cell,
+    html_header_bar_cell,
+    html_header_cmp_cell
+} from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
@@ -57,8 +66,9 @@ function _html_remove_maps(element: HTMLElement) {
 function _html_render_maps(player: string, data: MapData[], element: HTMLElement) {
   const title = _html_render_title();
   let rows = _html_render_maps_header(player);
-  const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
-  rows += data.map((map) => _html_render_map_row(player, map, max_game_cnt)).join("");
+    const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+    const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);
+    rows += data.map((map) => _html_render_map_row(player, map, max_game_cnt, max_opponent_cnt)).join("");
   const html = `
 ${title}
 ${rows}
@@ -69,7 +79,7 @@ ${rows}
 
 function _html_render_title(): string {
   return `
-<div class="m11-maps__title">
+<div class="section_title">
 Maps
 </div>
 `;
@@ -77,102 +87,35 @@ Maps
 
 function _html_render_maps_header(player: string): string {
   return `
-<div class="m11-maps__row m11-maps__row--header">
+<div class="table__header-row">
   <!--<div class="m11-maps__player-a-cell m11-maps__cell--header"><div>${player}</div></div>-->
   <!--<div class="m11-maps__vs-cell m11-maps__cell--header">vs</div>-->
   <!--<div class="m11-maps__player-b-cell m11-maps__cell--header">opponent</div>-->
-  <div class="m11-maps__cell m11-maps__cell--header m11-maps__cell--name">map</div>
-  <div class="m11-maps__cell m11-maps__cell--header">games</div>
-  <div class="m11-maps__cell m11-maps__cell--header">opponents</div>
-  <div class="m11-maps__cmp-cell m11-maps__cell--header">win rate</div>
-  <div class="m11-maps__cmp-cell m11-maps__cell--header">frag %</div>
-  <div class="m11-maps__cmp-cell m11-maps__cell--header">dmg %</div>
-  <div class="m11-maps__cmp-cell m11-maps__cell--header">dmg/min</div>
+  ${html_header_name_cell("map", "table__name-cell--huge table__cell--first-column")}
+  ${html_header_bar_cell("games")}
+  ${html_header_bar_cell("opponents")}
+  ${html_header_cmp_cell("win")}
+  ${html_header_cmp_cell("frags")}
+  ${html_header_cmp_cell("dmg")}
+  ${html_header_cmp_cell("dmg/min")}
 </div>
 `;
 }
 
-function _html_render_map_row(player: string, d: MapData, max_game_cnt: number): string {
+function _html_render_map_row(player: string, d: MapData, max_game_cnt: number, max_opponent_cnt: number): string {
   return `
-<div class="m11-maps__row m11-maps__row--map">
+<div class="table__row">
   <!--<div class="m11-maps__player-a-cell m11-maps__cell--map"><div>${player}</div></div>-->
   <!--<div class="m11-maps__vs-cell m11-maps__cell--map">vs</div>-->
   <!--<div class="m11-maps__player-b-cell m11-maps__cell--map">opponent</div>-->
-  <div class="m11-maps__cell m11-maps__cell--map m11-maps__cell--name">${d.map}</div>
-  ${_game_cnts(d, max_game_cnt)}
-  <div class="m11-maps__cell m11-maps__cell--map">${d.opponent_cnt}</div>
-  ${_cmp_avg_win_percent(d)}
-  ${_cmp_avg_frag_percent(d)}
-  ${_cmp_avg_dmg_percent(d)}
-  ${_cmp_avg_dmg_minute(d)}
-</div>
-`;
-}
 
-function _game_cnts(d: MapData, max_game_cnt: number): string {
-  const val = d.game_cnt;
-  const bar = d.game_cnt / max_game_cnt;
-  return _val_with_bar(val.toString(), bar, 80);
-}
-
-function _cmp_avg_win_percent(d: Pick<MapData, "a_win_percent" | "b_win_percent">): string {
-  const a = d.a_win_percent;
-  const b = d.b_win_percent;
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar);
-}
-
-function _cmp_avg_frag_percent(d: Pick<MapData, "a_avg_frag_percent" | "b_avg_frag_percent">): string {
-  const a = d.a_avg_frag_percent;
-  const b = d.b_avg_frag_percent;
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar);
-}
-
-function _cmp_avg_dmg_percent(d: Pick<MapData, "a_avg_dmg_percent" | "b_avg_dmg_percent">): string {
-  const a = d.a_avg_dmg_percent;
-  const b = d.b_avg_dmg_percent;
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar);
-}
-
-function _cmp_avg_dmg_minute(d: Pick<MapData, "a_avg_dmg_minute" | "b_avg_dmg_minute">): string {
-  const a = d.a_avg_dmg_minute;
-  const b = d.b_avg_dmg_minute;
-  let bar = 0;
-  if (a > b) {
-    bar = Math.max(1.0 - a / b, -1.0);
-  } else if (b > a) {
-    bar = Math.min(b / a - 1.0, 1.0);
-  }
-  return _cmp(a.toString(), b.toString(), bar);
-}
-
-function _cmp(a: string, b: string, bar: number, mul = 40): string {
-  //const mul = 32;
-  const bar_width = Math.abs(bar) * mul;
-  let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
-  if (bar >= 0) {
-    bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
-  }
-
-  return `
-<div class="m11-maps__cmp-cell">
-  <div class="m11-maps__cmp-cell__a">${a}</div>
-  <div class="m11-maps__cmp-cell__separator"></div>
-  <div class="m11-maps__cmp-cell__b">${b}</div>
-  <div class="m11-maps__cmp-cell__bar ${bar <= 0 ? "m11-maps__cmp-cell__bar--better" : "m11-maps__cmp-cell__bar--worse"}" style="${bar_style}"></div>
-</div>
-`;
-}
-
-function _val_with_bar(a: string, bar: number, mul: number = 32): string {
-  const bar_width = Math.abs(bar) * mul;
-  const bar_style = `width: ${bar_width}px;`;
-  return `
-<div class="m11-maps__bar-cell">
-  <div class="m11-maps__bar-cell__value">${a}</div>
-  <div class="m11-maps__bar-cell__bar" style="${bar_style}"></div>
+  ${html_name_cell(d.map, "table__name-cell--huge table__cell--first-column")}
+  ${html_bar_cell(d.game_cnt, max_game_cnt, 1)}
+  ${html_bar_cell(d.opponent_cnt, max_opponent_cnt, 8)}
+  ${html_cmp_cell_100percent(d.a_win_percent, d.b_win_percent)}
+  ${html_cmp_cell_100percent(d.a_avg_frag_percent, d.b_avg_frag_percent)}
+  ${html_cmp_cell_100percent(d.a_avg_dmg_percent, d.b_avg_dmg_percent)}
+  ${html_cmp_cell_clamped_ratio(d.a_avg_dmg_minute, d.b_avg_dmg_minute)}
 </div>
 `;
 }

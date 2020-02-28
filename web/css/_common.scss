@@ -1,0 +1,208 @@
+$win-color: none;//rgba(0,255,0,0.05);
+$vgap-normal: 20px;
+
+$table-hover-bg-color: rgba(0,0,0,0.04);
+$table-hover-color: white;
+
+$grey-0: black;
+$grey-1: #aaa;
+$grey-2: #ccc;
+$grey-3: #f5f5f5;
+
+$player-a-color: $grey-2;
+$vs-cell-color: $grey-2;
+$na-color: $grey-2;
+
+
+$font-1: 'Inconsolata';
+//$font-2: 'Inconsolata';
+//$font-2: 'Audiowide';
+//$font-2: 'Odibee Sans';
+$font-2: 'Titillium Web';
+$font-size-huge: 28px;
+$font-size-small: 14px;
+$font-size-tiny: 12px;
+
+
+/* common styles, probably should be moved later to a separate file */
+$huge-cell-basis: 150px;
+$big-cell-basis: 120px;
+$cell-basis: 100px;
+$small-cell-basis: 80px;
+$tiny-cell-basis: 50px;
+$separator-cell-basis: 40px;
+
+////////////////////////////////////////////////////////////////////////////////
+
+.table__row, .table__header-row {
+    display: flex;
+    //justify-content: center;
+}
+
+.table__row:hover {
+    cursor: pointer;
+    //color: $table-hover-color;
+    background-color: $table-hover-bg-color;
+}
+
+.table__row:nth-child(even) {
+    //background-color: #f5f5f5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// cell
+
+.table__cell {
+    display: flex;
+    flex-basis: $cell-basis;
+    box-sizing: border-box;
+    margin: 0px 10px;
+}
+
+.table__cell--header {
+    text-transform: uppercase;
+    margin-bottom: $vgap-normal;
+    //justify-content: center;
+    justify-content: flex-start;
+}
+
+.table__cell--right-align {
+    justify-content: flex-end !important;
+}
+
+.table__cell--center-align {
+    justify-content: center !important;
+}
+
+.table__cell--right-align {
+    justify-content: flex-end !important;
+}
+
+.table__cell--tiny {
+    flex-basis: $tiny-cell-basis !important;
+}
+
+.table__cell--small {
+    flex-basis: $small-cell-basis !important;
+}
+
+.table__cell--na {
+    color: #aaa;
+}
+
+.table__cell--first-column {
+    margin-left: 0px;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// center right-aligned cell
+
+.table__cell--center-right-align {
+    /* text right aligned but in the center */
+    justify-content: flex-end;
+    //box-sizing: border-box;
+    padding-right: 45px;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// name cell
+
+.table__name-cell {
+    @extend .table__cell;
+
+    display: flex;
+    width: $cell-basis;
+
+    div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: $cell-basis;
+    }
+}
+
+.table__name-cell--huge {
+    flex-basis: $huge-cell-basis;
+    width: $huge-cell-basis;
+    div {
+        max-width: $huge-cell-basis;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// bar cell
+
+.table__bar-cell {
+    @extend .table__cell;
+    position: relative; // anchor for the bar
+}
+
+.table__bar-cell__value {
+}
+
+.table__bar-cell__bar {
+    position: absolute;
+    height: 100%;
+    left: 0px;
+    background-color: #eee;
+    z-index: -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// cmp cell
+
+.table__cmp-cell {
+    @extend .table__cell;
+    flex-basis: $cell-basis;
+    position: relative; // anchor for the bar
+    justify-content: center;
+}
+
+.table__cmp-cell__a {
+    flex: 1;
+    text-align: right;
+}
+
+.table__cmp-cell__separator {
+    flex-basis: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.table__cmp-cell__b {
+    flex: 1;
+}
+
+// width and left positions are set dynamically
+.table__cmp-cell__bar {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.table__cmp-cell__bar--worse {
+    background-color: rgba(255,0,0,0.15);
+    border-left: 1px solid rgba(255,0,0,0.8);
+}
+
+.table__cmp-cell__bar--better {
+    background-color: rgba(0,255,0,0.25);
+    border-right: 1px solid rgba(0,255,0,1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// separator cell
+
+.table__cell--separator {
+    margin: 0px;
+    flex-basis: $separator-cell-basis;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// percent
+
+.table__cell__percent {
+    color: $grey-2;
+    padding-left: 4px;
+}

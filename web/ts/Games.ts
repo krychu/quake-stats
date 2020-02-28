@@ -87,7 +87,7 @@ function _html_render_games_header(g: GameData): string {
     return `
 <div class="table__header-row">
     <!--<div class="m11-games__header__player-a-cell"><div>${g.a_name}</div></div>-->
-    ${html_header_time_cell("when")}
+    ${html_header_time_cell("when", "table__cell--first-column")}
     ${html_header_cmp_cell("frags")}
     ${html_header_name_cell("opponent", "table__cell--big")}
     ${html_header_name_cell("map")}
@@ -121,7 +121,7 @@ function _html_render_games_row(g: GameData): string {
     return `
 <div class="table__row ${g.a_frags > g.b_frags && "m11-games__game--win"}">
     <!--<div class="m11-games__game__player-a-cell"><div>${g.a_name}</div></div>-->
-    ${html_time_cell(g.date)}
+    ${html_time_cell(g.date, "table__cell--first-column")}
 
     ${html_cmp_cell_clamped_frac(g.a_frags, g.b_frags)}
     ${html_name(g.b_name, "table__cell--big")}

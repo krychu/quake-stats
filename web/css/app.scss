@@ -1,15 +1,9 @@
 @import "./_common.scss";
-@import "./players.scss";
-@import "./games.scss";
-@import "./gamesshort.scss";
-@import "./opponents.scss";
-@import "./maps.scss";
 @import "./games_chart.scss";
 @import "./status.scss";
 @import "./activity.scss";
 @import "./header.scss";
 @import "./top_level.scss";
-@improt "./_vars.scss";
 
 #main {
     // font-family: Courier;
@@ -24,7 +18,7 @@
     margin-bottom: 100px;
 }
 
-#player, #players {
+#main__title {
     width: 800px;
     font-family: $font-2;
     font-size: 52px;
@@ -37,7 +31,7 @@
     }
 }
 
-.title {
+.section_title {
     font-family: $font-2;
     font-size: 38px;
     //margin: 0 auto;
@@ -46,12 +40,8 @@
     margin-bottom: 25px;
 }
 
-.m11-games-chart__title {
-    @extend .title;
+.section_title--games-chart {
+    @extend .section_title;
     margin-top: 50px;
     margin-bottom: 10px;
-}
-
-.m11-opponents__title, .m11-maps__title {
-    @extend .title;
 }

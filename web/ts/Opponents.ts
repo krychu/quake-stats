@@ -2,7 +2,11 @@ import { state, Cmd, OpponentData } from "./State";
 import {
     html_name_cell,
     html_bar_cell,
-    html_cmp_cell_100percent
+    html_cmp_cell_100percent,
+    html_cmp_cell_clamped_frac,
+    html_header_name_cell,
+    html_header_bar_cell,
+    html_header_cmp_cell
 } from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
@@ -77,7 +81,7 @@ ${rows}
 
 function _html_render_title(): string {
   return `
-<div class="m11-opponents__title">
+<div class="section_title">
 Opponents
 </div>
 `;
@@ -85,120 +89,33 @@ Opponents
 
 function _html_render_opponents_header(player: string): string {
   return `
-<div class="m11-opponents__row m11-opponents__row--header">
+<div class="table__header-row">
   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--header"><div>${player}</div></div>-->
   <!--<div class="m11-opponents__vs-cell m11-opponents__cell--header">vs</div>-->
-  <div class="m11-opponents__player-b-cell m11-opponents__cell--header">opponent</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header">games</div>
-  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">win rate</div>
-  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">frag %</div>
-  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">dmg %</div>
-  <div class="m11-opponents__cmp-cell m11-opponents__cell--header">lg acc</div>
-  <div class="m11-opponents__cell m11-opponents__cell--header m11-opponents__cell--map">fq map</div>
+  ${html_header_name_cell("opponent", "table__name-cell--huge table__cell--first-column")}
+  ${html_header_bar_cell("games")}
+  ${html_header_cmp_cell("win")}
+  ${html_header_cmp_cell("frags")}
+  ${html_header_cmp_cell("dmg")}
+  ${html_header_cmp_cell("lg acc")}
+  ${html_header_name_cell("fq map")}
 </div>
 `;
 }
 
 function _html_render_opponent_row(player: string, d: OpponentData, max_game_cnt: number): string {
   return `
-<div class="m11-opponents__row m11-opponents__row--opponent">
+<div class="table__row">
   <!--<div class="m11-opponents__player-a-cell m11-opponents__cell--opponent"><div>${player}</div></div>-->
   <!--<div class="m11-opponents__vs-cell">vs</div>-->
 
-  ${html_name_cell(d.name, "table__name-cell--huge-left")}
-  ${html_bar_cell(d.game_cnt, max_game_cnt)}
+  ${html_name_cell(d.name, "table__name-cell--huge table__cell--first-column")}
+  ${html_bar_cell(d.game_cnt, max_game_cnt, 1)}
   ${html_cmp_cell_100percent(d.a_win_percent, d.b_win_percent)}
   ${html_cmp_cell_100percent(d.a_avg_frag_percent, d.b_avg_frag_percent)}
   ${html_cmp_cell_100percent(d.a_avg_dmg_percent, d.b_avg_dmg_percent)}
-  ${_cmp_avg_dmg_percent(d)}
-  ${_cmp_avg_lg_acc_percent(d)}
-  <div class="m11-opponents__cell m11-opponents__cell--opponent m11-opponents__cell--map">${d.most_frequent_map}</div>
+  ${html_cmp_cell_clamped_frac(d.a_avg_lg_acc_percent, d.b_avg_lg_acc_percent, true)}
+  ${html_name_cell(d.most_frequent_map)}
 </div>
 `;
-}
-
-function _game_cnts(d: Pick<OpponentData, "game_cnt">, max_game_cnt: number): string {
-  const val = d.game_cnt;
-  const bar = d.game_cnt / max_game_cnt;
-  return _val_with_bar(val.toString(), bar, 80);
-}
-
-function _cmp_avg_win_rate(d: Pick<OpponentData, "a_win_percent" | "b_win_percent">): string {
-  const a = d.a_win_percent;
-  const b = d.b_win_percent;
-  if (a == null || b == null) {
-    return _cmp_na();
-  }
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-}
-
-function _cmp_avg_frag_percent(d: Pick<OpponentData, "a_avg_frag_percent" | "b_avg_frag_percent">): string {
-  const a = d.a_avg_frag_percent;
-  const b = d.b_avg_frag_percent;
-  if (a == null || b == null) {
-    return _cmp_na();
-  }
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-}
-
-function _cmp_avg_dmg_percent(d: Pick<OpponentData, "a_avg_dmg_percent" | "b_avg_dmg_percent">): string {
-  const a = d.a_avg_dmg_percent;
-  const b = d.b_avg_dmg_percent;
-  if (a == null || b == null) {
-    return _cmp_na();
-  }
-  const bar = (50 - a) / 50.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-}
-
-function _cmp_avg_lg_acc_percent(d: Pick<OpponentData, "a_avg_lg_acc_percent" | "b_avg_lg_acc_percent">): string {
-  const a = d.a_avg_lg_acc_percent;
-  const b = d.b_avg_lg_acc_percent;
-  if (a == null || b == null) {
-    return _cmp_na();
-  }
-  const bar = 2.0 * b / (a + b) - 1.0;
-  return _cmp(a.toString(), b.toString(), bar, undefined, undefined);
-}
-
-/*
- * avg indicates if we're rendering an row with averages.
- */
-function _cmp(a: string, b: string, bar: number, mul = 40, is_percent = false): string {
-  //const mul = 32;
-  const bar_width = Math.abs(bar) * mul;
-  let bar_style = `width: ${bar_width}px; left: 50%; margin-left: -${bar_width + 1}px`;
-  if (bar >= 0) {
-    bar_style = `width: ${bar_width}px; left: 50%; margin-left: -1px;`;
-  }
-  let percent_span = "";
-  if (is_percent) {
-    percent_span = `<span class="m11-opponents__cell__percent">%</span>`;
-  }
-
-  return `
-<div class="m11-opponents__cmp-cell m11-opponents__cell--opponent">
-  <div class="m11-opponents__cmp-cell__a">${a}${percent_span}</div>
-  <div class="m11-opponents__cmp-cell__separator"></div>
-  <div class="m11-opponents__cmp-cell__b">${b}${percent_span}</div>
-  <div class="m11-opponents__cmp-cell__bar ${bar <= 0 ? "m11-opponents__cmp-cell__bar--better" : "m11-opponents__cmp-cell__bar--worse"}" style="${bar_style}"></div>
-</div>
-`;
-}
-
-function _val_with_bar(a: string, bar: number, mul: number = 32): string {
-  const bar_width = Math.abs(bar) * mul;
-  const bar_style = `width: ${bar_width}px;`;
-  return `
-<div class="m11-opponents__bar-cell">
-  <div class="m11-opponents__bar-cell__value">${a}</div>
-  <div class="m11-opponents__bar-cell__bar" style="${bar_style}"></div>
-</div>
-`;
-}
-
-function _cmp_na(): string {
-  return `<div class="m11-opponents__cmp-cell m11-opponents__cmp-cell--na">n/a</div>`;
 }

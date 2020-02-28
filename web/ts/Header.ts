@@ -29,12 +29,12 @@ async function cmd_header_create_html_root(): Promise<void> {
 }
 
 async function cmd_header_attach_html_root(): Promise<void> {
-    if (!state.header.html_root || !state.html_main) {
+    if (!state.header.html_root) {
         log.log("Header:cmd_header_attach_html_root - state doesn't contain required data");
         return Promise.reject();
     }
 
-    state.html_main.prepend(state.header.html_root);
+    document.body.prepend(state.header.html_root);
     return Promise.resolve();
 }
 
