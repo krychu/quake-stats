@@ -59,7 +59,10 @@ function main_duel_players() {
     cmd.schedule(`
       main_find_html_root
       // main_2cols_find_html_root
-      main_find_activity_html_root
+      // main_find_activity_html_root
+
+      header_create_html_root
+      header_attach_html_root
     `);
 
     // cmd.schedule_cmd("main_find_activity_html_root").then((e) => {
@@ -77,32 +80,52 @@ function main_duel_players() {
   //   cmd.schedule_cmd("activity_attach_html_root");
   // });
 
-  cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
-    // since above is immediate we don't need to .then the one below
-    cmd.schedule_cmd("duel_players_attach_html_root");
-  });
+  // cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
+  //   cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
+  //   // since above is immediate we don't need to .then the one below
+  //   cmd.schedule_cmd("duel_players_attach_html_root");
+  // });
 
   // cmd.schedule_cmd("gamesshort_create_html_root").then((html_root) => {
   //   cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
   //   cmd.schedule_cmd("gamesshort_attach_html_root");
   // });
 
-   cmd.schedule(`
-      header_create_html_root
-      header_attach_html_root
-   `);
+   // cmd.schedule(`
+   //    header_create_html_root
+   //    header_attach_html_root
+   // `);
 
-  // fetch and render data
-  cmd.schedule_cmd("data_fetch_activity").then((data) => {
-    cmd.schedule_cmd("state_set_activity", data);
-    cmd.schedule_cmd("activity_render_data");
-  });
+    // fetch and render data
 
-  cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
-    cmd.schedule_cmd("state_set_duel_players", data);
-    cmd.schedule_cmd("duel_players_render_data");
-  });
+    cmd.schedule_barrier();
+
+    cmd.schedule(`
+      print 1a
+      main_find_activity_html_root
+      data_fetch_activity
+      activity_render_data
+      print 1b
+    `);
+
+    cmd.schedule(`
+      print 2a
+      duel_players_create_html_root
+      duel_players_attach_html_root
+      data_fetch_duel_players
+      duel_players_render_data
+      print 2b
+    `);
+
+  // cmd.schedule_cmd("data_fetch_activity").then((data) => {
+  //   cmd.schedule_cmd("state_set_activity", data);
+  //   cmd.schedule_cmd("activity_render_data");
+  // });
+
+  // cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
+  //   cmd.schedule_cmd("state_set_duel_players", data);
+  //   cmd.schedule_cmd("duel_players_render_data");
+  // });
 
   // cmd.schedule_cmd("data_fetch_gamesshort").then((data) => {
   //   cmd.schedule_cmd("state_set_gamesshort", data);

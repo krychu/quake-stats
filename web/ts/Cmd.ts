@@ -15,9 +15,9 @@ function step() {
   while (cmds.buffer.length) {
       const cmd = cmds.buffer.shift() as ScheduledCmd;
     if (cmds.funcs[cmd.name]) {
-      cmds.funcs[cmd.name](cmd.data).then((data?) => {
+        cmds.funcs[cmd.name](cmd.data).then((data?: any) => {
         cmd.resolve(data);
-      }).catch((data?) => {
+      }).catch((data?: any) => {
         log.log(`Cmd::step - ${cmd.name} resulted in rejection`);
         cmd.reject(data);
       });
@@ -28,6 +28,15 @@ function step() {
 
     while (cmds.scripts.length) {
         const script = cmds.scripts.shift() as string;
+
+        if (script === "__BARRIER__") {
+            continue;
+        }
+
+        if (cmds.scripts.length && cmds.scripts[0] === "__BARRIER__") {
+            console.log("BARRIER");
+            ??? HERE
+        }
         run(script);
     }
 
@@ -65,6 +74,10 @@ export function schedule_cmd(name: string, data?: any) {
   
 // }
 
+export function schedule_barrier() {
+    state.cmds.scripts.push("__BARRIER__");
+}
+
 export function schedule(text: string) {
     state.cmds.scripts.push(text);
 }
@@ -76,7 +89,9 @@ async function run(text: string) {
     for (let i=0; i<lines.length; i++) {
         const cmd_name = lines[i].trim();
         if (cmd_name.length && !cmd_name.startsWith("//")) {
-            if (cmds.funcs[cmd_name]) {
+            if (cmd_name.startsWith("print ")) {
+                console.log(cmd_name.substring(6));
+            } else if (cmds.funcs[cmd_name]) {
                 await cmds.funcs[cmd_name]();
             } else {
                 log.log("Cmd::run - command not found (" + cmd_name + ")");
@@ -84,3 +99,4 @@ async function run(text: string) {
         }
     }
 }
+

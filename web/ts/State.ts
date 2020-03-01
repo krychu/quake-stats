@@ -18,8 +18,8 @@ const commands: [string, Cmd][] = [
   // duel players
   //[ "state_set_activity_html_root",      cmd_state_set_activity_html_root ],
   [ "state_set_activity",                cmd_state_set_activity ],
-  [ "state_set_duel_players_html_root",  cmd_state_set_duel_players_html_root ],
-  [ "state_set_duel_players",            cmd_state_set_duel_players ],
+  // [ "state_set_duel_players_html_root",  cmd_state_set_duel_players_html_root ],
+  // [ "state_set_duel_players",            cmd_state_set_duel_players ],
   [ "state_set_gamesshort_html_root",    cmd_state_set_gamesshort_html_root ],
   [ "state_set_gamesshort",              cmd_state_set_gamesshort ]
 ]
@@ -29,8 +29,8 @@ const commands: [string, Cmd][] = [
     execution flow.
   - If one part of state is in some progress you can express it with status.
 
- */
-let state: State = {
+*/
+let state: any = {
   //num_games:                  number = 10;
 
   html_main: null,
@@ -105,11 +105,11 @@ let state: State = {
       html_root: null
     },
 
-    data: {
-      players: [],
-      games: [],
-      activity: []
-    }
+    // data: {
+    //   players: [],
+    //   games: [],
+    //   activity: []
+    // }
   }
 }
 
@@ -428,14 +428,14 @@ function cmd_state_set_activity(data: DayActivity[]): Promise<void> {
   state.duel_players.data.activity = data;
   return Promise.resolve();
 }
-function cmd_state_set_duel_players_html_root(html_root: HTMLElement): Promise<void> {
-  state.duel_players.players.html_root = html_root;
-  return Promise.resolve();
-}
-function cmd_state_set_duel_players(data: DPS_PlayerData[]): Promise<void> {
-  state.duel_players.data.players = data;
-  return Promise.resolve();
-}
+// function cmd_state_set_duel_players_html_root(html_root: HTMLElement): Promise<void> {
+//   state.duel_players.players.html_root = html_root;
+//   return Promise.resolve();
+// }
+// function cmd_state_set_duel_players(data: DPS_PlayerData[]): Promise<void> {
+//   state.duel_players.data.players = data;
+//   return Promise.resolve();
+// }
 function cmd_state_set_gamesshort_html_root(html_root: HTMLElement): Promise<void> {
   state.duel_players.games.html_root = html_root;
   return Promise.resolve();

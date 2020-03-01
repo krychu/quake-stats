@@ -20,11 +20,14 @@ const commands: [string, Cmd][] = [
 
 export function init() {
   cmd.add_cmds(commands);
-  log.log("DuelPlayers module initialized");
+    log.log("DuelPlayers module initialized");
+
+    state.duel_players.players = {
+        html_root: null,
+    };
 }
 
 export function shutdown() {
-
 }
 
 //------------------------------------------------------------------------------
@@ -32,7 +35,8 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 function cmd_duel_players_create_html_root(): Promise<any> {
   const html_root = document.createElement("div");
-  html_root.addEventListener("click", (e) => { _on_click(e); });
+    html_root.addEventListener("click", (e) => { _on_click(e); });
+    state.duel_players.players.html_root = html_root;
   return Promise.resolve(html_root);
 }
 
