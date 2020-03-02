@@ -1,8 +1,28 @@
-import { state, Cmd } from "./State";
+import { state } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-interface GameData {
+export interface DuelPlayerPageData {
+    game_cnt: number;
+    games: GameData[];
+    opponents: OpponentData[];
+    maps: MapData[];
+    game_cnts: [string, number][];
+    win_probabilities: any[];
+    top_level: any;
+};
+
+export interface DuelPlayersPageData {
+    players: PlayerData[];
+    activity: DayActivityData[];
+}
+
+export interface DayActivityData {
+    day_name: string;
+    game_cnt: number;
+}
+
+export interface GameData {
     // this order should stay sync with the UI design
     game_id: number;
     raw_date: number;
@@ -67,7 +87,7 @@ export interface MapData {
     b_avg_dmg_minute: number;
 }
 
-interface PlayerData {
+export interface PlayerData {
     name: string;
     game_cnt: number;
     opponent_cnt: number;
@@ -78,39 +98,17 @@ interface PlayerData {
     avg_frag_percent: number;
 }
 
-interface DuelPlayerPageData {
-    game_cnt: number;
-    games: GameData[];
-    opponents: OpponentData[];
-    maps: MapData[];
-    game_cnts: [string, number][];
-    win_probabilities: any[];
-    top_level: any;
-};
+const commands: [string, cmd.Cmd][] = [
+    // duel players
+    [ "data_fetch_activity",              cmd_data_fetch_activity ],
+    [ "data_fetch_duel_players",          cmd_data_fetch_duel_players ],
 
-export interface DayActivity {
-    day_name: string;
-    game_cnt: number;
-}
-
-interface DuelPlayersPageData {
-    players: PlayerData[];
-    activity: DayActivity[];
-}
-
-const commands: [string, Cmd][] = [
-  // duel player
+    // duel player
   [ "data_fetch_game_cnts",             cmd_data_fetch_game_cnts ],
   [ "data_fetch_games",                 cmd_data_fetch_games ],
   [ "data_fetch_opponents",             cmd_data_fetch_opponents ],
   [ "data_fetch_maps",                  cmd_data_fetch_maps ],
-    //[ "data_fetch_win_probabilities",     cmd_data_fetch_win_probabilities ],
-    [ "data_fetch_toplevel",            cmd_data_fetch_toplevel ],
-
-  // duel players
-  [ "data_fetch_activity",              cmd_data_fetch_activity ],
-  [ "data_fetch_duel_players",          cmd_data_fetch_duel_players ],
-  //[ "data_fetch_gamesshort",            cmd_data_fetch_gamesshort ]
+    [ "data_fetch_toplevel",            cmd_data_fetch_toplevel ]
 ];
 
 export function init() {
@@ -159,8 +157,7 @@ async function cmd_data_fetch_game_cnts(): Promise<any> {
 }
 
 async function cmd_data_fetch_games(): Promise<any> {
-  //const { player, data } = state;
-  if (state.duel_player.player == null) {
+  if (!state.duel_player.data || !state.duel_player.player) {
     log.log("Data::cmd_data_fetch_games - player is null");
     return Promise.reject();
   }
@@ -168,12 +165,8 @@ async function cmd_data_fetch_games(): Promise<any> {
   return fetch(_api_url_games(state.duel_player.player, state.duel_player.data.game_cnt))
     .then((response) => response.json())
     .then((json) => {
-        //cmd.schedule_cmd("state_set_games_data", json);
         const data = state.duel_player.data as DuelPlayerPageData;
         data.games = json;
-      //return json;
-      //return true;
-      //cmd.schedule_cmd("games_render_data");
     });
 }
 
@@ -188,7 +181,6 @@ async function cmd_data_fetch_opponents(): Promise<any> {
         .then((json) => {
             const data = state.duel_player.data as DuelPlayerPageData;
             data.opponents = json;
-      //return json;
     });
 }
 
@@ -220,20 +212,6 @@ async function cmd_data_fetch_toplevel(): Promise<void> {
         });
 }
 
-// function cmd_data_fetch_win_probabilities(): Promise<any> {
-//   //const { player } = state;
-//   if (state.duel_player.player == null) {
-//     log.log("Data::cmd_data_fetch_win_probabilities - player is null");
-//     return Promise.reject();
-//   }
-
-//   return fetch(_api_url_win_probabilities(state.duel_player.player))
-//     .then((response) => response.json())
-//     .then((json) => {
-//       return json;
-//     });
-// }
-
 /**
  * Duel Players
  */
@@ -256,14 +234,6 @@ async function cmd_data_fetch_duel_players(): Promise<any> {
     });
 }
 
-// function cmd_data_fetch_gamesshort(): Promise<any> {
-//   return fetch(_api_url_gamesshort())
-//     .then((response) => response.json())
-//     .then((json) => {
-//       return json;
-//     });
-// }
-
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
@@ -283,10 +253,6 @@ function _api_url_maps(player: string): string {
   return `/api/1vs1/${player}/maps`;
 }
 
-// function _api_url_win_probabilities(player: string): string {
-//   return `/api/1vs1/${player}/win_probabilities`;
-// }
-
 function _api_url_activity(): string {
   return `/api/1vs1/activity`;
 }
@@ -294,10 +260,6 @@ function _api_url_activity(): string {
 function _api_url_duel_players(): string {
   return `/api/1vs1/players`;
 }
-
-// function _api_url_gamesshort(): string {
-//   return `/api/1vs1/games`;
-// }
 
 function _api_url_toplevel(player: string): string {
     return `/api/1vs1/${player}/top`;

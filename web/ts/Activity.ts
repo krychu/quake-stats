@@ -1,16 +1,26 @@
-import { state, DayActivity, Cmd } from "./State";
+import { state } from "./State";
+import { DayActivityData } from "./Data";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 import * as SVG from "svg.js";
 
-const commands: [string, Cmd][] = [
-  //[ "activity_create_html_root",      cmd_activity_create_html_root ],
+export interface DayActivity {
+    show_day_cnt: number;
+    html_root: HTMLElement | null;
+};
+
+const commands: [string, cmd.Cmd][] = [
   [ "activity_attach_html_root",      cmd_activity_attach_html_root ],
   [ "activity_render_data",           cmd_activity_render_data ],
 ];
 
 export function init() {
     cmd.add_cmds(commands);
+    const substate: DayActivity = {
+        show_day_cnt: 40,
+        html_root: null,
+    }
+    state.duel_players.activity = substate;
     log.log("Activity module initialized");
 }
 
@@ -20,29 +30,9 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-
-// function cmd_state_set_activity_html_root(roots: HTMLElement[]): Promise<void> {
-//   state.duel_players.activity.html_root = roots[0];
-//   state.duel_players.activity.html_chart_root = roots[1];
-//   return Promise.resolve();
-// }
-
-// function cmd_activity_create_html_root(): Promise<any> {
-//   const html_root = document.createElement("div");
-//   html_root.className = "m11-activity";
-
-//   const html_chart_root = document.createElement("div");
-//   html_chart_root.className = "m11-activity-chart";
-
-//   //html_root.insertAdjacentHTML("beforeend", _html_render_title());
-//   html_root.appendChild(html_chart_root);
-
-//   return Promise.resolve([html_root, html_chart_root]);
-// }
-
 function cmd_activity_attach_html_root(): Promise<any> {
-    if (state.duel_players.activity.html_root == null || state.html_main == null) {
-        log.log("Games::cmd_activity_attach_html_root - state doesn't contain required data");
+    if (!state.duel_players.activity || !state.duel_players.activity.html_root || !state.html_main) {
+        log.log("Activity.ts - cmd_activity_attach_html_root - wrong state");
         return Promise.reject();
     }
 
@@ -50,11 +40,9 @@ function cmd_activity_attach_html_root(): Promise<any> {
     return Promise.resolve();
 }
 
-function cmd_activity_render_data(): Promise<any> {
-    //const { data, games } = state;
-
-    if (state.duel_players.activity.html_root == null || state.duel_players.data.activity == null) {
-        log.log("Games::cmd_activity_render_data - state doesn't contain required data");
+function cmd_activity_render_data(): Promise<void> {
+    if (!state.duel_players.activity || !state.duel_players.activity.html_root || !state.duel_players.data || !state.duel_players.data.activity) {
+        log.log("Activity.ts - cmd_activity_render_data - wrong state");
         return Promise.reject();
     }
 
@@ -72,7 +60,11 @@ function _html_remove_activity(element: HTMLElement) {
     log.log("IMPLEMENT ME: _html_remove_activity");
 }
 
-function _html_render_activity(data: DayActivity[], element: HTMLElement) {
+function _html_render_activity(data: DayActivityData[], element: HTMLElement) {
+    if (!state.duel_players.activity || !state.duel_players.activity.html_root) {
+        log.log("Activity.ts - _html_render_activity - wrong state");
+        return;
+    }
   const svg_width = (state.duel_players.activity.html_root as HTMLElement).offsetWidth;
   const svg_height = (state.duel_players.activity.html_root as HTMLElement).offsetHeight;
 

@@ -1,4 +1,5 @@
-import { state, Cmd, MapData } from "./State";
+import { state } from "./State";
+import { MapData } from "./Data";
 import {
     html_name_cell,
     html_bar_cell,
@@ -11,34 +12,42 @@ import {
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-const commands: [string, Cmd][] = [
+export interface Maps {
+    html_root: HTMLElement | null;
+};
+
+const commands: [string, cmd.Cmd][] = [
     [ "maps_create_html_root",      cmd_maps_create_html_root ],
     [ "maps_attach_html_root",      cmd_maps_attach_html_root ],
     [ "maps_render_data",           cmd_maps_render_data ],
 ];
 
-// cmd_state_set_game_data
-// cmd_state_set_game_html_root
-
 export function init() {
     cmd.add_cmds(commands);
+    const substate: Maps = {
+        html_root: null
+    };
+    state.duel_player.maps = substate;
     log.log("Maps module initialized");
-    // cmd.schedule_cmd("games_create_html_root");
-    // cmd.schedule_cmd("games_attach_html_root");
 }
 
 export function shutdown() {
 }
 
-function cmd_maps_create_html_root(): Promise<any> {
+function cmd_maps_create_html_root(): Promise<void> {
+    if (!state.duel_player.maps) {
+        log.log("Maps.ts - cmd_maps_create_html_root - wrong state");
+        return Promise.reject();
+    }
   const html_root = document.createElement("div");
-  html_root.className = "m11-maps";
-  return Promise.resolve(html_root);
+    html_root.className = "m11-maps";
+    state.duel_player.maps.html_root = html_root;
+    return Promise.resolve();
 }
 
 function cmd_maps_attach_html_root(): Promise<any> {
-  if (state.duel_player.maps.html_root == null || state.html_main == null) {
-    log.log("Maps:cmd_opponents_attach_html_root - state doesn't contain required data");
+  if (!state.duel_player.maps || !state.duel_player.maps.html_root || !state.html_main) {
+    log.log("Maps.ts - cmd_maps_attach_html_root - wrong state");
     return Promise.reject();
   }
 
@@ -47,8 +56,8 @@ function cmd_maps_attach_html_root(): Promise<any> {
 }
 
 function cmd_maps_render_data(): Promise<any> {
-  if (state.duel_player.player == null || state.duel_player.maps.html_root == null || state.duel_player.data.maps == null) {
-    log.log("Opponents::cmd_opponents_render_data - state doesn't contain required data");
+  if (!state.duel_player.maps || !state.duel_player.player || !state.duel_player.maps.html_root || !state.duel_player.data || !state.duel_player.data.maps) {
+    log.log("Maps.ts - cmd_maps_render_data - wrong state");
     return Promise.reject();
   }
 

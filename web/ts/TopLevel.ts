@@ -1,8 +1,12 @@
-import { state, Cmd } from "./State";
+import { state } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-const commands: [string, Cmd][] = [
+export interface TopLevel {
+    html_root: HTMLElement | null;
+};
+
+const commands: [string, cmd.Cmd][] = [
     [ "toplevel_create_html_root",      cmd_toplevel_create_html_root ],
     [ "toplevel_attach_html_root",      cmd_toplevel_attach_html_root ],
     [ "toplevel_render_data",           cmd_toplevel_render_data ]
@@ -10,17 +14,21 @@ const commands: [string, Cmd][] = [
 
 export function init() {
     cmd.add_cmds(commands);
-    log.log("TopLevel module initialized");
-
-    state.duel_player.top_level = {
+    const substate: TopLevel = {
         html_root: null
     };
+    state.duel_player.top_level = substate;
+    log.log("TopLevel module initialized");
 }
 
 export function shutdown() {
 }
 
 function cmd_toplevel_create_html_root(): Promise<void> {
+    if (!state.duel_player || !state.duel_player.top_level) {
+        log.log("TopLevel.ts - cmd_toplevel_create_html_root - wrong state");
+        return Promise.reject();
+    }
     const html_root = document.createElement("div");
     html_root.className = "m11-toplevel";
     state.duel_player.top_level.html_root = html_root;
@@ -28,8 +36,8 @@ function cmd_toplevel_create_html_root(): Promise<void> {
 }
 
 function cmd_toplevel_attach_html_root(): Promise<void> {
-    if (!state.duel_player.top_level.html_root || !state.html_main) {
-        log.log("Header:cmd_header_attach_html_root - state doesn't contain required data");
+    if (!state.duel_player || !state.duel_player.top_level || !state.duel_player.top_level.html_root || !state.html_main) {
+        log.log("TopLevel.ts - cmd_toplevel_attach_html_root - wrong state");
         return Promise.reject();
     }
 
@@ -38,8 +46,8 @@ function cmd_toplevel_attach_html_root(): Promise<void> {
 }
 
 function cmd_toplevel_render_data(): Promise<void> {
-    if (!state.duel_player.data.top_level || !state.duel_player.top_level.html_root) {
-        log.log("TopLevel::cmd_toplevel_render_data - state doesn't contain required data");
+    if (!state.duel_player || !state.duel_player.data || !state.duel_player.data.top_level || !state.duel_player.top_level || !state.duel_player.top_level.html_root) {
+        log.log("TopLevel.ts - cmd_toplevel_render_data - wrong state");
         return Promise.reject();
     }
 

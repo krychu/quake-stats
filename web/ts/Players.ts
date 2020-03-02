@@ -1,4 +1,5 @@
-import { state, DPS_PlayerData, Cmd } from "./State";
+import { state } from "./State";
+import { PlayerData } from "./Data";
 import {
     html_bar_cell,
     html_header_bar_cell,
@@ -12,7 +13,11 @@ import {
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-const commands: [string, Cmd][] = [
+export interface Players {
+    html_root: HTMLElement | null;
+};
+
+const commands: [string, cmd.Cmd][] = [
   [ "duel_players_create_html_root",    cmd_duel_players_create_html_root ],
   [ "duel_players_attach_html_root",    cmd_duel_players_attach_root_html ],
   [ "duel_players_render_data",         cmd_duel_players_render_data ]
@@ -20,11 +25,11 @@ const commands: [string, Cmd][] = [
 
 export function init() {
   cmd.add_cmds(commands);
-    log.log("DuelPlayers module initialized");
-
-    state.duel_players.players = {
-        html_root: null,
+    const substate: Players = {
+        html_root: null
     };
+    state.duel_players.players = substate;
+    log.log("DuelPlayers module initialized");
 }
 
 export function shutdown() {
@@ -33,16 +38,20 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-function cmd_duel_players_create_html_root(): Promise<any> {
+function cmd_duel_players_create_html_root(): Promise<void> {
+    if (!state.duel_players.players) {
+        log.log("Players.ts - cmd_duel_players_create_html_root - wrong state");
+        return Promise.reject();
+    }
   const html_root = document.createElement("div");
     html_root.addEventListener("click", (e) => { _on_click(e); });
     state.duel_players.players.html_root = html_root;
-  return Promise.resolve(html_root);
+  return Promise.resolve();
 }
 
 function cmd_duel_players_attach_root_html(): Promise<void> {
-  if (state.duel_players.players.html_root == null || state.html_main == null) {
-    log.log("Players::cmd_duel_players_attach_root_html - state doesn't contain required data");
+  if (!state.duel_players.players || !state.duel_players.players.html_root || !state.html_main) {
+    log.log("Players.ts - cmd_duel_players_attach_root_html - wrong state");
     return Promise.reject();
   }
 
@@ -51,8 +60,8 @@ function cmd_duel_players_attach_root_html(): Promise<void> {
 }
 
 function cmd_duel_players_render_data(): Promise<void> {
-  if (state.duel_players.players.html_root == null || state.duel_players.data.players == null) {
-    log.log("Players::cmd_duel_players_render_data - state doesn't contain required data");
+  if (!state.duel_players.players || !state.duel_players.players.html_root || !state.duel_players.data) {
+    log.log("Players.ts - cmd_duel_players_render_data - wrong state");
     return Promise.reject();
   }
 
@@ -70,7 +79,7 @@ function _html_remove_players(element: HTMLElement) {
   log.log("IMPLEMENT ME: _html_remove_players");
 }
 
-function _html_render_players(data: DPS_PlayerData[], element: HTMLElement) {
+function _html_render_players(data: PlayerData[], element: HTMLElement) {
     let rows = _html_render_players_header();
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
     const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);
@@ -97,7 +106,7 @@ function _html_render_players_header(): string {
 `;
 }
 
-function _html_render_players_row(p: DPS_PlayerData, max_game_cnt: number, max_opponent_cnt: number): string {
+function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_opponent_cnt: number): string {
   return `
 <div class="table__row">
   ${html_name_cell(p.name, "table__name-cell--huge table__cell--first-column")}

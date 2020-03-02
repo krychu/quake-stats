@@ -1,6 +1,6 @@
-import { state, GameData, Cmd } from "./State";
+import { state } from "./State";
+import { GameData } from "./Data";
 import {
-    time_ago,
     html_time_cell,
     html_header_time_cell,
     html_cmp_cell_clamped_frac,
@@ -13,7 +13,12 @@ import {
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-const commands: [string, Cmd][] = [
+export interface Games {
+    show_game_cnt: number;
+    html_root: HTMLElement | null;
+}
+
+const commands: [string, cmd.Cmd][] = [
     [ "games_create_html_root",      cmd_games_create_html_root ],
     [ "games_attach_html_root",      cmd_games_attach_html_root ],
     [ "games_render_data",           cmd_games_render_data ],
@@ -21,9 +26,12 @@ const commands: [string, Cmd][] = [
 
 export function init() {
     cmd.add_cmds(commands);
+    const substate: Games = {
+        show_game_cnt: 20,
+        html_root: null
+    };
+    state.duel_player.games = substate;
     log.log("Games module initialized");
-    // cmd.schedule_cmd("games_create_html_root");
-    // cmd.schedule_cmd("games_attach_html_root");
 }
 
 export function shutdown() {
@@ -33,16 +41,21 @@ export function shutdown() {
 // Commands
 //------------------------------------------------------------------------------
 
-function cmd_games_create_html_root(): Promise<any> {
+function cmd_games_create_html_root(): Promise<void> {
+    if (!state.duel_player.games) {
+        log.log("Games.ts - cmd_games_crate_html_root - wrong state");
+        return Promise.reject();
+    }
     const html_root = document.createElement("div");
     //html_root.setAttribute("id", "duel-games");
     html_root.className = "m11-games";
-    return Promise.resolve(html_root);
+    state.duel_player.games.html_root = html_root;
+    return Promise.resolve();
 }
 
 function cmd_games_attach_html_root(): Promise<any> {
-    if (state.duel_player.games.html_root == null || state.html_main == null) {
-        log.log("Games::cmd_games_attach_html_root - state doesn't contain required data");
+    if (!state.duel_player.games || !state.duel_player.games.html_root || !state.html_main) {
+        log.log("Games.ts - cmd_games_attach_html_root - wrong state");
         return Promise.reject();
     }
 
@@ -51,10 +64,8 @@ function cmd_games_attach_html_root(): Promise<any> {
 }
 
 function cmd_games_render_data(): Promise<any> {
-    //const { data, games } = state;
-
-    if (state.duel_player.games.html_root == null || state.duel_player.data.games == null) {
-        log.log("Games::cmd_games_render_data - state doesn't contain required data");
+    if (!state.duel_player.games || !state.duel_player.games.html_root || !state.duel_player.data) {
+        log.log("Games.ts - cmd_games_render_data - wrong state");
         return Promise.reject();
     }
 

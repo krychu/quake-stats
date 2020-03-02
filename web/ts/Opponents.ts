@@ -1,4 +1,5 @@
-import { state, Cmd, OpponentData } from "./State";
+import { state } from "./State";
+import { OpponentData } from "./Data";
 import {
     html_name_cell,
     html_bar_cell,
@@ -11,34 +12,42 @@ import {
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
-const commands: [string, Cmd][] = [
+export interface Opponents {
+    html_root: HTMLElement | null;
+};
+
+const commands: [string, cmd.Cmd][] = [
     [ "opponents_create_html_root",      cmd_opponents_create_html_root ],
     [ "opponents_attach_html_root",      cmd_opponents_attach_html_root ],
     [ "opponents_render_data",           cmd_opponents_render_data ],
 ];
 
-// cmd_state_set_game_data
-// cmd_state_set_game_html_root
-
 export function init() {
     cmd.add_cmds(commands);
+    const substate = {
+        html_root: null
+    };
+    state.duel_player.opponents = substate;
     log.log("Opponents module initialized");
-    // cmd.schedule_cmd("games_create_html_root");
-    // cmd.schedule_cmd("games_attach_html_root");
 }
 
 export function shutdown() {
 }
 
-function cmd_opponents_create_html_root(): Promise<any> {
+function cmd_opponents_create_html_root(): Promise<void> {
+    if (!state.duel_player.opponents) {
+        log.log("Opponents.ts - cmd_opponents_create_html_root - wrong state");
+        return Promise.reject();
+    }
   const html_root = document.createElement("div");
-  html_root.className = "m11-opponents";
-  return Promise.resolve(html_root);
+    html_root.className = "m11-opponents";
+    state.duel_player.opponents.html_root = html_root;
+    return Promise.resolve();
 }
 
 function cmd_opponents_attach_html_root(): Promise<any> {
-  if (state.duel_player.opponents.html_root == null || state.html_main == null) {
-    log.log("Opponents:cmd_opponents_attach_html_root - state doesn't contain required data");
+  if (!state.duel_player.opponents || !state.duel_player.opponents.html_root || !state.html_main) {
+    log.log("Opponents.ts - cmd_opponents_attach_html_root - wrong state");
     return Promise.reject();
   }
 
@@ -47,8 +56,8 @@ function cmd_opponents_attach_html_root(): Promise<any> {
 }
 
 function cmd_opponents_render_data(): Promise<any> {
-  if (state.duel_player.player == null || state.duel_player.opponents.html_root == null || state.duel_player.data.games == null) {
-    log.log("Opponents::cmd_opponents_render_data - state doesn't contain required data");
+    if (!state.duel_player.player || !state.duel_player.opponents || !state.duel_player.opponents.html_root || !state.duel_player.data || !state.duel_player.data.games) {
+    log.log("Opponents.ts - cmd_opponents_render_data - wrong state");
     return Promise.reject();
   }
 

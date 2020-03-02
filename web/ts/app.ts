@@ -3,7 +3,6 @@ import * as log from "./Log";
 import * as cmd from "./Cmd";
 import * as data from "./Data";
 import * as games from "./Games";
-import * as gamesshort from "./GamesShort";
 import * as opponents from "./Opponents";
 import * as maps from "./Maps";
 import * as games_chart from "./GamesChart";
@@ -15,9 +14,8 @@ import * as toplevel from "./TopLevel";
 declare const SV_PLAYER: string;
 declare const PAGE: string;
 
-const commands: [string, state.Cmd][] = [
+const commands: [string, cmd.Cmd][] = [
     [ "main_find_html_root",          cmd_main_find_html_root ],
-    [ "main_2cols_find_html_root",    cmd_main_2cols_find_html_root ],
     [ "main_find_activity_html_root", cmd_main_find_activity_html_root ]
 ];
 
@@ -40,7 +38,6 @@ function main_duel_players() {
     cmd,
     data,
     activity,
-    gamesshort,
     players,
     header
   ];
@@ -51,86 +48,19 @@ function main_duel_players() {
 
   cmd.add_cmds(commands);
 
-  // html: find
-  // cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-  //   cmd.schedule_cmd("state_set_main_html_root", html_root);
-    // });
-
     cmd.schedule(`
-      main_find_html_root
-      // main_2cols_find_html_root
-      // main_find_activity_html_root
-
-      header_create_html_root
-      header_attach_html_root
+      || data_fetch_duel_players
+      || data_fetch_activity
+      || main_find_html_root
+      || main_find_activity_html_root
+       | header_create_html_root
+       | header_attach_html_root
+       | duel_players_create_html_root
+       | duel_players_attach_html_root
+      --
+      || activity_render_data
+      || duel_players_render_data
     `);
-
-    // cmd.schedule_cmd("main_find_activity_html_root").then((e) => {
-    //     cmd.schedule_cmd("state_set_activity_html_root", e);
-    // });
-
-  // cmd.schedule_cmd("main_2cols_find_html_root").then((html_root) => {
-  //   cmd.schedule_cmd("state_set_main_2cols_html_root", html_root);
-  // });
-
-  // html: create
-  // cmd.schedule_cmd("activity_create_html_root").then((html_roots) => {
-  //   cmd.schedule_cmd("state_set_activity_html_root", html_roots);
-  //   // since above is immediate we don't need to .then the one below
-  //   cmd.schedule_cmd("activity_attach_html_root");
-  // });
-
-  // cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
-  //   cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
-  //   // since above is immediate we don't need to .then the one below
-  //   cmd.schedule_cmd("duel_players_attach_html_root");
-  // });
-
-  // cmd.schedule_cmd("gamesshort_create_html_root").then((html_root) => {
-  //   cmd.schedule_cmd("state_set_gamesshort_html_root", html_root);
-  //   cmd.schedule_cmd("gamesshort_attach_html_root");
-  // });
-
-   // cmd.schedule(`
-   //    header_create_html_root
-   //    header_attach_html_root
-   // `);
-
-    // fetch and render data
-
-    cmd.schedule_barrier();
-
-    cmd.schedule(`
-      print 1a
-      main_find_activity_html_root
-      data_fetch_activity
-      activity_render_data
-      print 1b
-    `);
-
-    cmd.schedule(`
-      print 2a
-      duel_players_create_html_root
-      duel_players_attach_html_root
-      data_fetch_duel_players
-      duel_players_render_data
-      print 2b
-    `);
-
-  // cmd.schedule_cmd("data_fetch_activity").then((data) => {
-  //   cmd.schedule_cmd("state_set_activity", data);
-  //   cmd.schedule_cmd("activity_render_data");
-  // });
-
-  // cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
-  //   cmd.schedule_cmd("state_set_duel_players", data);
-  //   cmd.schedule_cmd("duel_players_render_data");
-  // });
-
-  // cmd.schedule_cmd("data_fetch_gamesshort").then((data) => {
-  //   cmd.schedule_cmd("state_set_gamesshort", data);
-  //   cmd.schedule_cmd("gamesshort_render_data");
-  // });
 }
 
 function main_duel_player() {
@@ -155,128 +85,52 @@ function main_duel_player() {
   state.state.duel_player.player = SV_PLAYER;
 
     cmd.schedule(`
-      main_find_html_root
+          // fetch data
+
+      || data_fetch_toplevel
+      || data_fetch_games
+      || data_fetch_opponents
+      || data_fetch_maps
+
+          // create html
+
+      || main_find_html_root
+      || header_create_html_root
+      || toplevel_create_html_root
+      || gchart_create_html_root
+      || games_create_html_root
+      || opponents_create_html_root
+      || maps_create_html_root
+
+      --
+
+      || header_attach_html_root
+      || toplevel_attach_html_root
+      || gchart_attach_html_root
+      || games_attach_html_root
+      || opponents_attach_html_root
+      || maps_attach_html_root
+
+          // render data
+
+      || toplevel_render_data
+      || gchart_render_data
+      || games_render_data
+      || opponents_render_data
+      || maps_render_data
     `);
-
-  // cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-  //   cmd.schedule_cmd("state_set_main_html_root", html_root);
-  // });
-
-  // Create and store games chart html root
-  cmd.schedule_cmd("gchart_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_gchart_html_root", html_root);
-    cmd.schedule_cmd("gchart_attach_html_root");
-  });
-
-  // Create and store recent games html root
-  cmd.schedule_cmd("games_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_games_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("games_attach_html_root");
-    //cmd.schedule_cmd("games_attach_html_root", "duel-games");
-  });
-
-  // Create and store opponents html root
-  cmd.schedule_cmd("opponents_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_opponents_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("opponents_attach_html_root");
-  });
-
-  // Create and store maps html root
-  cmd.schedule_cmd("maps_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_maps_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("maps_attach_html_root");
-  });
-
-    cmd.schedule(`
-      header_create_html_root
-      header_attach_html_root
-    `);
-
-  // cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
-  //   cmd.schedule_cmd("state_set_gchart_html_root", html_root);
-  // })
-
-  // Request, store and render recent games
-    cmd.schedule(`
-      toplevel_create_html_root
-      toplevel_attach_html_root
-      data_fetch_toplevel
-      toplevel_render_data
-    `);
-
-    cmd.schedule_cmd("data_fetch_games").then((data) => {
-    cmd.schedule_cmd("state_set_games", data);
-    cmd.schedule_cmd("games_render_data");
-    cmd.schedule_cmd("gchart_render_data");
-  });
-
-  // Request, store and render opponents
-  cmd.schedule_cmd("data_fetch_opponents").then((data) => {
-    cmd.schedule_cmd("state_set_opponents", data);
-    cmd.schedule_cmd("opponents_render_data");
-  });
-
-  // Request, store and render maps
-  cmd.schedule_cmd("data_fetch_maps").then((data) => {
-    cmd.schedule_cmd("state_set_maps", data);
-    cmd.schedule_cmd("maps_render_data");
-  });
-
-  cmd.schedule_cmd("data_fetch_game_cnts").then((data) => {
-    cmd.schedule_cmd("state_set_game_cnts", data);
-  });
-
-  cmd.schedule_cmd("data_fetch_win_probabilities").then((data) => {
-    cmd.schedule_cmd("state_set_win_probabilities", data);
-  });
 }
 
 async function cmd_main_find_html_root(): Promise<void> {
-    //return find_element("main");
     state.state.html_main = document.getElementById("main");
     return Promise.resolve();
-  // const html_root = document.getElementById("main");
-
-  // if (!html_root) {
-  //   log.log("main::cmd_main_find_html_root - can't find the main html root");
-  //   Promise.reject();
-  // }
-
-  // return Promise.resolve(html_root);
 }
-
-// function cmd_main_find_activity_html_root(): Promise<HTMLElement|null> {
-//     return find_element("main__activity");
-// }
 
 async function cmd_main_find_activity_html_root(): Promise<void> {
-    state.state.duel_players.activity.html_root = document.getElementById("main__activity");
-    return Promise.resolve();
-}
-
-async function cmd_main_2cols_find_html_root(): Promise<void> {
-    state.state.html_main_2cols = document.getElementById("main__2cols");
-    return Promise.resolve();
-  // const html_root = document.getElementById("main__2cols");
-
-  // if (!html_root) {
-  //   log.log("main::cmd_main_2cols_find_html_root - can't find the main 2cols html root");
-  //   Promise.reject();
-  // }
-
-  // return Promise.resolve(html_root);
-}
-
-function find_element(id: string): Promise<HTMLElement|null> {
-    const e = document.getElementById(id);
-
-    if (!e) {
-        log.log(`app::find_element - can't find element with id = ${id}`);
+    if (!state.state.duel_players.activity) {
+        log.log("app.ts - cmd_main_find_activity_html_root - wrong state");
         return Promise.reject();
     }
-
-    return Promise.resolve(e);
+    state.state.duel_players.activity.html_root = document.getElementById("main__activity");
+    return Promise.resolve();
 }
