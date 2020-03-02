@@ -1,0 +1,18 @@
+@import '_common';
+
+#main__activity {
+    height: 100px;
+}
+
+#main__activity tspan {
+    font-family: $font-1;
+    font-size: $font-size-tiny;
+}
+
+#main__activity rect {
+    fill: $grey-2;
+}
+
+#main__activity text {
+    fill: $grey-0;
+}

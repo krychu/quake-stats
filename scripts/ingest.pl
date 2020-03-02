@@ -17,6 +17,8 @@ use JSON::Parse qw(parse_json);
 use Syntax::Keyword::Try;
 use Configuration qw($cfg);
 use Encode qw(decode encode);
+use Math::Round;
+use List::Util qw(min max);
 use Data::Dumper;
 use Log::Any::Adapter;
 use Log::Any '$log', prefix => '[ingest] ';
@@ -26,10 +28,12 @@ my $chartbl = quake_chartbl();
 
 try {
     my @data_dirs = ($cfg->{data_qtv}, $cfg->{data_badplace}, $cfg->{data_quake1pl});
+    my ($dbh, $sth_game) = prepare_dbh();
     for my $data_dir (@data_dirs) {
         my $abs_paths = get_stat_abs_paths($data_dir);
-        insert_stat_files($abs_paths);
+        insert_stat_files($dbh, $abs_paths, $sth_game);
     }
+    finish_dbh($dbh, $sth_game);
 }
 catch {
     my $error = $@ || 'unknown error';
@@ -46,43 +50,243 @@ sub get_stat_abs_paths {
     return \@abs_paths;
 }
 
-sub insert_stat_files {
-    my $abs_paths = shift;
-
-    if (!scalar(@$abs_paths)) {
-        return;
-    }
-
+sub prepare_dbh {
     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});
 
-    my $sth_game = $dbh->prepare(scalar(read_file('../sql/app/insert_game.sql')));
-    my $sth_game_player = $dbh->prepare(scalar(read_file('../sql/app/insert_game_player.sql')));
+    my $sth_game = prepare_sth_game($dbh);
+    return ($dbh, $sth_game);
+}
+
+sub finish_dbh {
+    my ($dbh, $sth_game) = @_;
+
+    $sth_game->finish or die "Cannot finish the game statement";
+    $dbh->disconnect or die "Disconnection error: $DBI::errstr\n";
+}
+
+sub insert_stat_files {
+    my ($dbh, $abs_paths, $sth_game) = @_;
 
     my ($cnt, $skip_cnt) = (0, 0);
     for my $abs_path (@$abs_paths) {
         $log->info("Adding: $abs_path");
 
         my $txt = read_file($abs_path);
+
+        # skip if the format is unsupported
         if (!format_ok($txt)) {
             $skip_cnt++;
             next;
         }
+
+        # txt pre-processing
         $txt = decode_names($txt);
+
+        # json pre-processing
         my $json = parse_json($txt);
-        preprocess_date($json);
+        clean_dates($json);
+
         my $file = basename($abs_path);
         last if is_already_added($dbh, $file, $json);
 
-        my $pg_game_id = insert_game($sth_game, $json, $file);
-        map {insert_game_player($sth_game_player, $pg_game_id, $_)} @{$json->{players}};
+        my ($record_0, $record_1) = prepare_records($json, $file);
+        insert_game($record_0, $record_1, $file, $sth_game);
+
         $cnt++;
     }
-
     $log->info("New stat files added: $cnt, files skept: $skip_cnt (unsupported format)\n");
+}
 
-    $sth_game->finish or die "Cannot finish the game statement";
-    $sth_game_player->finish or die "Cannot finish the game_player statement";
-    $dbh->disconnect or die "Disconnection error: $DBI::errstr\n";
+sub insert_game {
+    my ($record_0, $record_1, $file, $sth_game) = @_;
+
+    for my $r ($record_0, $record_1) {
+        $sth_game->execute( @{$r}{ @{columns()} } );
+    }
+}
+
+sub prepare_records {
+    my ($json, $file) = @_;
+
+    my ($a_json, $b_json) = @{ $json->{players} };
+
+    my $record_0 = {
+        date                 => $json->{date},
+        map                  => $json->{map},
+        hostname             => $json->{hostname},
+        mode                 => $json->{mode},
+        tl                   => $json->{tl},
+        dm                   => $json->{dm},
+        duration             => $json->{duration},
+        demo                 => $json->{demo},
+        file                 => $file,
+
+        a_name               => $a_json->{name},
+        a_top_color          => $a_json->{'top-color'},
+        a_bottom_color       => $a_json->{'bottom-color'},
+        a_ping               => $a_json->{ping},
+        a_frags              => $a_json->{stats}{frags},
+        a_spawn_frags        => $a_json->{stats}{'spawn-frags'},
+        a_suicides           => $a_json->{stats}{suicides},
+        a_kills              => $a_json->{stats}{kills},
+        a_deaths             => $a_json->{stats}{deaths},
+        a_spree_max          => $a_json->{spree}{max},
+        a_dmg_given          => $a_json->{dmg}{given}, # should it subtract self?
+        a_dmg_taken          => $a_json->{dmg}{taken},
+        a_rl_attacks         => $a_json->{weapons}{rl}{acc}{attacks},
+        a_rl_hits            => $a_json->{weapons}{rl}{acc}{hits},
+        a_rl_virtual         => $a_json->{weapons}{rl}{acc}{virtual},
+        a_rl_kills           => $a_json->{weapons}{rl}{kills}{enemy}, # what is total and self here?
+        a_rl_deaths          => $a_json->{weapons}{rl}{deaths},
+        a_rl_dmg_given       => $a_json->{weapons}{rl}{damage}{enemy},
+        a_rl_dmg_taken       => $b_json->{weapons}{rl}{damage}{enemy},
+        a_lg_attacks         => $a_json->{weapons}{lg}{acc}{attacks},
+        a_lg_hits            => $a_json->{weapons}{lg}{acc}{hits},
+        a_lg_kills           => $a_json->{weapons}{lg}{kills}{enemy},
+        a_lg_deaths          => $a_json->{weapons}{lg}{deaths},
+        a_lg_dmg_given       => $a_json->{weapons}{lg}{damage}{enemy},
+        a_lg_dmg_taken       => $b_json->{weapons}{lg}{damage}{enemy},
+        a_ra                 => $a_json->{items}{ra}{took},
+        a_ya                 => $a_json->{items}{ya}{took},
+        a_mh                 => $a_json->{items}{health_100}{took},
+        a_speed_avg          => round($a_json->{speed}{avg}),
+
+        b_name               => $b_json->{name},
+        b_top_color          => $b_json->{'top-color'},
+        b_bottom_color       => $b_json->{'bottom-color'},
+        b_ping               => $b_json->{ping},
+        b_frags              => $b_json->{stats}{frags},
+        b_spawn_frags        => $b_json->{stats}{'spawn-frags'},
+        b_suicides           => $b_json->{stats}{suicides},
+        b_kills              => $b_json->{stats}{kills},
+        b_deaths             => $b_json->{stats}{deaths},
+        b_spree_max          => $b_json->{spree}{max},
+        b_dmg_given          => $b_json->{dmg}{given}, # should it subtract self?
+        b_dmg_taken          => $b_json->{dmg}{taken},
+        b_rl_attacks         => $b_json->{weapons}{rl}{acc}{attacks},
+        b_rl_hits            => $b_json->{weapons}{rl}{acc}{hits},
+        b_rl_virtual         => $b_json->{weapons}{rl}{acc}{virtual},
+        b_rl_kills           => $b_json->{weapons}{rl}{kills}{enemy}, # what is total and self here?
+        b_rl_deaths          => $b_json->{weapons}{rl}{deaths},
+        b_rl_dmg_given       => $b_json->{weapons}{rl}{damage}{enemy},
+        b_rl_dmg_taken       => $a_json->{weapons}{rl}{damage}{enemy},
+        b_lg_attacks         => $b_json->{weapons}{lg}{acc}{attacks},
+        b_lg_hits            => $b_json->{weapons}{lg}{acc}{hits},
+        b_lg_kills           => $b_json->{weapons}{lg}{kills}{enemy},
+        b_lg_deaths          => $b_json->{weapons}{lg}{deaths},
+        b_lg_dmg_given       => $b_json->{weapons}{lg}{damage}{enemy},
+        b_lg_dmg_taken       => $a_json->{weapons}{lg}{damage}{enemy},
+        b_ra                 => $b_json->{items}{ra}{took},
+        b_ya                 => $b_json->{items}{ya}{took},
+        b_mh                 => $b_json->{items}{health_100}{took},
+        b_speed_avg          => round($b_json->{speed}{avg})
+    };
+
+    my $record_1 = { %$record_0 }; # shallow copy
+    my @ignore = qw{a_win a_loss a_draw};
+    for my $key (keys %$record_0) {
+        next if (grep {$key eq $_} @ignore);
+
+        my $new_key = $key =~ s/^a_/b_/r;
+        if ($new_key eq $key) {
+            $new_key = $key =~ s/^b_/a_/r;
+        }
+        if ($new_key ne $key) {
+            $record_1->{$new_key} = $record_0->{$key};
+        }
+    }
+
+    # $record_1->{a_win} = $record_0->{a_loss};
+    # $record_1->{a_loss} = $record_0->{a_win};
+
+    return ($record_0, $record_1);
+}
+
+sub prepare_sth_game {
+    my $dbh = shift;
+
+    my @columns = @{columns()};
+    my $columns_str = join(",", @columns);
+    my $vars_str = join(",", map { '$' . $_ } 1 .. scalar(@columns));
+    return $dbh->prepare(
+        qq{
+        INSERT INTO games ($columns_str)
+        VALUES ($vars_str);
+        });
+}
+
+sub columns {
+    return [qw{
+            date
+            map
+            hostname
+            mode
+            tl
+            dm
+            duration
+            demo
+            file
+
+            a_name
+            a_top_color
+            a_bottom_color
+            a_ping
+            a_frags
+            a_spawn_frags
+            a_suicides
+            a_kills
+            a_deaths
+            a_spree_max
+            a_dmg_given
+            a_dmg_taken
+            a_rl_attacks
+            a_rl_hits
+            a_rl_virtual
+            a_rl_kills
+            a_rl_deaths
+            a_rl_dmg_given
+            a_rl_dmg_taken
+            a_lg_attacks
+            a_lg_hits
+            a_lg_kills
+            a_lg_deaths
+            a_lg_dmg_given
+            a_lg_dmg_taken
+            a_ra
+            a_ya
+            a_mh
+            a_speed_avg
+
+            b_name
+            b_top_color
+            b_bottom_color
+            b_ping
+            b_frags
+            b_spawn_frags
+            b_suicides
+            b_kills
+            b_deaths
+            b_spree_max
+            b_dmg_given
+            b_dmg_taken
+            b_rl_attacks
+            b_rl_hits
+            b_rl_virtual
+            b_rl_kills
+            b_rl_deaths
+            b_rl_dmg_given
+            b_rl_dmg_taken
+            b_lg_attacks
+            b_lg_hits
+            b_lg_kills
+            b_lg_deaths
+            b_lg_dmg_given
+            b_lg_dmg_taken
+            b_ra
+            b_ya
+            b_mh
+            b_speed_avg
+            }];
 }
 
 sub format_ok {
@@ -116,103 +320,13 @@ sub is_already_added {
     return defined($ref);
 }
 
-# Returns id of the inserted game.
-sub insert_game {
-    my ($sth, $json, $file) = @_;
-
-    $sth->execute(
-        $json->{version},
-        $json->{date},
-        $json->{map},
-        $json->{hostname},
-        $json->{ip},
-        $json->{port},
-        $json->{mode},
-        $json->{tl},
-        $json->{dm},
-        $json->{duration},
-        $json->{demo},
-        $file
-        );
-
-    return $sth->fetch()->[0];
-}
-
-sub preprocess_date {
+sub clean_dates {
     my $json = shift;
 
     my $date = $json->{date};
     if ($date =~ m/Summer Time/) {
         $json->{date} = $date =~ s/Summer Time//r;
     }
-}
-
-sub insert_game_player {
-    my ($sth, $pg_game_id, $player) = @_;
-
-    # print Dumper($player);
-
-    $sth->execute(
-        $pg_game_id,
-        $player->{'top-color'},
-        $player->{'bottom-color'},
-        $player->{ping},
-        $player->{name},
-
-        $player->{stats}->{frags},
-        $player->{stats}->{deaths},
-        $player->{stats}->{'spawn-frags'},
-        $player->{stats}->{kills},
-        $player->{stats}->{suicides},
-
-        $player->{dmg}->{taken},
-        $player->{dmg}->{given},
-        $player->{dmg}->{self},
-
-        $player->{spree}->{max},
-        $player->{spree}->{quad},
-        $player->{control},
-        $player->{speed}->{max},
-        $player->{speed}->{avg},
-
-        $player->{items}->{health_15}->{took},
-        $player->{items}->{health_25}->{took},
-        $player->{items}->{health_100}->{took},
-        $player->{items}->{ga}->{took},
-        $player->{items}->{ya}->{took},
-        $player->{items}->{ra}->{took},
-        $player->{items}->{q}->{took},
-        $player->{items}->{q}->{time},
-
-        $player->{weapons}->{sg}->{acc}->{attacks},
-        $player->{weapons}->{sg}->{acc}->{hits},
-        $player->{weapons}->{sg}->{kills}->{total},
-        $player->{weapons}->{sg}->{deaths},
-        $player->{weapons}->{sg}->{damage}->{enemy},
-
-        $player->{weapons}->{gl}->{acc}->{attacks},
-        $player->{weapons}->{gl}->{acc}->{hits},
-        $player->{weapons}->{gl}->{acc}->{virtual},
-        $player->{weapons}->{gl}->{kills}->{total},
-        $player->{weapons}->{gl}->{deaths},
-        $player->{weapons}->{gl}->{pickups}->{taken},
-        $player->{weapons}->{gl}->{damage}->{enemy},
-
-        $player->{weapons}->{rl}->{acc}->{attacks},
-        $player->{weapons}->{rl}->{acc}->{hits},
-        $player->{weapons}->{rl}->{acc}->{virtual},
-        $player->{weapons}->{rl}->{kills}->{total},
-        $player->{weapons}->{rl}->{deaths},
-        $player->{weapons}->{rl}->{pickups}->{taken},
-        $player->{weapons}->{rl}->{damage}->{enemy},
-
-        $player->{weapons}->{lg}->{acc}->{attacks},
-        $player->{weapons}->{lg}->{acc}->{hits},
-        $player->{weapons}->{lg}->{kills}->{total},
-        $player->{weapons}->{lg}->{deaths},
-        $player->{weapons}->{lg}->{pickups}->{taken},
-        $player->{weapons}->{lg}->{damage}->{enemy}
-        );
 }
 
 sub quake_chartbl {

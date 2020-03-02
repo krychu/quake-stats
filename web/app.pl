@@ -41,14 +41,39 @@ get '/status' => sub {
 
 # API
 
-# Players
+# Main: Activity
+get '/api/1vs1/activity' => sub {
+    my $c = shift;
+    my $activity = PG::get_activity();
+    return $c->render(json => $activity);
+};
+
+# Main: Players
 get '/api/1vs1/players' => sub {
     my $c = shift;
-    my $players = PG::get_players();
+    my $interval_str = '94 months';
+    my $players = PG::get_players($interval_str);
     $c->render(json => $players);
 };
 
-# Recent games
+# Main: Recent games
+get '/api/1vs1/games' => sub {
+    my $c = shift;
+    my $game_cnt = 50;
+    my $games = PG::get_games_short($game_cnt);
+    $c->render(json => $games);
+};
+
+# Player: Top-level stats
+get '/api/1vs1/:player/top' => sub {
+    my $c = shift;
+    my $player = $c->stash('player');
+    my $interval_str = '94 months';
+    my $top = PG::get_top($player, $interval_str);
+    $c->render(json => $top);
+};
+
+# Player: Recent games
 get '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
     my $player = $c->stash('player');
@@ -57,20 +82,20 @@ get '/api/1vs1/:player/games/:cnt' => sub {
     $c->render(json => $games);
 };
 
-# Opponents
+# Player: Opponents
 get '/api/1vs1/:player/opponents' => sub {
     my $c = shift;
     my $player = $c->stash('player');
-    my $interval_str = '4 months';
+    my $interval_str = '94 months';
     my $opponents = PG::get_opponents($player, $interval_str);
     $c->render(json => $opponents);
 };
 
-# Maps
+# Player: Maps
 get '/api/1vs1/:player/maps' => sub {
     my $c = shift;
     my $player = $c->stash('player');
-    my $interval_str = '4 months';
+    my $interval_str = '94 months';
     my $maps = PG::get_maps($player, $interval_str);
     $c->render(json => $maps);
 };
@@ -107,8 +132,9 @@ __DATA__
       const PAGE = 'duel_players';
     </script>
 
-    <div id="main" class="main--players">
-      <div id="players">duel</div>
+    <div id="main">
+      <div id="main__title">duel</div>
+      <div id="main__activity"></div>
     </div>
 
     <script type="module" src="/app.js"></script>
@@ -145,7 +171,7 @@ __DATA__
     </script>
 
     <div id="main">
-      <div id="player"><a href="/1vs1">duel</a> / <%= $player %></div>
+      <div id="main__title"><a href="/1vs1">duel</a> / <%= $player %></div>
     </div>
 
     <script type="module" src="/app.js"></script>

@@ -1,15 +1,23 @@
-import { state, Duel, Cmd }from "./State";
+import { state }from "./State";
+import { GameData } from "./Data";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
-//import * as SVG from "svgjs";
 import * as SVG from "svg.js";
 
-const commands: [string, Cmd][] = [
+export interface GamesChart {
+    game_cnt: number;
+    html_root_id: string; // Can be removed
+    html_root: HTMLElement | null;
+    html_chart_root: HTMLElement | null;
+    // svg_width: number;
+    // svg_height: number;
+}
+
+const commands: [string, cmd.Cmd][] = [
   //[ "gchart_find_html_root",            cmd_gchart_find_html_root ],
   [ "gchart_create_html_root",          cmd_gchart_create_html_root ],
   [ "gchart_attach_html_root",          cmd_gchart_attach_html_root ],
-  [ "gchart_render_data",               cmd_gchart_render_data ],
-  [ "state_set_gchart_html_root",       cmd_state_set_gchart_html_root ]
+  [ "gchart_render_data",               cmd_gchart_render_data ]
 ];
 
 const CHART_PADDING_X = 40;
@@ -18,7 +26,15 @@ const CHART_CIRCLE_RADIUS = 2;
 const CHART_STEP_Y = 5;
 
 export function init() {
-  cmd.add_cmds(commands);
+    cmd.add_cmds(commands);
+    const substate = {
+        game_cnt: 20,
+        html_root_id: "1vs1-games-chart", // Can be removed
+        html_root: null,
+        html_chart_root: null
+    };
+    state.duel_player.games_chart = substate;
+
   log.log("Games Chart module initialized");
 }
 
@@ -28,14 +44,12 @@ export function shutdown() {
 //------------------------------------------------------------------------------
 // Commands
 //------------------------------------------------------------------------------
-function cmd_state_set_gchart_html_root(roots: HTMLElement[]): Promise<any> {
-  state.duel_player.games_chart.html_root = roots[0];
-  state.duel_player.games_chart.html_chart_root = roots[1];
-  return Promise.resolve();
-}
-
-function cmd_gchart_create_html_root(): Promise<HTMLElement[]> {
-  const html_root = document.createElement("div");
+async function cmd_gchart_create_html_root(): Promise<void> {
+    if (!state.duel_player.games_chart) {
+        log.log("GamesChart.ts - cmd_gchart_create_html_root - wrong state");
+        return Promise.reject();
+    }
+    const html_root = document.createElement("div");
   //html_root.className = "m11-games-chart";
 
   const html_chart_root = document.createElement("div");
@@ -44,20 +58,23 @@ function cmd_gchart_create_html_root(): Promise<HTMLElement[]> {
   html_root.insertAdjacentHTML("beforeend", _html_render_title());
   html_root.appendChild(html_chart_root);
 
-  return Promise.resolve([html_root, html_chart_root]);
+    state.duel_player.games_chart.html_root = html_root;
+    state.duel_player.games_chart.html_chart_root = html_chart_root;
+
+    return Promise.resolve();
 }
 
 function _html_render_title(): string {
   return `
-<div class="m11-games-chart__title">
+<div class="section_title--games-chart">
 Last games
 </div>
 `;
 }
 
 function cmd_gchart_attach_html_root(): Promise<any> {
-  if (state.duel_player.games_chart.html_root == null || state.html_main == null) {
-    log.log("GamesChart:cmd_gchart_attach_html_root = state doesn't contain required data");
+  if (!state.duel_player.games_chart || state.duel_player.games_chart.html_root == null || state.html_main == null) {
+    log.log("GamesChart.ts - cmd_gchart_attach_html_root - wrong state");
     return Promise.reject();
   }
 
@@ -65,18 +82,9 @@ function cmd_gchart_attach_html_root(): Promise<any> {
   return Promise.resolve();
 }
 
-// function cmd_gchart_find_html_root(): Promise<any> {
-//   const html_root = document.getElementById(state.duel_player.games_chart.html_root_id);
-//   if (html_root == null) {
-//     log.log(`GamesChart::cmd_gchart_find_html_root - can't find element with id '${state.duel_player.games_chart.html_root_id}'`);
-//     return Promise.reject();
-//   }
-//   return Promise.resolve(html_root);
-// }
-
 function cmd_gchart_render_data(): Promise<any> {
-  if (state.duel_player.data.games == null || state.duel_player.games_chart.html_chart_root == null) {
-    log.log(`GamesChart::cmd_state_render_data - insuficient state (${state.duel_player.data.games}, ${state.duel_player.games_chart.html_root})`);
+  if (!state.duel_player.data || !state.duel_player.data.games || !state.duel_player.games_chart || !state.duel_player.games_chart.html_chart_root) {
+    log.log("GamesCharts - cmd_gchart_render_data - wrong state");
     return Promise.reject();
   }
 
@@ -87,11 +95,6 @@ function cmd_gchart_render_data(): Promise<any> {
   const max_y = _games_chart_max_y(diffs);
   const points = _games_chart_points(diffs, max_y, svg_width, svg_height);
 
-  // console.log(state.duel_player.data.games);
-  // console.log(diffs);
-  // console.log(max_y);
-  // console.log(points);
-
   _games_chart_draw(state.duel_player.games_chart.html_chart_root, points, max_y, svg_width, svg_height);
 
   return Promise.resolve();
@@ -100,8 +103,8 @@ function cmd_gchart_render_data(): Promise<any> {
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
-function _games_chart_diffs(games: Duel[]): number[] {
-  return games.map(([a, b]) => a.frags - b.frags);
+function _games_chart_diffs(games: GameData[]): number[] {
+  return games.map((g) => g.a_frags - g.b_frags);
 }
 
 function _games_chart_max_y(diffs: number[]): number {

@@ -14,9 +14,13 @@ my %queries;
 {
     my $dbh = DBI->connect("dbi:Pg:host=$cfg->{postgresql_host};port=$cfg->{postgresql_port};dbname=$cfg->{postgresql_dbname}", $cfg->{postgresql_user}, '', {AutoCommit => 1, RaiseError => 1, PrintError => 1});
 
+    $queries{select_1vs1_top} = $dbh->prepare(scalar(read_file('../sql/app/top_level.sql')));
     $queries{select_1vs1_games} = $dbh->prepare(scalar(read_file('../sql/app/games.sql')));
     $queries{select_1vs1_opponents} = $dbh->prepare(scalar(read_file('../sql/app/opponents.sql')));
     $queries{select_1vs1_maps} = $dbh->prepare(scalar(read_file('../sql/app/maps.sql')));
+
+    $queries{select_1vs1_activity} = $dbh->prepare(scalar(read_file('../sql/app/activity.sql')));
+    $queries{select_1vs1_games_short} = $dbh->prepare(scalar(read_file('../sql/app/games_short.sql')));
     $queries{select_1vs1_players} = $dbh->prepare(scalar(read_file('../sql/app/players.sql')));
 
     sub get_dbh {
@@ -24,10 +28,34 @@ my %queries;
     }
 };
 
-sub get_players {
-    my $query = $queries{select_1vs1_players};
+sub get_activity {
+    my $query = $queries{select_1vs1_activity};
     $query->execute();
     return $query->fetchall_arrayref({});
+}
+
+sub get_players {
+    my $interval_str = shift;
+
+    my $query = $queries{select_1vs1_players};
+    $query->execute($interval_str);
+    return $query->fetchall_arrayref({});
+}
+
+sub get_games_short {
+    my $game_cnt = shift;
+
+    my $query = $queries{select_1vs1_games_short};
+    $query->execute($game_cnt);
+    return $query->fetchall_arrayref({});
+}
+
+sub get_top {
+    my ($player, $interval_str) = @_;
+
+    my $query = $queries{select_1vs1_top};
+    $query->execute($player, $interval_str);
+    return $query->fetchall_arrayref({})->[0];
 }
 
 sub get_games {
@@ -35,8 +63,9 @@ sub get_games {
     my $query = $queries{select_1vs1_games};
 
     $query->execute($player, $game_cnt);
-    my @games = split_by(2, @{ $query->fetchall_arrayref({}) });
-    return \@games;
+    return $query->fetchall_arrayref({});
+    #my @games = split_by(2, @{ $query->fetchall_arrayref({}) });
+    #return \@games;
 }
 
 sub get_opponents {

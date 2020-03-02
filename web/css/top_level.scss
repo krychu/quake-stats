@@ -1,0 +1,25 @@
+@import '_common';
+
+.m11-toplevel {
+    display: flex;
+    flex-direction: row;
+}
+
+.m11-toplevel__item {
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+}
+
+.m11-toplevel__item__stat {
+    text-align: center;
+    font-size: $font-size-huge;
+}
+
+.m11-toplevel__item__label {
+    text-align: center;
+}
+
+.m11-toplevel__item--left-aligned {
+    text-align: left;
+}

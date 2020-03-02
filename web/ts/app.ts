@@ -6,13 +6,17 @@ import * as games from "./Games";
 import * as opponents from "./Opponents";
 import * as maps from "./Maps";
 import * as games_chart from "./GamesChart";
+import * as activity from "./Activity";
+import * as header from "./Header";
 import * as players from "./Players";
+import * as toplevel from "./TopLevel";
 
 declare const SV_PLAYER: string;
 declare const PAGE: string;
 
-const commands: [string, state.Cmd][] = [
-  [ "main_find_html_root",        cmd_main_find_html_root ]
+const commands: [string, cmd.Cmd][] = [
+    [ "main_find_html_root",          cmd_main_find_html_root ],
+    [ "main_find_activity_html_root", cmd_main_find_activity_html_root ]
 ];
 
 main();
@@ -33,7 +37,9 @@ function main_duel_players() {
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
     data,
-    players
+    activity,
+    players,
+    header
   ];
 
   modules.forEach((m) => {
@@ -42,31 +48,32 @@ function main_duel_players() {
 
   cmd.add_cmds(commands);
 
-  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_html_root", html_root);
-  });
-
-  cmd.schedule_cmd("duel_players_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_duel_players_html_root", html_root);
-    // since above is immediate we don't need to .then the one below
-    cmd.schedule_cmd("duel_players_attach_html_root");
-  });
-
-  cmd.schedule_cmd("data_fetch_duel_players").then((data) => {
-    cmd.schedule_cmd("state_set_duel_players", data);
-    cmd.schedule_cmd("duel_players_render_data");
-  });
+    cmd.schedule(`
+      || data_fetch_duel_players
+      || data_fetch_activity
+      || main_find_html_root
+      || main_find_activity_html_root
+       | header_create_html_root
+       | header_attach_html_root
+       | duel_players_create_html_root
+       | duel_players_attach_html_root
+      --
+      || activity_render_data
+      || duel_players_render_data
+    `);
 }
 
 function main_duel_player() {
   const modules = [
     state, // state needs to go first since cmd module accessess stuff in state
     cmd,
-    data,
+      data,
+      toplevel,
     games,
     opponents,
     maps,
-    games_chart
+      games_chart,
+      header
   ];
 
   modules.forEach((m) => {
@@ -77,77 +84,53 @@ function main_duel_player() {
 
   state.state.duel_player.player = SV_PLAYER;
 
-  cmd.schedule_cmd("main_find_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_main_html_root", html_root);
-  });
+    cmd.schedule(`
+          // fetch data
 
-  // Create and store games chart html root
-  cmd.schedule_cmd("gchart_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_gchart_html_root", html_root);
-    cmd.schedule_cmd("gchart_attach_html_root");
-  });
+      || data_fetch_toplevel
+      || data_fetch_games
+      || data_fetch_opponents
+      || data_fetch_maps
 
-  // Create and store recent games html root
-  cmd.schedule_cmd("games_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_games_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("games_attach_html_root");
-    //cmd.schedule_cmd("games_attach_html_root", "duel-games");
-  });
+          // create html
 
-  // Create and store opponents html root
-  cmd.schedule_cmd("opponents_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_opponents_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("opponents_attach_html_root");
-  });
+      || main_find_html_root
+      || header_create_html_root
+      || toplevel_create_html_root
+      || gchart_create_html_root
+      || games_create_html_root
+      || opponents_create_html_root
+      || maps_create_html_root
 
-  // Create and store maps html root
-  cmd.schedule_cmd("maps_create_html_root").then((html_root) => {
-    cmd.schedule_cmd("state_set_maps_html_root", html_root);
-    // we know above is immediate
-    cmd.schedule_cmd("maps_attach_html_root");
-  });
+      --
 
-  // cmd.schedule_cmd("gchart_find_html_root").then(html_root => {
-  //   cmd.schedule_cmd("state_set_gchart_html_root", html_root);
-  // })
+      || header_attach_html_root
+      || toplevel_attach_html_root
+      || gchart_attach_html_root
+      || games_attach_html_root
+      || opponents_attach_html_root
+      || maps_attach_html_root
 
-  // Request, store and render recent games
-  cmd.schedule_cmd("data_fetch_games").then((data) => {
-    cmd.schedule_cmd("state_set_games", data);
-    cmd.schedule_cmd("games_render_data");
-    cmd.schedule_cmd("gchart_render_data");
-  });
+          // render data
 
-  // Request, store and render opponents
-  cmd.schedule_cmd("data_fetch_opponents").then((data) => {
-    cmd.schedule_cmd("state_set_opponents", data);
-    cmd.schedule_cmd("opponents_render_data");
-  });
-
-  // Request, store and render maps
-  cmd.schedule_cmd("data_fetch_maps").then((data) => {
-    cmd.schedule_cmd("state_set_maps", data);
-    cmd.schedule_cmd("maps_render_data");
-  });
-
-  cmd.schedule_cmd("data_fetch_game_cnts").then((data) => {
-    cmd.schedule_cmd("state_set_game_cnts", data);
-  });
-
-  cmd.schedule_cmd("data_fetch_win_probabilities").then((data) => {
-    cmd.schedule_cmd("state_set_win_probabilities", data);
-  });
+      || toplevel_render_data
+      || gchart_render_data
+      || games_render_data
+      || opponents_render_data
+      || maps_render_data
+    `);
 }
 
-function cmd_main_find_html_root(): Promise<any> {
-  const html_root = document.getElementById("main");
+async function cmd_main_find_html_root(): Promise<void> {
+    state.state.html_main = document.getElementById("main");
+    return Promise.resolve();
+}
 
-  if (!html_root) {
-    log.log("main::cmd_main_find_html_root - can't find the main html root");
-    Promise.reject();
-  }
-
-  return Promise.resolve(html_root);
+async function cmd_main_find_activity_html_root(): Promise<void> {
+    if (!state.state.duel_players.activity) {
+        log.log("app.ts - cmd_main_find_activity_html_root - wrong state");
+        return Promise.reject();
+    }
+    state.state.duel_players.activity.html_root = document.getElementById("main__activity");
+    return Promise.resolve();
 }
