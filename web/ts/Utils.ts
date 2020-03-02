@@ -9,6 +9,24 @@ export function htmlToElement(html: string): HTMLElement {
     return template.content.firstElementChild as HTMLElement;
 }
 
+// From Tom Gruner @ http://stackoverflow.com/a/12034334/1660815
+const entityMap: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+};
+
+export function escape_html(str: string) {
+    return String(str).replace(/[&<>"'`=\/]/g, function (s: string) {
+        return entityMap[s];
+    });
+}
+
 export function time_ago(date: string): string {
     const parts = date.split(":").map(part => parseInt(part));
 
@@ -80,9 +98,8 @@ export function html_header_time_cell(name: string, extra_classes = ""): string 
     return `<div class="table__cell table__cell--header table__cell--tiny table__cell--right-align ${extra_classes}">${name}</div>`;
 }
 
-
 export function html_name_cell(name: string, extra_classes: string = ""): string {
-    return `<div class="table__name-cell ${extra_classes}"><div>${name}</div></div>`;
+    return `<div class="table__name-cell ${extra_classes}"><div>${escape_html(name)}</div></div>`;
 }
 export function html_header_name_cell(name: string, extra_classes: string = ""): string {
     return `<div class="table__name-cell table__cell--header ${extra_classes}">${name}</div>`;

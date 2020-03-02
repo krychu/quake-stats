@@ -87,9 +87,6 @@ function _html_render_players(data: PlayerData[], element: HTMLElement) {
   const html = `${rows}`;
 
   element.insertAdjacentHTML("beforeend", html);
-  // element.getElementsByClassName("duel-players__player").map((e) => {
-
-  // });
 }
 
 function _html_render_players_header(): string {

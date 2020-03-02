@@ -119,7 +119,7 @@ function _html_render_map_row(player: string, d: MapData, max_game_cnt: number, 
   <!--<div class="m11-maps__player-b-cell m11-maps__cell--map">opponent</div>-->
 
   ${html_name_cell(d.map, "table__name-cell--huge table__cell--first-column")}
-  ${html_bar_cell(d.game_cnt, max_game_cnt, 1)}
+  ${html_bar_cell(d.game_cnt, max_game_cnt, 8)}
   ${html_bar_cell(d.opponent_cnt, max_opponent_cnt, 8)}
   ${html_cmp_cell_100percent(d.a_win_percent, d.b_win_percent)}
   ${html_cmp_cell_100percent(d.a_avg_frag_percent, d.b_avg_frag_percent)}

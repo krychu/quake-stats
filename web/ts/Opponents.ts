@@ -119,7 +119,7 @@ function _html_render_opponent_row(player: string, d: OpponentData, max_game_cnt
   <!--<div class="m11-opponents__vs-cell">vs</div>-->
 
   ${html_name_cell(d.name, "table__name-cell--huge table__cell--first-column")}
-  ${html_bar_cell(d.game_cnt, max_game_cnt, 1)}
+  ${html_bar_cell(d.game_cnt, max_game_cnt, 8)}
   ${html_cmp_cell_100percent(d.a_win_percent, d.b_win_percent)}
   ${html_cmp_cell_100percent(d.a_avg_frag_percent, d.b_avg_frag_percent)}
   ${html_cmp_cell_100percent(d.a_avg_dmg_percent, d.b_avg_dmg_percent)}

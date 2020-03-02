@@ -71,7 +71,7 @@ function _html_render_activity(data: DayActivityData[], element: HTMLElement) {
   const draw = SVG(element);
 
   for (let i=0; i<data.length; i++) {
-    data[i].game_cnt = Math.round(Math.random() * 380);
+    //data[i].game_cnt = Math.round(Math.random() * 380);
 
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
     const game_divider = Math.max(max_game_cnt, 100);
@@ -80,7 +80,7 @@ function _html_render_activity(data: DayActivityData[], element: HTMLElement) {
     const bar_width = 15;
     const bar_gap = 10;
     const x = (bar_width + bar_gap) * i;
-    const bar_height = Math.round((data[i].game_cnt / game_divider) * max_bar_height);
+      const bar_height = Math.max( Math.round((data[i].game_cnt / game_divider) * max_bar_height), 2);
     const bar_y = max_bar_height - bar_height;
 
     const text_y = max_bar_height + 2;
