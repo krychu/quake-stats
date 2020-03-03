@@ -33,6 +33,7 @@ async function cmd_header_create_html_root(): Promise<void> {
     const html_root = document.createElement("div");
     html_root.id = "header";
     html_root.insertAdjacentHTML("beforeend", _html_render_header());
+    (html_root.querySelector("select") as HTMLElement).addEventListener("change", on_time_range_change);
     state.header.html_root = html_root;
     return Promise.resolve();
 }
@@ -47,24 +48,16 @@ async function cmd_header_attach_html_root(): Promise<void> {
     return Promise.resolve();
 }
 
-export function _on_change() {
+export function on_time_range_change() {
     console.log("asd");
 }
 
 function _html_render_header() {
-    console.log(this);
     return `
 <div class="header__logo">QWSTATS</div>
-<select onchange="_on_change()">
+<select>
   <option value="3 months">3 months</option>
   <option value="6 months">6 months</option>
 </select>
 `;
 }
-
-// function _html_render_header(time_period: string) {
-//     return `
-// <div class="header__logo">QWSTATS</div>
-// <div class="header__time">${time_period}</div>
-// `;
-// }
