@@ -79,11 +79,14 @@ function cmd_games_render_data(): Promise<any> {
 // Helpers
 //------------------------------------------------------------------------------
 function _html_remove_games(element: HTMLElement) {
-    console.log(element);
-    log.log("IMPLEMENT ME: _html_remove_games");
+    element.innerHTML = "";
 }
 
 function _html_render_games(data: GameData[], element: HTMLElement) {
+    if (!data.length) {
+        return;
+    }
+
   let rows = _html_render_games_header(data[0]);
   //rows += data.map(([a, b]) => _html_render_games_row(data)).join("");
   rows += data.map((g) => _html_render_games_row(g)).join("");

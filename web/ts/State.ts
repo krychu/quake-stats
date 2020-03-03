@@ -13,6 +13,7 @@ import { TopLevel } from "./TopLevel";
 const commands: [string, cmd.Cmd][] = [];
 
 interface State {
+    page: "duel_player" | "duel_players";
     html_main: HTMLElement | null;
     cmds: cmd.Cmds | null;
     header: Header | null;
@@ -43,6 +44,7 @@ interface DuelPlayerPage {
 
 */
 let state: State = {
+    page: (window as any).PAGE,
   html_main: null,
 
     cmds: null,

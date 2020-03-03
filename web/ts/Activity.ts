@@ -56,16 +56,16 @@ function cmd_activity_render_data(): Promise<void> {
 // Helpers
 //------------------------------------------------------------------------------
 function _html_remove_activity(element: HTMLElement) {
-    console.log(element);
-    log.log("IMPLEMENT ME: _html_remove_activity");
+    element.innerHTML = "";
 }
 
 function _html_render_activity(data: DayActivityData[], element: HTMLElement) {
-    if (!state.duel_players.activity || !state.duel_players.activity.html_root) {
+    if (!state.html_main || !state.duel_players.activity || !state.duel_players.activity.html_root) {
         log.log("Activity.ts - _html_render_activity - wrong state");
         return;
     }
-  const svg_width = (state.duel_players.activity.html_root as HTMLElement).offsetWidth;
+
+    const svg_width = (state.duel_players.activity.html_root as HTMLElement).offsetWidth;
   const svg_height = (state.duel_players.activity.html_root as HTMLElement).offsetHeight;
 
   const draw = SVG(element);

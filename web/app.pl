@@ -74,11 +74,12 @@ post '/api/1vs1/:player/top' => sub {
 };
 
 # Player: Recent games
-get '/api/1vs1/:player/games/:cnt' => sub {
+post '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
+    my $time_period = $c->param("time_period");
     my $player = $c->stash('player');
     my $game_cnt = $c->stash('cnt');
-    my $games = PG::get_games($player, $game_cnt);
+    my $games = PG::get_games($player, $game_cnt, $time_period);
     $c->render(json => $games);
 };
 

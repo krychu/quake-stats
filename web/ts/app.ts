@@ -10,15 +10,18 @@ import * as activity from "./Activity";
 import * as header from "./Header";
 import * as players from "./Players";
 import * as toplevel from "./TopLevel";
+import { html_insufficient_data } from "./Utils";
 
 declare const SV_PLAYER: string;
 declare const PAGE: string;
 
 const commands: [string, cmd.Cmd][] = [
     [ "main_find_html_root",          cmd_main_find_html_root ],
-    [ "main_find_activity_html_root", cmd_main_find_activity_html_root ]
+    [ "main_find_activity_html_root", cmd_main_find_activity_html_root ],
+    [ "main_insufficient_data",       cmd_main_insufficient_data ]
 ];
 
+state.state.page = PAGE as "duel_player" | "duel_players";
 main();
 
 export function main() {
@@ -58,6 +61,7 @@ function main_duel_players() {
        | duel_players_create_html_root
        | duel_players_attach_html_root
       --
+      || main_insufficient_data
       || activity_render_data
       || duel_players_render_data
     `);
@@ -112,7 +116,7 @@ function main_duel_player() {
       || maps_attach_html_root
 
           // render data
-
+      || main_insufficient_data
       || toplevel_render_data
       || gchart_render_data
       || games_render_data
@@ -133,4 +137,23 @@ async function cmd_main_find_activity_html_root(): Promise<void> {
     }
     state.state.duel_players.activity.html_root = document.getElementById("main__activity");
     return Promise.resolve();
+}
+
+async function cmd_main_insufficient_data(): Promise<void> {
+    if (!state.state.html_main) {
+        log.log("app.ts - cmd_main_insufficient_data - wrong state");
+        return Promise.reject();
+    }
+
+    const e = state.state.html_main.querySelector(".insufficient-data");
+    if (e) {
+        state.state.html_main.removeChild(e);
+    }
+
+    if (
+        (state.state.page === "duel_player" && (!state.state.duel_player.data || !state.state.duel_player.data.games.length))
+            || (state.state.page === "duel_players" && (!state.state.duel_players.data || !state.state.duel_players.data.players.length))) {
+        //state.html_main.appendChild(html_insufficient)
+        state.state.html_main.insertAdjacentHTML("beforeend", html_insufficient_data());
+    }
 }

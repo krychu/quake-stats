@@ -2,6 +2,7 @@ import { state }from "./State";
 import { GameData } from "./Data";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
+import { html_insufficient_data } from "./Utils";
 import * as SVG from "svg.js";
 
 export interface GamesChart {
@@ -55,9 +56,6 @@ async function cmd_gchart_create_html_root(): Promise<void> {
   const html_chart_root = document.createElement("div");
   html_chart_root.className = "m11-games-chart";
 
-  html_root.insertAdjacentHTML("beforeend", _html_render_title());
-  html_root.appendChild(html_chart_root);
-
     state.duel_player.games_chart.html_root = html_root;
     state.duel_player.games_chart.html_chart_root = html_chart_root;
 
@@ -83,10 +81,19 @@ function cmd_gchart_attach_html_root(): Promise<any> {
 }
 
 function cmd_gchart_render_data(): Promise<any> {
-  if (!state.duel_player.data || !state.duel_player.data.games || !state.duel_player.games_chart || !state.duel_player.games_chart.html_chart_root) {
+  if (!state.html_main || !state.duel_player.data || !state.duel_player.data.games || !state.duel_player.games_chart || !state.duel_player.games_chart.html_root || !state.duel_player.games_chart.html_chart_root) {
     log.log("GamesCharts - cmd_gchart_render_data - wrong state");
     return Promise.reject();
   }
+
+    state.duel_player.games_chart.html_root.innerHTML = "";
+
+    if (!state.duel_player.data.games.length) {
+        return Promise.resolve();
+    }
+
+    state.duel_player.games_chart.html_root.insertAdjacentHTML("beforeend", _html_render_title());
+    state.duel_player.games_chart.html_root.appendChild(state.duel_player.games_chart.html_chart_root);
 
   const svg_width = state.duel_player.games_chart.html_chart_root.offsetWidth;
   const svg_height = state.duel_player.games_chart.html_chart_root.offsetHeight;
@@ -95,6 +102,7 @@ function cmd_gchart_render_data(): Promise<any> {
   const max_y = _games_chart_max_y(diffs);
   const points = _games_chart_points(diffs, max_y, svg_width, svg_height);
 
+    state.duel_player.games_chart.html_chart_root.innerHTML = "";
   _games_chart_draw(state.duel_player.games_chart.html_chart_root, points, max_y, svg_width, svg_height);
 
   return Promise.resolve();

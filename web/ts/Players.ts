@@ -75,11 +75,14 @@ function cmd_duel_players_render_data(): Promise<void> {
 // Helpers
 //------------------------------------------------------------------------------
 function _html_remove_players(element: HTMLElement) {
-  console.log(element);
-  log.log("IMPLEMENT ME: _html_remove_players");
+    element.innerHTML = "";
 }
 
 function _html_render_players(data: PlayerData[], element: HTMLElement) {
+    if (!data.length) {
+        return;
+    }
+
     let rows = _html_render_players_header();
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
     const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);

@@ -3,6 +3,17 @@ import * as cmd from "./Cmd";
 import * as log from "./Log";
 import { create_form_data } from "./Utils";
 
+export interface TopLevelData {
+    game_cnt: number;
+    opponent_cnt: number;
+    win_percent: number;
+    avg_frag_percent: number;
+    avg_fpm: number;
+    avg_kd: number;
+    avg_lg_acc_percent: number;
+    most_frequent_map: string;
+};
+
 export interface DuelPlayerPageData {
     game_cnt: number;
     games: GameData[];
@@ -145,7 +156,7 @@ export function shutdown() {
  */
 async function cmd_data_fetch_game_cnts(): Promise<any> {
   if (state.duel_player.player == null) {
-    log.log("Data::cmd_data_fetch_game_cnt - player is null");
+    log.log("Data.ts - cmd_data_fetch_game_cnt - wrong state");
     return Promise.reject();
   }
 
@@ -158,12 +169,15 @@ async function cmd_data_fetch_game_cnts(): Promise<any> {
 }
 
 async function cmd_data_fetch_games(): Promise<any> {
-  if (!state.duel_player.data || !state.duel_player.player) {
-    log.log("Data::cmd_data_fetch_games - player is null");
+  if (!state.header || !state.header.time_period || !state.duel_player.data || !state.duel_player.player) {
+    log.log("Data.ts - cmd_data_fetch_games - wrong state");
     return Promise.reject();
   }
 
-  return fetch(_api_url_games(state.duel_player.player, state.duel_player.data.game_cnt))
+    return fetch(_api_url_games(state.duel_player.player, state.duel_player.data.game_cnt), {
+        method: "POST",
+        body: create_form_data({time_period: state.header.time_period})
+    })
     .then((response) => response.json())
     .then((json) => {
         const data = state.duel_player.data as DuelPlayerPageData;

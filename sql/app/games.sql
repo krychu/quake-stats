@@ -8,6 +8,7 @@
 -- ------------
 -- $1 Player name
 -- $2 Game count
+-- $3 Time interval as string, e.g., '4 months'
 --
 
 SELECT
@@ -42,7 +43,8 @@ SELECT
 FROM games
 WHERE
   a_name = $1
-  AND dm = 3
+  AND date > NOW() AT TIME ZONE 'utc' - INTERVAL $3
   AND mode = 'duel'
+  AND dm = 3
 ORDER BY raw_date DESC
 LIMIT $2;

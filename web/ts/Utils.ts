@@ -199,3 +199,7 @@ function _html_cmp_cell(a: string, b: string, bar: number, mul: number = 40, is_
 export function html_separator_cell(): string {
     return `<div class="table__cell table__cell--separator"></div>`;
 }
+
+export function html_insufficient_data(): string {
+    return `<div class="insufficient-data">No data for the selected period</div>`;
+}

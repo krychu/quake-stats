@@ -1,4 +1,6 @@
 import { state } from "./State";
+import { TopLevelData } from "./Data";
+import { html_insufficient_data } from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
@@ -58,13 +60,14 @@ function cmd_toplevel_render_data(): Promise<void> {
 }
 
 function _html_remove_toplevel(element: HTMLElement) {
-    console.log(element);
-    log.log("IMPLEMENT ME: _html_remove_toplevel");
+    element.innerHTML = "";
 }
 
-function _html_render_toplevel(data: any, element: HTMLElement) {
-    console.log(data);
-    console.log(element);
+function _html_render_toplevel(data: TopLevelData, element: HTMLElement) {
+    if (!data.game_cnt) {
+        return
+    }
+
     const html = `
 <div class="m11-toplevel__item">
   <div class="m11-toplevel__item__stat">${data.game_cnt}</div>

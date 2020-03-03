@@ -68,11 +68,14 @@ function cmd_maps_render_data(): Promise<any> {
 }
 
 function _html_remove_maps(element: HTMLElement) {
-  console.log(element);
-  log.log("IMPLEMENT ME: _html_remove_opponents");
+    element.innerHTML = "";
 }
 
 function _html_render_maps(player: string, data: MapData[], element: HTMLElement) {
+    if (!data.length) {
+        return;
+    }
+
   const title = _html_render_title();
   let rows = _html_render_maps_header(player);
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
