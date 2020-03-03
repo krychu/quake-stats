@@ -49,27 +49,27 @@ get '/api/1vs1/activity' => sub {
 };
 
 # Main: Players
-get '/api/1vs1/players' => sub {
+post '/api/1vs1/players' => sub {
     my $c = shift;
-    my $interval_str = '94 months';
-    my $players = PG::get_players($interval_str);
+    my $time_period = $c->param("time_period");
+    my $players = PG::get_players($time_period);
     $c->render(json => $players);
 };
 
 # Main: Recent games
-get '/api/1vs1/games' => sub {
-    my $c = shift;
-    my $game_cnt = 50;
-    my $games = PG::get_games_short($game_cnt);
-    $c->render(json => $games);
-};
+# get '/api/1vs1/games' => sub {
+#     my $c = shift;
+#     my $game_cnt = 50;
+#     my $games = PG::get_games_short($game_cnt);
+#     $c->render(json => $games);
+# };
 
 # Player: Top-level stats
-get '/api/1vs1/:player/top' => sub {
+post '/api/1vs1/:player/top' => sub {
     my $c = shift;
+    my $time_period = $c->param("time_period");
     my $player = $c->stash('player');
-    my $interval_str = '94 months';
-    my $top = PG::get_top($player, $interval_str);
+    my $top = PG::get_top($player, $time_period);
     $c->render(json => $top);
 };
 
@@ -83,20 +83,20 @@ get '/api/1vs1/:player/games/:cnt' => sub {
 };
 
 # Player: Opponents
-get '/api/1vs1/:player/opponents' => sub {
+post '/api/1vs1/:player/opponents' => sub {
     my $c = shift;
+    my $time_period = $c->param("time_period");
     my $player = $c->stash('player');
-    my $interval_str = '94 months';
-    my $opponents = PG::get_opponents($player, $interval_str);
+    my $opponents = PG::get_opponents($player, $time_period);
     $c->render(json => $opponents);
 };
 
 # Player: Maps
-get '/api/1vs1/:player/maps' => sub {
+post '/api/1vs1/:player/maps' => sub {
     my $c = shift;
+    my $time_period = $c->param("time_period");
     my $player = $c->stash('player');
-    my $interval_str = '94 months';
-    my $maps = PG::get_maps($player, $interval_str);
+    my $maps = PG::get_maps($player, $time_period);
     $c->render(json => $maps);
 };
 

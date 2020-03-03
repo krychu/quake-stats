@@ -1,6 +1,7 @@
 import { state } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
+import { create_form_data } from "./Utils";
 
 export interface DuelPlayerPageData {
     game_cnt: number;
@@ -171,12 +172,15 @@ async function cmd_data_fetch_games(): Promise<any> {
 }
 
 async function cmd_data_fetch_opponents(): Promise<any> {
-  if (state.duel_player.player == null) {
-    log.log("Data::data_fetch_opponents - player is null");
+  if (!state.header || !state.header.time_period || !state.duel_player.player) {
+    log.log("Data.ts - cmd_data_fetch_opponents - wrong state");
     return Promise.reject();
   }
 
-  return fetch(_api_url_opponents(state.duel_player.player))
+    return fetch(_api_url_opponents(state.duel_player.player), {
+        method: "POST",
+        body: create_form_data({time_period: state.header.time_period})
+    })
     .then((response) => response.json())
         .then((json) => {
             const data = state.duel_player.data as DuelPlayerPageData;
@@ -185,12 +189,15 @@ async function cmd_data_fetch_opponents(): Promise<any> {
 }
 
 async function cmd_data_fetch_maps(): Promise<any> {
-  if (state.duel_player.player == null) {
-    log.log("Data::data_fetch_maps - player is null");
+  if (!state.header || !state.header.time_period || !state.duel_player.player) {
+    log.log("Data.ts - cmd_data_fetch_maps - wrong state");
     return Promise.reject();
   }
 
-  return fetch(_api_url_maps(state.duel_player.player))
+    return fetch(_api_url_maps(state.duel_player.player), {
+        method: "POST",
+        body: create_form_data({time_period: state.header.time_period})
+    })
     .then((response) => response.json())
         .then((json) => {
             const data = state.duel_player.data as DuelPlayerPageData;
@@ -199,12 +206,15 @@ async function cmd_data_fetch_maps(): Promise<any> {
 }
 
 async function cmd_data_fetch_toplevel(): Promise<void> {
-    if (state.duel_player.player == null) {
+    if (!state.header || !state.header.time_period || !state.duel_player.player) {
         log.log("Data::cmd_data_fetch_toplevel - player is null");
         return Promise.reject();
     }
 
-    return fetch(_api_url_toplevel(state.duel_player.player))
+    return fetch(_api_url_toplevel(state.duel_player.player), {
+        method: "POST",
+        body: create_form_data({time_period: state.header.time_period})
+    })
         .then((response) => response.json())
         .then((json) => {
             const data = state.duel_player.data as DuelPlayerPageData;
@@ -225,13 +235,19 @@ async function cmd_data_fetch_activity(): Promise<any> {
 }
 
 async function cmd_data_fetch_duel_players(): Promise<any> {
-  return fetch(_api_url_duel_players())
-    .then((response) => response.json())
+    if (!state.header || !state.header.time_period) {
+        return;
+    }
+
+    return fetch(_api_url_duel_players(), {
+        method: "POST",
+        body: create_form_data({time_period: state.header.time_period})
+    })
+        .then((response) => response.json())
         .then((json) => {
             const data = state.duel_players.data as DuelPlayersPageData;
             data.players = json;
-      //return json;
-    });
+        });
 }
 
 //------------------------------------------------------------------------------

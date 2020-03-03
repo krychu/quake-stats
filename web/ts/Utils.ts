@@ -9,6 +9,14 @@ export function htmlToElement(html: string): HTMLElement {
     return template.content.firstElementChild as HTMLElement;
 }
 
+export function create_form_data(obj: {[key: string]: string}): FormData {
+    const form_data = new FormData();
+    for (let p in obj) {
+        form_data.append(p, obj[p]);
+    }
+    return form_data;
+}
+
 // From Tom Gruner @ http://stackoverflow.com/a/12034334/1660815
 const entityMap: { [key: string]: string } = {
     '&': '&amp;',
