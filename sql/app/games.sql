@@ -44,5 +44,5 @@ WHERE
   a_name = $1
   AND dm = 3
   AND mode = 'duel'
-ORDER BY date DESC
+ORDER BY raw_date DESC
 LIMIT $2;
