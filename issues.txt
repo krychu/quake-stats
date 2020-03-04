@@ -19,8 +19,6 @@ Open issues
 
 Refactor
 --------
-- Refactor: design language
-- Refactor: commands should communicate via state, not pass arguments
 - Refactor: $stat_urls should return absolute txt path
 - Refactor: use ternary op for is_success
 
@@ -28,6 +26,8 @@ Done
 --------------------------------------------------------------------------------
 + (05.03.2020) Add numbers above bars in Daily Games Chart +  show additional info on hover
 + (04.03.2020) Don't show tables or page if there's no data
++ (02.03.2020) Refactor: design language
++ (02.03.2020) Refactor: commands should communicate via state, not pass arguments
 + Add activity chart
 + Add header / logo
 + Change win% in player table to a single number, no bars
