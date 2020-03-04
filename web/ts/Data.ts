@@ -32,6 +32,7 @@ export interface DuelPlayersPageData {
 export interface DayActivityData {
     day_name: string;
     game_cnt: number;
+    day_bucket: string;
 }
 
 export interface GameData {

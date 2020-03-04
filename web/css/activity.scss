@@ -1,7 +1,8 @@
 @import '_common';
 
 #main__activity {
-    height: 100px;
+    height: 150px;
+    margin-left: -10px; // compensate for chart x offset
 }
 
 #main__activity tspan {
@@ -15,4 +16,21 @@
 
 #main__activity text {
     fill: $grey-0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.main__activity__games, .main__activity__date {
+    fill: $hover-color !important;
+}
+
+#main__activity .hovered {
+    color: $hover-color;
+    fill: $hover-color;
+    transition: all 0.2s ease-in-out;
+}
+
+.main__activity__header {
+    text-transform: uppercase;
+    padding-left: 9px;
+    // padding-left: 500px;
 }
