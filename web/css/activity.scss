@@ -12,6 +12,10 @@
 
 #main__activity rect {
     fill: $grey-2;
+
+    &:hover {
+        cursor: crosshair;
+    }
 }
 
 #main__activity text {
