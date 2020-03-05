@@ -18,9 +18,10 @@ const commands: [string, cmd.Cmd][] = [
 
 export function init() {
     cmd.add_cmds(commands);
+    const time_period = sessionStorage.getItem("time_period");
     const substate: Header = {
         html_root: null,
-        time_period: "3 months"
+        time_period: time_period ? time_period : "3 months"
     }
     state.header = substate;
     log.log("Header module initialized");
@@ -36,7 +37,7 @@ async function cmd_header_create_html_root(): Promise<void> {
     }
     const html_root = document.createElement("div");
     html_root.id = "header";
-    html_root.insertAdjacentHTML("beforeend", _html_render_header());
+    html_root.insertAdjacentHTML("beforeend", _html_render_header(state.header.time_period));
     (html_root.querySelector("select") as HTMLElement).addEventListener("change", on_time_range_change);
     state.header.html_root = html_root;
     return Promise.resolve();
@@ -57,6 +58,7 @@ export function on_time_range_change() {
         return;
     }
     state.header.time_period = (state.header.html_root.querySelector("select") as HTMLSelectElement).value;
+    sessionStorage.setItem("time_period", state.header.time_period);
 
     if (state.page === "duel_players") {
         rec_refresh_duel_players_page();
@@ -65,15 +67,19 @@ export function on_time_range_change() {
     }
 }
 
-function _html_render_header() {
+function _html_render_header(cur_time_period: string) {
+    let html_options = "";
+
+    ["1 month", "3 months", "6 months", "1 year", "100 years"].forEach((time_period) => {
+        const label = time_period === "100 years" ? "all time" : time_period;
+        const selected = cur_time_period === time_period ? "selected" : "";
+        html_options += `<option value="${time_period}" ${selected}>${label}</div>`;
+    });
+
     return `
 <div class="header__logo">QWSTATS</div>
 <select>
-  <option value="1 month">1 month</option>
-  <option value="3 months" selected>3 months</option>
-  <option value="6 months">6 months</option>
-  <option value="1 year">1 year</option>
-  <option value="100 years">all time</option>
+${html_options}
 </select>
 `;
 }
