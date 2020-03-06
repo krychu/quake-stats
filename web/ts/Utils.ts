@@ -1,3 +1,5 @@
+export type SortDirection = "asc" | "desc";
+
 /**
  * Note that only one element is returned. If string represents mutiple elements
  * without a parent, only the first one is returned.

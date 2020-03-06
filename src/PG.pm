@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Configuration qw($cfg);
 use DBD::Pg;
+use DBI qw(:sql_types);
+use DBD::Pg qw(:pg_types);
 use File::Slurp;
 use Array::Split qw(split_by);
 use Data::Dumper;
@@ -34,10 +36,13 @@ sub get_activity {
 }
 
 sub get_players {
-    my $interval_str = shift;
+    my ($interval_str, $field, $sort_direction) = @_;
 
     my $query = $queries{select_1vs1_players};
-    $query->execute($interval_str);
+    $query->bind_param('$1', $interval_str);
+    $query->bind_param('$2', $field, { pg_type => PG_NAME });
+    $query->bind_param('$3', $sort_direction);
+    $query->execute();
     return $query->fetchall_arrayref({});
 }
 

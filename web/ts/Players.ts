@@ -8,13 +8,19 @@ import {
     html_name_cell,
     html_header_name_cell,
     html_center_right_align_cell,
-    html_header_center_right_align_cell
+    html_header_center_right_align_cell,
+    SortDirection
 } from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
+import { rec_sort_duel_players } from "./Recipes";
+
+type ColumnName = "player" | "games" | "opponents" | "winrate" | "frags" | "lg hits" | "last";
 
 export interface Players {
     html_root: HTMLElement | null;
+    sort_column_name: ColumnName;
+    sort_direction: SortDirection;
 };
 
 const commands: [string, cmd.Cmd][] = [
@@ -26,7 +32,9 @@ const commands: [string, cmd.Cmd][] = [
 export function init() {
   cmd.add_cmds(commands);
     const substate: Players = {
-        html_root: null
+        html_root: null,
+        sort_column_name: "games",
+        sort_direction: "desc"
     };
     state.duel_players.players = substate;
     log.log("DuelPlayers module initialized");
@@ -95,12 +103,12 @@ function _html_render_players(data: PlayerData[], element: HTMLElement) {
 function _html_render_players_header(): string {
   return `
 <div class="table__header-row">
-  ${html_header_name_cell("name", "table__name-cell--huge table__cell--first-column")}
+  ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column")}
   ${html_header_bar_cell("games")}
   ${html_header_bar_cell("opponents")}
   ${html_header_center_right_align_cell("winrate", 18)}
-  ${html_header_center_right_align_cell("fpg", 18)}
-  ${html_header_center_right_align_cell("LG acc", 33)}
+  ${html_header_center_right_align_cell("frags", 18)}
+  ${html_header_center_right_align_cell("lg hits", 33)}
   ${html_header_time_cell("last")}
 </div>
 `;
@@ -125,16 +133,32 @@ function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_oppon
  * clicks on parent and all children items.
  */
 function _on_click(e: any): void {
-  let ee = null;
-  for (let i = 0; i < e.path.length; i++) {
-    if (e.path[i].classList.contains("table__row")) {
-      ee = e.path[i];
-      break;
+    for (let i = 0; i < e.path.length; i++) {
+        if (e.path[i].classList.contains("table__row")) {
+            return _on_table_row_click(e.path[i]);
+        } else if  (e.path[i].classList.contains("table__cell--header")) {
+            return _on_table_header_cell_click(e.path[i]);
+        }
     }
-  }
+}
 
-  if (ee != null) {
-    const name = ee.getElementsByClassName("table__name-cell")[0].innerText;
+function _on_table_row_click(table_row: HTMLElement): void {
+    const name = (table_row.getElementsByClassName("table__name-cell")[0] as HTMLElement).innerText;
     location.href = `/1vs1/${name}`;
-  }
+}
+
+function _on_table_header_cell_click(header_cell: HTMLElement): void {
+    if (!state.duel_players.players) {
+        return;
+    }
+
+    const column_name = header_cell.innerText.toLowerCase() as ColumnName;
+    let sort_direction: SortDirection = "desc";
+    if (state.duel_players.players.sort_column_name === column_name && state.duel_players.players.sort_direction === "desc") {
+        sort_direction = "asc";
+    }
+    state.duel_players.players.sort_column_name = column_name;
+    state.duel_players.players.sort_direction = sort_direction;
+
+    rec_sort_duel_players(column_name, sort_direction);
 }

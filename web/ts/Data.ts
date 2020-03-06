@@ -250,13 +250,17 @@ async function cmd_data_fetch_activity(): Promise<any> {
 }
 
 async function cmd_data_fetch_duel_players(): Promise<any> {
-    if (!state.header || !state.header.time_period) {
+    if (!state.header || !state.header.time_period || !state.duel_players.players) {
         return;
     }
 
     return fetch(_api_url_duel_players(), {
         method: "POST",
-        body: create_form_data({time_period: state.header.time_period})
+        body: create_form_data({
+            time_period: state.header.time_period,
+            sort_column_name: state.duel_players.players.sort_column_name,
+            sort_direction: state.duel_players.players.sort_direction
+        })
     })
         .then((response) => response.json())
         .then((json) => {

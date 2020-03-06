@@ -52,7 +52,18 @@ get '/api/1vs1/activity' => sub {
 post '/api/1vs1/players' => sub {
     my $c = shift;
     my $time_period = $c->param("time_period");
-    my $players = PG::get_players($time_period);
+    my $sort_column_name = $c->param("sort_column_name");
+    my $pg_field = {
+        player      => "name",
+        games       => "game_cnt",
+        opponents   => "opponent_cnt",
+        winrate     => "a_win_percent",
+        frags       => "avg_frag_percent",
+        "lg hits"   => "avg_lg_acc_percent",
+        last        => "last_game_date"
+    }->{$sort_column_name};
+    my $sort_direction = $c->param("sort_direction");
+    my $players = PG::get_players($time_period, $pg_field, $sort_direction);
     $c->render(json => $players);
 };
 

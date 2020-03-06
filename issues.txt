@@ -1,6 +1,5 @@
 Open issues
 --------------------------------------------------------------------------------
-- Preserve time selection
 - Sortable tables (especially players and recent games)
 - Add game badges
 - Implement bps visual design
@@ -24,6 +23,7 @@ Refactor
 
 Done
 --------------------------------------------------------------------------------
++ (05.03.2020) Preserve time selection
 + (05.03.2020) Add numbers above bars in Daily Games Chart +  show additional info on hover
 + (04.03.2020) Don't show tables or page if there's no data
 + (02.03.2020) Refactor: design language
