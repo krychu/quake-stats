@@ -87,29 +87,34 @@ function _html_remove_players(element: HTMLElement) {
 }
 
 function _html_render_players(data: PlayerData[], element: HTMLElement) {
-    if (!data.length) {
+    if (!data.length || !state.duel_players.players) {
         return;
     }
 
-    let rows = _html_render_players_header();
+    const sort_column_name = state.duel_players.players.sort_column_name;
+    const sort_direction = state.duel_players.players.sort_direction;
+
+    let rows = _html_render_players_header(sort_column_name, sort_direction);
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
     const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);
     rows += data.map((player) => _html_render_players_row(player, max_game_cnt, max_opponent_cnt)).join("");
   const html = `${rows}`;
 
-  element.insertAdjacentHTML("beforeend", html);
+    element.insertAdjacentHTML("beforeend", html);
 }
 
-function _html_render_players_header(): string {
-  return `
+function _html_render_players_header(c: ColumnName, d: SortDirection): string {
+    const sort_class = `table__cell--sort-header-${d}`;
+
+    return `
 <div class="table__header-row">
-  ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column")}
-  ${html_header_bar_cell("games")}
-  ${html_header_bar_cell("opponents")}
-  ${html_header_center_right_align_cell("winrate", 18)}
-  ${html_header_center_right_align_cell("frags", 18)}
-  ${html_header_center_right_align_cell("lg hits", 33)}
-  ${html_header_time_cell("last")}
+  ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column " + (c === "player" ? sort_class : ""))}
+  ${html_header_bar_cell("games", c === "games" ? sort_class : "")}
+  ${html_header_bar_cell("opponents", c === "opponents" ? sort_class : "")}
+  ${html_header_center_right_align_cell("winrate", 18, c === "winrate" ? sort_class : "")}
+  ${html_header_center_right_align_cell("frags", 18, c === "frags" ? sort_class : "")}
+  ${html_header_center_right_align_cell("lg hits", 33, c === "lg hits" ? sort_class : "")}
+  ${html_header_time_cell("last", c === "last" ? sort_class : "")}
 </div>
 `;
 }

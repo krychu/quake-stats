@@ -97,8 +97,8 @@ export function html_bar_cell(value: number, max_value: number, min_divider = 30
 </div>
 `;
 }
-export function html_header_bar_cell(name: string): string {
-    return `<div class="table__cell table__cell--header table__cell--small">${name}</div>`;
+export function html_header_bar_cell(name: string, extra_classes = ""): string {
+    return `<div class="table__cell table__cell--header table__cell--small ${extra_classes}">${name}</div>`;
 }
 
 export function html_time_cell(date: string, extra_classes = ""): string {
@@ -108,14 +108,14 @@ export function html_header_time_cell(name: string, extra_classes = ""): string 
     return `<div class="table__cell table__cell--header table__cell--tiny table__cell--right-align ${extra_classes}">${name}</div>`;
 }
 
-export function html_name_cell(name: string, extra_classes: string = ""): string {
+export function html_name_cell(name: string, extra_classes = ""): string {
     return `<div class="table__name-cell ${extra_classes}"><div>${escape_html(name)}</div></div>`;
 }
-export function html_header_name_cell(name: string, extra_classes: string = ""): string {
+export function html_header_name_cell(name: string, extra_classes = ""): string {
     return `<div class="table__name-cell table__cell--header ${extra_classes}">${name}</div>`;
 }
 
-export function html_center_right_align_cell(value: string | number, extra_classes: string = "", percent = false): string {
+export function html_center_right_align_cell(value: string | number, extra_classes = "", percent = false): string {
     if (value == null) {
         return html_na_cell("table__cell--center-right-align " + extra_classes);
     }
@@ -124,8 +124,8 @@ export function html_center_right_align_cell(value: string | number, extra_class
 
     return `<div class="table__cell table__cell--center-right-align">${value}${html_percent}</div>`;
 }
-export function html_header_center_right_align_cell(name: string, right_padding: number): string {
-    return `<div class="table__cell table__cell--center-align table__cell--header" style="padding-right: ${right_padding}px">${name}</div>`;
+export function html_header_center_right_align_cell(name: string, right_padding: number, extra_classes = ""): string {
+    return `<div class="table__cell table__cell--center-align table__cell--header ${extra_classes}" style="padding-right: ${right_padding}px">${name}</div>`;
 }
 
 // Proportion with a and b clamped to 0, useful for frags for example

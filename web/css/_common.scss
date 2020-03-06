@@ -65,6 +65,16 @@ $separator-cell-basis: 40px;
     margin-bottom: $vgap-normal;
     //justify-content: center;
     justify-content: flex-start;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.table__cell--sort-header-desc, .table__cell--sort-header-asc {
+    font-weight: bold;
+    color: #FF55FF;
 }
 
 .table__cell--right-align {
