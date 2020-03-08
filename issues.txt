@@ -63,3 +63,22 @@ Graveyard
 - Bug: exclude n/a from calculating averages
 - Hover over games chart highlights related game
 - Label games chart
+
+Players handling
+--------------------------------------------------------------------------------
+We might have a need to edit players for a more sanitary list. 
+Players list preferred sort order:
+A -> Z, 1 -> 9, !"#€%&/()
+
+* Known players (what is 'known', played for years?) who have anomalies in name, maybe '(1)'name, name'!', name 'brb' could be concatenated.
+* Maybe there will be too many random shortname players, like '1' or 'x' to administer. Should leave be? Maybe filter only single char '('?
+* This is tough. And just a start. Maybe as few automatic corrections as possible, and put effort into an admin interface where we can concatenate/rename/delete/undelete players?
+
+Few examples:
+### - remove.
+(1)macisum - should be removed. Either someone trolling, or macisum unaware. 
+(=.l00k.=) - sort on first letter "l"?
+/ bro - bot. sort on "b". could we give bots like this a label somehow?
+2on2 - remove.
+3-% - remove.
+Player - remove. Will have many entries, because many use this, hence totally useless.
