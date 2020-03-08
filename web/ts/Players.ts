@@ -105,16 +105,23 @@ function _html_render_players(data: PlayerData[], element: HTMLElement) {
 
 function _html_render_players_header(c: ColumnName, d: SortDirection): string {
     const sort_class = `table__cell--sort-header-${d}`;
+    const hidden_arrow = `<div class="table__cell--header-arrow">${d === "asc" ? "&#8593;" : "&#8595;"}</div>`;
+    const visible_arrow = `<div class="table__cell--visible-header-arrow">${d === "asc" ? "&#8593;" : "&#8595;"}</div>`;
+
+    let items: {[key: string]: string[]} = {};
+    ["player", "games", "opponents", "winrate", "frags", "lg hits", "last"].forEach((column) => {
+        items[column] = column === c ? [visible_arrow, sort_class] : [hidden_arrow, ""];
+    });
 
     return `
 <div class="table__header-row">
-  ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column " + (c === "player" ? sort_class : ""))}
-  ${html_header_bar_cell("games", c === "games" ? sort_class : "")}
-  ${html_header_bar_cell("opponents", c === "opponents" ? sort_class : "")}
-  ${html_header_center_right_align_cell("winrate", 18, c === "winrate" ? sort_class : "")}
-  ${html_header_center_right_align_cell("frags", 18, c === "frags" ? sort_class : "")}
-  ${html_header_center_right_align_cell("lg hits", 33, c === "lg hits" ? sort_class : "")}
-  ${html_header_time_cell("last", c === "last" ? sort_class : "")}
+  ${html_header_name_cell("player" + items["player"][0], "table__name-cell--huge table__cell--first-column " + items["player"][1])}
+  ${html_header_bar_cell("games" + items["games"][0], items["games"][1])}
+  ${html_header_bar_cell("opponents" + items["opponents"][0], items["opponents"][1])}
+  ${html_header_center_right_align_cell("winrate" + items["winrate"][0], 18, items["winrate"][1])}
+  ${html_header_center_right_align_cell("frags" + items["frags"][0], 18, items["frags"][1])}
+  ${html_header_center_right_align_cell("lg hits" + items["lg hits"][0], 33, items["lg hits"][1])}
+  ${html_header_time_cell("last" + items["last"][0], items["last"][1])}
 </div>
 `;
 }
@@ -157,11 +164,16 @@ function _on_table_header_cell_click(header_cell: HTMLElement): void {
         return;
     }
 
-    const column_name = header_cell.innerText.toLowerCase() as ColumnName;
+    let column_name: ColumnName = header_cell.innerText.toLowerCase() as ColumnName;
+    const last_char_code = column_name.charCodeAt(column_name.length - 1);
+    if (last_char_code === 8595 || last_char_code === 8593) {
+        column_name = column_name.substring(0, column_name.length-2) as ColumnName;
+    }
     let sort_direction: SortDirection = "desc";
     if (state.duel_players.players.sort_column_name === column_name && state.duel_players.players.sort_direction === "desc") {
         sort_direction = "asc";
     }
+
     state.duel_players.players.sort_column_name = column_name;
     state.duel_players.players.sort_direction = sort_direction;
 

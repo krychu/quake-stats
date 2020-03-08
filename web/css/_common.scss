@@ -77,6 +77,16 @@ $separator-cell-basis: 40px;
     color: #FF55FF;
 }
 
+.table__cell--header-arrow {
+    margin-left: 5px;
+    visibility: hidden;
+}
+
+.table__cell--visible-header-arrow {
+    @extend .table__cell--header-arrow;
+    visibility: visible;
+}
+
 .table__cell--right-align {
     justify-content: flex-end !important;
 }
