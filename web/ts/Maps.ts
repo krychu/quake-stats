@@ -7,13 +7,19 @@ import {
     html_cmp_cell_clamped_ratio,
     html_header_name_cell,
     html_header_bar_cell,
-    html_header_cmp_cell
+    html_header_cmp_cell,
+    SortDirection
 } from "./Utils";
+import { rec_sort_duel_player_maps } from "./Recipes";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 
+type ColumnName = "map" | "games" | "opponents" | "winrate" | "frags" | "dmg" | "dmg/min";
+
 export interface Maps {
     html_root: HTMLElement | null;
+    sort_column_name: ColumnName;
+    sort_direction: SortDirection;
 };
 
 const commands: [string, cmd.Cmd][] = [
@@ -25,7 +31,9 @@ const commands: [string, cmd.Cmd][] = [
 export function init() {
     cmd.add_cmds(commands);
     const substate: Maps = {
-        html_root: null
+        html_root: null,
+        sort_column_name: "games",
+        sort_direction: "desc"
     };
     state.duel_player.maps = substate;
     log.log("Maps module initialized");
@@ -39,7 +47,8 @@ function cmd_maps_create_html_root(): Promise<void> {
         log.log("Maps.ts - cmd_maps_create_html_root - wrong state");
         return Promise.reject();
     }
-  const html_root = document.createElement("div");
+    const html_root = document.createElement("div");
+    html_root.addEventListener("click", (e) => { _on_click(e); });
     html_root.className = "m11-maps";
     state.duel_player.maps.html_root = html_root;
     return Promise.resolve();
@@ -72,12 +81,15 @@ function _html_remove_maps(element: HTMLElement) {
 }
 
 function _html_render_maps(player: string, data: MapData[], element: HTMLElement) {
-    if (!data.length) {
+    if (!data.length || !state.duel_player.maps) {
         return;
     }
 
+    const sort_column_name = state.duel_player.maps.sort_column_name;
+    const sort_direction = state.duel_player.maps.sort_direction;
+
   const title = _html_render_title();
-  let rows = _html_render_maps_header(player);
+    let rows = _html_render_maps_header(player, sort_column_name, sort_direction);
     const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
     const max_opponent_cnt = data.reduce((acc, cur) => (cur.opponent_cnt > acc) ? cur.opponent_cnt : acc, 0);
     rows += data.map((map) => _html_render_map_row(player, map, max_game_cnt, max_opponent_cnt)).join("");
@@ -97,19 +109,19 @@ Maps
 `;
 }
 
-function _html_render_maps_header(player: string): string {
+function _html_render_maps_header(player: string, c: ColumnName, d: SortDirection): string {
   return `
 <div class="table__header-row">
   <!--<div class="m11-maps__player-a-cell m11-maps__cell--header"><div>${player}</div></div>-->
   <!--<div class="m11-maps__vs-cell m11-maps__cell--header">vs</div>-->
   <!--<div class="m11-maps__player-b-cell m11-maps__cell--header">opponent</div>-->
-  ${html_header_name_cell("map", "table__name-cell--huge table__cell--first-column")}
-  ${html_header_bar_cell("games")}
-  ${html_header_bar_cell("opponents")}
-  ${html_header_cmp_cell("win")}
-  ${html_header_cmp_cell("frags")}
-  ${html_header_cmp_cell("dmg")}
-  ${html_header_cmp_cell("dmg/min")}
+  ${html_header_name_cell("map", "table__name-cell--huge table__cell--first-column", c === "map" ? d : null)}
+  ${html_header_bar_cell("games", "", c === "games" ? d : null)}
+  ${html_header_bar_cell("opponents", "", c === "opponents" ? d : null)}
+  ${html_header_cmp_cell("winrate", "", c === "winrate" ? d : null)}
+  ${html_header_cmp_cell("frags", "", c === "frags" ? d : null)}
+  ${html_header_cmp_cell("dmg", "", c === "dmg" ? d : null)}
+  ${html_header_cmp_cell("dmg/min", "", c === "dmg/min" ? d : null)}
 </div>
 `;
 }
@@ -130,4 +142,30 @@ function _html_render_map_row(player: string, d: MapData, max_game_cnt: number, 
   ${html_cmp_cell_clamped_ratio(d.a_avg_dmg_minute, d.b_avg_dmg_minute)}
 </div>
 `;
+}
+
+function _on_click(e: any): void {
+    for (let i = 0; i < e.path.length; i++) {
+        if  (e.path[i].classList && e.path[i].classList.contains("table__cell--header")) {
+            return _on_table_header_cell_click(e.path[i]);
+        }
+    }
+}
+
+function _on_table_header_cell_click(cell: HTMLElement): void {
+    if (!state.duel_player.maps) {
+        return;
+    }
+
+    const column_name: ColumnName = (cell.querySelector(".table__cell__header-name") as HTMLElement).innerText.toLowerCase().trim() as ColumnName;
+
+    let sort_direction: SortDirection = "desc";
+    if (state.duel_player.maps.sort_column_name === column_name && state.duel_player.maps.sort_direction === "desc") {
+        sort_direction = "asc";
+    }
+
+    state.duel_player.maps.sort_column_name = column_name;
+    state.duel_player.maps.sort_direction = sort_direction;
+
+    rec_sort_duel_player_maps();
 }

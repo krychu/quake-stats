@@ -91,31 +91,31 @@ export function html_bar_cell(value: number, max_value: number, min_divider = 30
 
     const bar_style = `width: ${bar_width}px;`;
     return `
-<div class="table__bar-cell table__cell--small">
+<div class="table__bar-cell table__cell--normal">
   <div class="table__bar-cell__value">${value.toString()}</div>
   <div class="table__bar-cell__bar" style="${bar_style}"></div>
 </div>
 `;
 }
-export function html_header_bar_cell(name: string, extra_classes = "", sort_arrow: SortDirection | null = null): string {
-    extra_classes += sort_arrow ? " table__cell--header--selected" : "";
-    return `<div class="table__cell table__cell--header table__cell--small ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_arrow)}</div>`;
+export function html_header_bar_cell(name: string, extra_classes = "", sort_direction: SortDirection | null = null): string {
+    extra_classes += sort_direction ? " table__cell--header--selected" : "";
+    return `<div class="table__cell table__cell--header table__cell--normal ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 export function html_time_cell(date: string, extra_classes = ""): string {
     return `<div class="table__cell table__cell--small table__cell--center-right-align ${extra_classes}">${time_ago(date)}</div>`;
 }
-export function html_header_time_cell(name: string, extra_classes = "", sort_arrow: SortDirection | null = null): string {
-    extra_classes += sort_arrow ? " table__cell--header--selected" : "";
-    return `<div class="table__cell table__cell--right-align table__cell--header table__cell--small ${extra_classes}" style="padding-right: 15px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_arrow)}</div>`;
+export function html_header_time_cell(name: string, extra_classes = "", sort_direction: SortDirection | null = null): string {
+    extra_classes += sort_direction ? " table__cell--header--selected" : "";
+    return `<div class="table__cell table__cell--right-align table__cell--header table__cell--small ${extra_classes}" style="padding-right: 15px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 export function html_name_cell(name: string, extra_classes = ""): string {
     return `<div class="table__name-cell ${extra_classes}"><div>${escape_html(name)}</div></div>`;
 }
-export function html_header_name_cell(name: string, extra_classes = "", sort_arrow: SortDirection | null = null): string {
-    extra_classes += sort_arrow ? " table__cell--header--selected" : "";
-    return `<div class="table__name-cell table__cell--header ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_arrow)}</div>`;
+export function html_header_name_cell(name: string, extra_classes = "", sort_direction: SortDirection | null = null): string {
+    extra_classes += sort_direction ? " table__cell--header--selected" : "";
+    return `<div class="table__name-cell table__cell--header ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 export function html_center_right_align_cell(value: string | number, extra_classes = "", percent = false): string {
@@ -127,9 +127,9 @@ export function html_center_right_align_cell(value: string | number, extra_class
 
     return `<div class="table__cell table__cell--center-right-align ${extra_classes}">${value}${html_percent}</div>`;
 }
-export function html_header_center_right_align_cell(name: string, right_padding: number, extra_classes = "", sort_arrow: SortDirection | null = null): string {
-    extra_classes += sort_arrow ? " table__cell--header--selected" : "";
-    return `<div class="table__cell table__cell--center-align table__cell--header ${extra_classes}" style="padding-right: ${right_padding}px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_arrow)}</div>`;
+export function html_header_center_right_align_cell(name: string, right_padding: number, extra_classes = "", sort_direction: SortDirection | null = null): string {
+    extra_classes += sort_direction ? " table__cell--header--selected" : "";
+    return `<div class="table__cell table__cell--center-align table__cell--header ${extra_classes}" style="padding-right: ${right_padding}px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 // Proportion with a and b clamped to 0, useful for frags for example
@@ -150,9 +150,9 @@ export function html_cmp_cell_clamped_frac(a: number, b: number, is_percent = fa
     return _html_cmp_cell(a.toString(), b.toString(), bar, 40, is_percent, extra_classes);
 }
 
-export function html_header_cmp_cell(name: string, extra_classes = "", sort_arrow: SortDirection | null = null): string {
-    extra_classes += sort_arrow ? " table__cell--header--selected" : "";
-    return `<div class="table__cmp-cell table__cell--header ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_arrow)}</div>`;
+export function html_header_cmp_cell(name: string, extra_classes = "", sort_direction: SortDirection | null = null): string {
+    extra_classes += sort_direction ? " table__cell--header--selected" : "";
+    return `<div class="table__cmp-cell table__cell--header ${extra_classes}" style="padding-left: 12px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 // a and b are percentages that add up to 100
@@ -211,8 +211,8 @@ export function html_insufficient_data(): string {
     return `<div class="insufficient-data">No data for the selected period</div>`;
 }
 
-function html_sort_arrow(sort_arrow: SortDirection | null = null): string {
-    const arrow_symbol = sort_arrow ? {asc: "&#8593;", desc: "&#8595;"}[sort_arrow] : "&#8593;";
-    const arrow_class = sort_arrow ? "table__cell__sort-arrow--visibile" : "table__cell__sort-arrow--hidden";
+function html_sort_arrow(sort_direction: SortDirection | null = null): string {
+    const arrow_symbol = sort_direction ? {asc: "&#8593;", desc: "&#8595;"}[sort_direction] : "&#8593;";
+    const arrow_class = sort_direction ? "table__cell__sort-arrow--visibile" : "table__cell__sort-arrow--hidden";
     return arrow_symbol ? `<div class="table__cell__sort-arrow ${arrow_class}">${arrow_symbol}</div>` : "";
 }

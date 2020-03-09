@@ -170,14 +170,18 @@ async function cmd_data_fetch_game_cnts(): Promise<any> {
 }
 
 async function cmd_data_fetch_games(): Promise<any> {
-  if (!state.header || !state.header.time_period || !state.duel_player.data || !state.duel_player.player) {
+  if (!state.header || !state.header.time_period || !state.duel_player.data || !state.duel_player.player || !state.duel_player.games) {
     log.log("Data.ts - cmd_data_fetch_games - wrong state");
     return Promise.reject();
   }
 
     return fetch(_api_url_games(state.duel_player.player, state.duel_player.data.game_cnt), {
         method: "POST",
-        body: create_form_data({time_period: state.header.time_period})
+        body: create_form_data({
+            time_period: state.header.time_period,
+            sort_column_name: state.duel_player.games.sort_column_name,
+            sort_direction: state.duel_player.games.sort_direction
+        })
     })
     .then((response) => response.json())
     .then((json) => {
@@ -187,14 +191,18 @@ async function cmd_data_fetch_games(): Promise<any> {
 }
 
 async function cmd_data_fetch_opponents(): Promise<any> {
-  if (!state.header || !state.header.time_period || !state.duel_player.player) {
+  if (!state.header || !state.header.time_period || !state.duel_player.player || !state.duel_player.opponents) {
     log.log("Data.ts - cmd_data_fetch_opponents - wrong state");
     return Promise.reject();
   }
 
     return fetch(_api_url_opponents(state.duel_player.player), {
         method: "POST",
-        body: create_form_data({time_period: state.header.time_period})
+        body: create_form_data({
+            time_period: state.header.time_period,
+            sort_column_name: state.duel_player.opponents.sort_column_name,
+            sort_direction: state.duel_player.opponents.sort_direction
+        })
     })
     .then((response) => response.json())
         .then((json) => {
@@ -204,14 +212,18 @@ async function cmd_data_fetch_opponents(): Promise<any> {
 }
 
 async function cmd_data_fetch_maps(): Promise<any> {
-  if (!state.header || !state.header.time_period || !state.duel_player.player) {
+  if (!state.header || !state.header.time_period || !state.duel_player.player || !state.duel_player.maps) {
     log.log("Data.ts - cmd_data_fetch_maps - wrong state");
     return Promise.reject();
   }
 
     return fetch(_api_url_maps(state.duel_player.player), {
         method: "POST",
-        body: create_form_data({time_period: state.header.time_period})
+        body: create_form_data({
+            time_period: state.header.time_period,
+            sort_column_name: state.duel_player.maps.sort_column_name,
+            sort_direction: state.duel_player.maps.sort_direction
+        })
     })
     .then((response) => response.json())
         .then((json) => {

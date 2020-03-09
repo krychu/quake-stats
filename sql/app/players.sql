@@ -3,8 +3,8 @@
 -- Placeholders
 -- ------------
 -- $1 Time interval as string, e.g., '4 months'
--- $2 sorting field name
--- $3 sort direction (asc or desc)
+-- $2 Sorting field name
+-- $3 Sort direction (asc or desc)
 
 WITH duel_players AS (
   SELECT

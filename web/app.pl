@@ -53,7 +53,7 @@ post '/api/1vs1/players' => sub {
     my $c = shift;
     my $time_period = $c->param("time_period");
     my $sort_column_name = $c->param("sort_column_name");
-    my $pg_field = {
+    my $pg_sort_field = {
         player      => "name",
         games       => "game_cnt",
         opponents   => "opponent_cnt",
@@ -63,17 +63,9 @@ post '/api/1vs1/players' => sub {
         last        => "last_game_date"
     }->{$sort_column_name};
     my $sort_direction = $c->param("sort_direction");
-    my $players = PG::get_players($time_period, $pg_field, $sort_direction);
+    my $players = PG::get_players($time_period, $pg_sort_field, $sort_direction);
     $c->render(json => $players);
 };
-
-# Main: Recent games
-# get '/api/1vs1/games' => sub {
-#     my $c = shift;
-#     my $game_cnt = 50;
-#     my $games = PG::get_games_short($game_cnt);
-#     $c->render(json => $games);
-# };
 
 # Player: Top-level stats
 post '/api/1vs1/:player/top' => sub {
@@ -84,13 +76,28 @@ post '/api/1vs1/:player/top' => sub {
     $c->render(json => $top);
 };
 
-# Player: Recent games
+# Player: Games
 post '/api/1vs1/:player/games/:cnt' => sub {
     my $c = shift;
     my $time_period = $c->param("time_period");
+    my $sort_column_name = $c->param("sort_column_name");
+    my $pg_sort_field = {
+        when       => "raw_date",
+        frags      => "a_frags",
+        opponent   => "b_name",
+        map        => "map",
+        dmg        => "a_dmg_percent",
+        "rl/min"   => "a_rl_dmg_minute",
+        "lg/min"   => "a_lg_dmg_minute",
+        "lg acc"   => "a_lg_acc_percent",
+        ra         => "a_ra",
+        ya         => "a_ya",
+        mh         => "a_mh"
+    }->{$sort_column_name};
+    my $sort_direction = $c->param("sort_direction");
     my $player = $c->stash('player');
     my $game_cnt = $c->stash('cnt');
-    my $games = PG::get_games($player, $game_cnt, $time_period);
+    my $games = PG::get_games($player, $game_cnt, $time_period, $pg_sort_field, $sort_direction);
     $c->render(json => $games);
 };
 
@@ -98,8 +105,19 @@ post '/api/1vs1/:player/games/:cnt' => sub {
 post '/api/1vs1/:player/opponents' => sub {
     my $c = shift;
     my $time_period = $c->param("time_period");
+    my $sort_column_name = $c->param("sort_column_name");
+    my $pg_sort_field = {
+        opponent   => "name",
+        games      => "game_cnt",
+        winrate    => "a_win_percent",
+        frags      => "a_avg_frag_percent",
+        dmg        => "a_avg_dmg_percent",
+        "lg acc"   => "a_avg_lg_acc_percent",
+        "fq map"   => "most_frequent_map"
+    }->{$sort_column_name};
+    my $sort_direction = $c->param("sort_direction");
     my $player = $c->stash('player');
-    my $opponents = PG::get_opponents($player, $time_period);
+    my $opponents = PG::get_opponents($player, $time_period, $pg_sort_field, $sort_direction);
     $c->render(json => $opponents);
 };
 
@@ -107,8 +125,19 @@ post '/api/1vs1/:player/opponents' => sub {
 post '/api/1vs1/:player/maps' => sub {
     my $c = shift;
     my $time_period = $c->param("time_period");
+    my $sort_column_name = $c->param("sort_column_name");
+    my $pg_sort_field = {
+        map        => "map",
+        games      => "game_cnt",
+        opponents  => "opponent_cnt",
+        winrate    => "a_win_percent",
+        frags      => "a_avg_frag_percent",
+        dmg        => "a_avg_dmg_percent",
+        "dmg/min"  => "a_avg_dmg_minute"
+    }->{$sort_column_name};
+    my $sort_direction = $c->param("sort_direction");
     my $player = $c->stash('player');
-    my $maps = PG::get_maps($player, $time_period);
+    my $maps = PG::get_maps($player, $time_period, $pg_sort_field, $sort_direction);
     $c->render(json => $maps);
 };
 

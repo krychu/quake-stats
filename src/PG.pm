@@ -7,7 +7,7 @@ use DBD::Pg;
 use DBI qw(:sql_types);
 use DBD::Pg qw(:pg_types);
 use File::Slurp;
-use Array::Split qw(split_by);
+#use Array::Split qw(split_by);
 use Data::Dumper;
 
 my %queries;
@@ -36,11 +36,11 @@ sub get_activity {
 }
 
 sub get_players {
-    my ($interval_str, $field, $sort_direction) = @_;
+    my ($interval_str, $sort_field, $sort_direction) = @_;
 
     my $query = $queries{select_1vs1_players};
     $query->bind_param('$1', $interval_str);
-    $query->bind_param('$2', $field, { pg_type => PG_NAME });
+    $query->bind_param('$2', $sort_field, { pg_type => PG_NAME });
     $query->bind_param('$3', $sort_direction);
     $query->execute();
     return $query->fetchall_arrayref({});
@@ -55,28 +55,47 @@ sub get_top {
 }
 
 sub get_games {
-    my ($player, $game_cnt, $interval_str) = @_;
+    my ($player, $game_cnt, $interval_str, $sort_field, $sort_direction) = @_;
     my $query = $queries{select_1vs1_games};
 
-    $query->execute($player, $game_cnt, $interval_str);
+    #print "$sort_field - $sort_direction -\n";
+
+    $query->bind_param('$1', $player);
+    $query->bind_param('$2', $game_cnt);
+    $query->bind_param('$3', $interval_str);
+    $query->bind_param('$4', $sort_field, { pg_type => PG_NAME });
+    $query->bind_param('$5', $sort_direction);
+
+    $query->execute();
+    #$query->execute($player, $game_cnt, $interval_str, $sort_field, $sort_direction);
     return $query->fetchall_arrayref({});
     #my @games = split_by(2, @{ $query->fetchall_arrayref({}) });
     #return \@games;
 }
 
 sub get_opponents {
-    my ($player, $interval_str) = @_;
+    my ($player, $interval_str, $sort_field, $sort_direction) = @_;
     my $query = $queries{select_1vs1_opponents};
 
-    $query->execute($player, $interval_str);
+    $query->bind_param('$1', $player);
+    $query->bind_param('$2', $interval_str);
+    $query->bind_param('$3', $sort_field, { pg_type => PG_NAME });
+    $query->bind_param('$4', $sort_direction);
+
+    $query->execute();
     return $query->fetchall_arrayref({});
 }
 
 sub get_maps {
-    my ($player, $interval_str) = @_;
+    my ($player, $interval_str, $sort_field, $sort_direction) = @_;
     my $query = $queries{select_1vs1_maps};
 
-    $query->execute($player, $interval_str);
+    $query->bind_param('$1', $player);
+    $query->bind_param('$2', $interval_str);
+    $query->bind_param('$3', $sort_field, { pg_type => PG_NAME });
+    $query->bind_param('$4', $sort_direction);
+
+    $query->execute();
     return $query->fetchall_arrayref({});
 }
 

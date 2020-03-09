@@ -9,13 +9,19 @@ import {
     html_header_cmp_cell,
     html_header_name_cell,
     html_separator_cell,
+    SortDirection
 } from "./Utils";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
+import { rec_sort_duel_player_games } from "./Recipes";
+
+type ColumnName = "when" | "frags" | "opponent" | "map" | "dmg" | "rl/min" | "lg/min" | "lg acc" | "ra" | "ya" | "mh";
 
 export interface Games {
     show_game_cnt: number;
     html_root: HTMLElement | null;
+    sort_column_name: ColumnName;
+    sort_direction: SortDirection;
 }
 
 const commands: [string, cmd.Cmd][] = [
@@ -28,7 +34,9 @@ export function init() {
     cmd.add_cmds(commands);
     const substate: Games = {
         show_game_cnt: 20,
-        html_root: null
+        html_root: null,
+        sort_column_name: "when",
+        sort_direction: "desc"
     };
     state.duel_player.games = substate;
     log.log("Games module initialized");
@@ -47,6 +55,7 @@ function cmd_games_create_html_root(): Promise<void> {
         return Promise.reject();
     }
     const html_root = document.createElement("div");
+    html_root.addEventListener("click", (e) => { _on_click(e); });
     //html_root.setAttribute("id", "duel-games");
     html_root.className = "m11-games";
     state.duel_player.games.html_root = html_root;
@@ -83,11 +92,14 @@ function _html_remove_games(element: HTMLElement) {
 }
 
 function _html_render_games(data: GameData[], element: HTMLElement) {
-    if (!data.length) {
+    if (!data.length || !state.duel_player.games) {
         return;
     }
 
-  let rows = _html_render_games_header(data[0]);
+    const sort_column_name = state.duel_player.games.sort_column_name;
+    const sort_direction = state.duel_player.games.sort_direction;
+
+    let rows = _html_render_games_header(data[0], sort_column_name, sort_direction);
   //rows += data.map(([a, b]) => _html_render_games_row(data)).join("");
   rows += data.map((g) => _html_render_games_row(g)).join("");
   const html = `
@@ -97,14 +109,14 @@ ${rows}
     element.insertAdjacentHTML("beforeend", html);
 }
 
-function _html_render_games_header(g: GameData): string {
+function _html_render_games_header(g: GameData, c: ColumnName, d: SortDirection): string {
     return `
 <div class="table__header-row">
     <!--<div class="m11-games__header__player-a-cell"><div>${g.a_name}</div></div>-->
-    ${html_header_time_cell("when", "table__cell--first-column")}
-    ${html_header_cmp_cell("frags")}
-    ${html_header_name_cell("opponent", "table__cell--big")}
-    ${html_header_name_cell("map")}
+    ${html_header_time_cell("when", "table__cell--first-column", c === "when" ? d : null)}
+    ${html_header_cmp_cell("frags", "", c === "frags" ? d : null)}
+    ${html_header_name_cell("opponent", "table__cell--big", c === "opponent" ? d : null)}
+    ${html_header_name_cell("map", "", c === "map" ? d : null)}
 
     ${html_separator_cell()}
 
@@ -113,17 +125,17 @@ function _html_render_games_header(g: GameData): string {
     <!--<div class="m11-games__header__cmp-cell m11-games__cell">FPM</div>-->
     <!--<div class="m11-games__header__cmp-cell m11-games__cell">K/D</div>-->
 
-    ${html_header_cmp_cell("dmg", "table__cell--small")}
+    ${html_header_cmp_cell("dmg", "table__cell--small", c === "dmg" ? d : null)}
     <!--<div class="m11-games__header__cmp-cell">dmg/min</div>-->
-    ${html_header_cmp_cell("rl/min")}
-    ${html_header_cmp_cell("lg/min")}
-    ${html_header_cmp_cell("lg acc")}
+    ${html_header_cmp_cell("rl/min", "", c === "rl/min" ? d : null)}
+    ${html_header_cmp_cell("lg/min", "", c === "lg/min" ? d : null)}
+    ${html_header_cmp_cell("lg acc", "", c === "lg acc" ? d : null)}
 
     ${html_separator_cell()}
 
-    ${html_header_cmp_cell("ra", "table__cell--small")}
-    ${html_header_cmp_cell("ya", "table__cell--small")}
-    ${html_header_cmp_cell("mh", "table__cell--small")}
+    ${html_header_cmp_cell("ra", "table__cell--small", c === "ra" ? d : null)}
+    ${html_header_cmp_cell("ya", "table__cell--small", c === "ya" ? d : null)}
+    ${html_header_cmp_cell("mh", "table__cell--small", c === "mh" ? d : null)}
 
     <!--<div class="m11-games__header__cmp-cell">speed</div>-->
     <!--<div class="m11-games__header__single-cmp-cell">speed</div>-->
@@ -161,4 +173,30 @@ function _html_render_games_row(g: GameData): string {
 
 function html_name(name: string, extra_classes: string = ""): string {
     return `<div class="table__name-cell ${extra_classes}"><div>${name}</div></div>`;
+}
+
+function _on_click(e: any): void {
+    for (let i = 0; i < e.path.length; i++) {
+        if  (e.path[i].classList && e.path[i].classList.contains("table__cell--header")) {
+            return _on_table_header_cell_click(e.path[i]);
+        }
+    }
+}
+
+function _on_table_header_cell_click(cell: HTMLElement): void {
+    if (!state.duel_player.games) {
+        return;
+    }
+
+    const column_name: ColumnName = (cell.querySelector(".table__cell__header-name") as HTMLElement).innerText.toLowerCase().trim() as ColumnName;
+
+    let sort_direction: SortDirection = "desc";
+    if (state.duel_player.games.sort_column_name === column_name && state.duel_player.games.sort_direction === "desc") {
+        sort_direction = "asc";
+    }
+
+    state.duel_player.games.sort_column_name = column_name;
+    state.duel_player.games.sort_direction = sort_direction;
+
+    rec_sort_duel_player_games();
 }

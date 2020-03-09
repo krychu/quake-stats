@@ -69,7 +69,9 @@ $separator-cell-basis: 40px;
 }
 
 .table__cell--header--selected {
-    color: #FF55FF;
+    //color: #FF55FF;
+    color: magenta;
+    //border: 1px solid magenta;
 }
 
 .table__cell--header:hover .table__cell__header-name {
@@ -102,6 +104,10 @@ $separator-cell-basis: 40px;
 
 .table__cell--tiny {
     flex-basis: $tiny-cell-basis !important;
+}
+
+.table__cell--normal {
+    flex-basis: $cell-basis !important;
 }
 
 .table__cell--small {

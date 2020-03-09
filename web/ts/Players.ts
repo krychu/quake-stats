@@ -137,7 +137,7 @@ function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_oppon
  */
 function _on_click(e: any): void {
     for (let i = 0; i < e.path.length; i++) {
-        if (e.path[i].classList.contains("table__row")) {
+        if (e.path[i].classList && e.path[i].classList.contains("table__row")) {
             return _on_table_row_click(e.path[i]);
         } else if  (e.path[i].classList.contains("table__cell--header")) {
             return _on_table_header_cell_click(e.path[i]);

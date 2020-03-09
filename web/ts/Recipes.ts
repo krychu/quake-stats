@@ -34,12 +34,25 @@ export function rec_sort_duel_players() {
       | data_fetch_duel_players
       | duel_players_render_data
     `);
-    //console.log(column_name + ", " + direction);
-    // name
-    // game_cnt
-    // opponent_cnt
-    // a_win_percent
-    // avg_frag_percent
-    // avg_lg_acc_percent
-    // last_game_date
+}
+
+export function rec_sort_duel_player_games() {
+    cmd.schedule(`
+      | data_fetch_games
+      | games_render_data
+    `);
+}
+
+export function rec_sort_duel_player_opponents() {
+    cmd.schedule(`
+      | data_fetch_opponents
+      | opponents_render_data
+    `);
+}
+
+export function rec_sort_duel_player_maps() {
+    cmd.schedule(`
+      | data_fetch_maps
+      | maps_render_data
+`);
 }
