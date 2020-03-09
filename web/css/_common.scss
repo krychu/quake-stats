@@ -66,25 +66,26 @@ $separator-cell-basis: 40px;
     //justify-content: center;
     justify-content: flex-start;
     cursor: pointer;
-
-    &:hover {
-        text-decoration: underline;
-    }
 }
 
-.table__cell--sort-header-desc, .table__cell--sort-header-asc {
-    font-weight: bold;
+.table__cell--header--selected {
     color: #FF55FF;
 }
 
-.table__cell--header-arrow {
-    margin-left: 5px;
-    visibility: hidden;
+.table__cell--header:hover .table__cell__header-name {
+    text-decoration: underline;
 }
 
-.table__cell--visible-header-arrow {
-    @extend .table__cell--header-arrow;
+.table__cell__sort-arrow {
+    margin-left: 5px;
+}
+
+.table__cell__sort-arrow--visible {
     visibility: visible;
+}
+
+.table__cell__sort-arrow--hidden {
+    visibility: hidden;
 }
 
 .table__cell--right-align {
@@ -122,7 +123,7 @@ $separator-cell-basis: 40px;
     /* text right aligned but in the center */
     justify-content: flex-end;
     //box-sizing: border-box;
-    padding-right: 45px;
+    padding-right: 25px;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

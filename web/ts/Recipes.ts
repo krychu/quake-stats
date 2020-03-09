@@ -29,9 +29,7 @@ export function rec_refresh_duel_player_page() {
     `);
 }
 
-export function rec_sort_duel_players(column_name: string, sort_direction: SortDirection) {
-    console.log(column_name);
-    console.log(sort_direction);
+export function rec_sort_duel_players() {
     cmd.schedule(`
       | data_fetch_duel_players
       | duel_players_render_data

@@ -104,24 +104,15 @@ function _html_render_players(data: PlayerData[], element: HTMLElement) {
 }
 
 function _html_render_players_header(c: ColumnName, d: SortDirection): string {
-    const sort_class = `table__cell--sort-header-${d}`;
-    const hidden_arrow = `<div class="table__cell--header-arrow">${d === "asc" ? "&#8593;" : "&#8595;"}</div>`;
-    const visible_arrow = `<div class="table__cell--visible-header-arrow">${d === "asc" ? "&#8593;" : "&#8595;"}</div>`;
-
-    let items: {[key: string]: string[]} = {};
-    ["player", "games", "opponents", "winrate", "frags", "lg hits", "last"].forEach((column) => {
-        items[column] = column === c ? [visible_arrow, sort_class] : [hidden_arrow, ""];
-    });
-
     return `
 <div class="table__header-row">
-  ${html_header_name_cell("player" + items["player"][0], "table__name-cell--huge table__cell--first-column " + items["player"][1])}
-  ${html_header_bar_cell("games" + items["games"][0], items["games"][1])}
-  ${html_header_bar_cell("opponents" + items["opponents"][0], items["opponents"][1])}
-  ${html_header_center_right_align_cell("winrate" + items["winrate"][0], 18, items["winrate"][1])}
-  ${html_header_center_right_align_cell("frags" + items["frags"][0], 18, items["frags"][1])}
-  ${html_header_center_right_align_cell("lg hits" + items["lg hits"][0], 33, items["lg hits"][1])}
-  ${html_header_time_cell("last" + items["last"][0], items["last"][1])}
+  ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column", c === "player" ? d : null)}
+  ${html_header_bar_cell("games", "", c === "games" ? d : null)}
+  ${html_header_bar_cell("opponents", "", c === "opponents" ? d : null)}
+  ${html_header_center_right_align_cell("winrate", 0, "table__cell--small", c === "winrate" ? d : null)}
+  ${html_header_center_right_align_cell("frags", 0, "table__cell--small", c === "frags" ? d : null)}
+  ${html_header_center_right_align_cell("lg hits", 11, "table__cell--small", c === "lg hits" ? d : null)}
+  ${html_header_time_cell("last", "", c === "last" ? d : null)}
 </div>
 `;
 }
@@ -132,9 +123,9 @@ function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_oppon
   ${html_name_cell(p.name, "table__name-cell--huge table__cell--first-column")}
   ${html_bar_cell(p.game_cnt, max_game_cnt)}
   ${html_bar_cell(p.opponent_cnt, max_opponent_cnt, 10)}
-  ${html_center_right_align_cell(p.a_win_percent, "", true)}
-  ${html_center_right_align_cell(p.avg_frag_percent, "", true)}
-  ${html_center_right_align_cell(p.avg_lg_acc_percent, "", true)}
+  ${html_center_right_align_cell(p.a_win_percent, "table__cell--small", true)}
+  ${html_center_right_align_cell(p.avg_frag_percent, "table__cell--small", true)}
+  ${html_center_right_align_cell(p.avg_lg_acc_percent, "table__cell--small", true)}
   ${html_time_cell(p.last_game_date)}
 </div>
 `;
@@ -164,11 +155,8 @@ function _on_table_header_cell_click(header_cell: HTMLElement): void {
         return;
     }
 
-    let column_name: ColumnName = header_cell.innerText.toLowerCase() as ColumnName;
-    const last_char_code = column_name.charCodeAt(column_name.length - 1);
-    if (last_char_code === 8595 || last_char_code === 8593) {
-        column_name = column_name.substring(0, column_name.length-2) as ColumnName;
-    }
+    const column_name: ColumnName = (header_cell.querySelector(".table__cell__header-name") as HTMLElement).innerText.toLowerCase().trim() as ColumnName;
+
     let sort_direction: SortDirection = "desc";
     if (state.duel_players.players.sort_column_name === column_name && state.duel_players.players.sort_direction === "desc") {
         sort_direction = "asc";
@@ -177,5 +165,5 @@ function _on_table_header_cell_click(header_cell: HTMLElement): void {
     state.duel_players.players.sort_column_name = column_name;
     state.duel_players.players.sort_direction = sort_direction;
 
-    rec_sort_duel_players(column_name, sort_direction);
+    rec_sort_duel_players();
 }
