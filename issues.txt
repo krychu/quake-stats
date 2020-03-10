@@ -1,5 +1,6 @@
 Open issues
 --------------------------------------------------------------------------------
+- Bug: sorting on Frags could show "170% | -70%"
 - Sortable tables (especially players and recent games)
 - Add game badges
 - Implement bps visual design
