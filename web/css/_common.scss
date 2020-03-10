@@ -23,7 +23,16 @@ $font-size-huge: 28px;
 $font-size-small: 14px;
 $font-size-tiny: 12px;
 
-$hover-color: #ffd100;
+//$hover-color: #ffd100;
+$hover-color: cyan;
+/* $bar-color-better: cyan; */
+/* $bar-border-color-better: cyan; */
+/* $bar-color-worse: magenta; */
+/* $bar-border-color-worse: magenta; */
+$bar-color-better: rgba(0,255,0,0.25);
+$bar-border-color-better: rgba(0,255,0,1);
+$bar-color-worse: rgba(255,0,0,0.15);
+$bar-border-color-worse: rgba(255,0,0,0.8);
 
 /* common styles, probably should be moved later to a separate file */
 $huge-cell-basis: 150px;
@@ -209,13 +218,13 @@ $separator-cell-basis: 40px;
 }
 
 .table__cmp-cell__bar--worse {
-    background-color: rgba(255,0,0,0.15);
-    border-left: 1px solid rgba(255,0,0,0.8);
+    background-color: $bar-color-worse;
+    border-left: 1px solid $bar-border-color-worse;
 }
 
 .table__cmp-cell__bar--better {
-    background-color: rgba(0,255,0,0.25);
-    border-right: 1px solid rgba(0,255,0,1);
+    background-color: $bar-color-better;
+    border-right: 1px solid $bar-border-color-better;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
