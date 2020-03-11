@@ -7,6 +7,7 @@ Open issues
 - Show ra/mh only
 - Add demo download link and show it on hover only
 - Adopt bps' player name ordering (when sorting alphabetically)
+- Filter incompleted games (<3 min)
 - Bug: Some txts in qtv cannot be retrieved
 - Opponents: Make dmg bars longer
 - Docker
