@@ -1,13 +1,14 @@
 Open issues
 --------------------------------------------------------------------------------
-- Bug: sorting on Frags could show "170% | -70%"
+- Filter incompleted games (<3 min)
+- Bug: Opponents percentages can be borked (probably because incomplete game, see bps-dot)
+- Bug: Frags could show "170% | -70%"
 - Sortable tables (especially players and recent games)
 - Add game badges
 - Implement bps visual design
 - Show ra/mh only
 - Add demo download link and show it on hover only
 - Adopt bps' player name ordering (when sorting alphabetically)
-- Filter incompleted games (<3 min)
 - Bug: Some txts in qtv cannot be retrieved
 - Opponents: Make dmg bars longer
 - Docker
