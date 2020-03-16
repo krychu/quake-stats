@@ -1,5 +1,8 @@
 Open issues
 --------------------------------------------------------------------------------
+- Filter incompleted games (<3 min)
+- Bug: Opponents percentages can be borked (probably because incomplete game, see bps-dot)
+- Bug: Frags could show "170% | -70%"
 - Sortable tables (especially players and recent games)
 - Add game badges
 - Implement bps visual design
