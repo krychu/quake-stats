@@ -37,36 +37,20 @@ export function escape_html(str: string) {
     });
 }
 
-export function time_ago(date: string): string {
-    const parts = date.split(":").map(part => parseInt(part));
+export function time_format(minutes_ago: number): [number, string] {
+    const hours_ago = Math.floor(minutes_ago/60);
+    const days_ago = Math.floor(minutes_ago/(24*60));
+    const months_ago = Math.floor(minutes_ago/(28*24*60));
 
-    if (parts[0] === 0.0) {
-        return "TODAY";
-    } else if (parts[0] > 365) {
-        return "+365 d";
+    if (months_ago) {
+        return [months_ago, "mon"];
+    } else if (days_ago) {
+        return [days_ago, "days"];
+    } else if (hours_ago) {
+        return [hours_ago, "hours"];
     } else {
-        return parts[0] + " d";
+        return [minutes_ago, "mins"];
     }
-}
-
-export function time_ago_old(date: string): string {
-    const parts = date.split(":").map(part => parseInt(part));
-    const units = ["d", "h", "m"];
-
-    for (let i=0; i<units.length; i++) {
-        if (!isNaN(parts[i]) && parts[i] !== 0.0) {
-            // if (units[i] === "d" && parts[i] > 365) {
-            //   return Math.floor(parts[i] / 365).toString() + "y+";
-            // } else {
-            if (units[i] === "d" && parts[i] > 365) {
-                return "+365 d";
-            }
-            return parts[i] + " " + units[i];
-            //}
-        }
-    }
-
-    return "?";
 }
 
 /* common html functions */
@@ -102,12 +86,18 @@ export function html_header_bar_cell(name: string, extra_classes = "", sort_dire
     return `<div class="table__cell table__cell--header table__cell--normal ${extra_classes}"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
-export function html_time_cell(date: string, extra_classes = ""): string {
-    return `<div class="table__cell table__cell--small table__cell--center-right-align ${extra_classes}">${time_ago(date)}</div>`;
+export function html_time_cell(minutes_ago: number, extra_classes = ""): string {
+    const [value, label] = time_format(minutes_ago);
+    return `
+<div class="table__time-cell table__cell--small ${extra_classes}">
+  <div class="table__time-cell__value">${value}</div>
+  <div class="table__time-cell__label">${label}</div>
+</div>
+`;
 }
 export function html_header_time_cell(name: string, extra_classes = "", sort_direction: SortDirection | null = null): string {
     extra_classes += sort_direction ? " table__cell--header--selected" : "";
-    return `<div class="table__cell table__cell--right-align table__cell--header table__cell--small ${extra_classes}" style="padding-right: 15px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
+    return `<div class="table__cell table__cell--right-align table__cell--header table__cell--small ${extra_classes}" style="padding-right: 8px"><div class="table__cell__header-name">${name}</div> ${html_sort_arrow(sort_direction)}</div>`;
 }
 
 export function html_name_cell(name: string, extra_classes = ""): string {

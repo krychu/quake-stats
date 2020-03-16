@@ -39,7 +39,8 @@ export interface GameData {
     // this order should stay sync with the UI design
     game_id: number;
     raw_date: number;
-    date: string;
+    //date: string;
+    minutes_ago: number;
     map: string;
 
     a_name: string;
@@ -106,7 +107,8 @@ export interface PlayerData {
     opponent_cnt: number;
     a_win_percent: number;
     b_win_percent: number;
-    last_game_date: string;
+    //last_game_date: string;
+    last_game_minutes_ago: number;
     avg_lg_acc_percent: number;
     avg_frag_percent: number;
 }

@@ -15,7 +15,7 @@ import * as cmd from "./Cmd";
 import * as log from "./Log";
 import { rec_sort_duel_player_games } from "./Recipes";
 
-type ColumnName = "when" | "frags" | "opponent" | "map" | "dmg" | "rl/min" | "lg/min" | "lg acc" | "ra" | "ya" | "mh";
+type ColumnName = "ago" | "frags" | "opponent" | "map" | "dmg" | "rl/min" | "lg/min" | "lg acc" | "ra" | "ya" | "mh";
 
 export interface Games {
     show_game_cnt: number;
@@ -35,7 +35,7 @@ export function init() {
     const substate: Games = {
         show_game_cnt: 20,
         html_root: null,
-        sort_column_name: "when",
+        sort_column_name: "ago",
         sort_direction: "desc"
     };
     state.duel_player.games = substate;
@@ -113,8 +113,7 @@ function _html_render_games_header(g: GameData, c: ColumnName, d: SortDirection)
     return `
 <div class="table__header-row">
     <!--<div class="m11-games__header__player-a-cell"><div>${g.a_name}</div></div>-->
-    ${html_header_time_cell("when", "table__cell--first-column", c === "when" ? d : null)}
-    ${html_header_cmp_cell("frags", "", c === "frags" ? d : null)}
+    ${html_header_cmp_cell("frags", "table__cell--first-column", c === "frags" ? d : null)}
     ${html_header_name_cell("opponent", "table__cell--big", c === "opponent" ? d : null)}
     ${html_header_name_cell("map", "", c === "map" ? d : null)}
 
@@ -136,6 +135,7 @@ function _html_render_games_header(g: GameData, c: ColumnName, d: SortDirection)
     ${html_header_cmp_cell("ra", "table__cell--small", c === "ra" ? d : null)}
     ${html_header_cmp_cell("ya", "table__cell--small", c === "ya" ? d : null)}
     ${html_header_cmp_cell("mh", "table__cell--small", c === "mh" ? d : null)}
+    ${html_header_time_cell("ago", "", c === "ago" ? d : null)}
 
     <!--<div class="m11-games__header__cmp-cell">speed</div>-->
     <!--<div class="m11-games__header__single-cmp-cell">speed</div>-->
@@ -147,9 +147,8 @@ function _html_render_games_row(g: GameData): string {
     return `
 <div class="table__row ${g.a_frags > g.b_frags && "m11-games__game--win"}">
     <!--<div class="m11-games__game__player-a-cell"><div>${g.a_name}</div></div>-->
-    ${html_time_cell(g.date, "table__cell--first-column")}
 
-    ${html_cmp_cell_clamped_frac(g.a_frags, g.b_frags)}
+    ${html_cmp_cell_clamped_frac(g.a_frags, g.b_frags, false, "table__cell--first-column")}
     ${html_name(g.b_name, "table__cell--big")}
     ${html_name(g.map)}
 
@@ -167,6 +166,9 @@ function _html_render_games_row(g: GameData): string {
     ${html_cmp_cell_clamped_frac(g.a_ra, g.b_ra, false, "table__cell--small")}
     ${html_cmp_cell_clamped_frac(g.a_ya, g.b_ya, false, "table__cell--small")}
     ${html_cmp_cell_clamped_frac(g.a_mh, g.b_mh, false, "table__cell--small")}
+
+    ${html_time_cell(g.minutes_ago)}
+
 </div>
 `;
 }

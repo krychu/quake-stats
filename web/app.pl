@@ -60,7 +60,7 @@ post '/api/1vs1/players' => sub {
         winrate     => "a_win_percent",
         frags       => "avg_frag_percent",
         "lg hits"   => "avg_lg_acc_percent",
-        last        => "last_game_date"
+        ago         => "last_game_minutes_ago"
     }->{$sort_column_name};
     my $sort_direction = $c->param("sort_direction");
     my $players = PG::get_players($time_period, $pg_sort_field, $sort_direction);
@@ -82,7 +82,7 @@ post '/api/1vs1/:player/games/:cnt' => sub {
     my $time_period = $c->param("time_period");
     my $sort_column_name = $c->param("sort_column_name");
     my $pg_sort_field = {
-        when       => "raw_date",
+        ago        => "raw_date",
         frags      => "a_frags",
         opponent   => "b_name",
         map        => "map",

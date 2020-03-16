@@ -15,7 +15,8 @@ WITH duel_players AS (
     ROUND(((COUNT(*) FILTER (WHERE b_frags > a_frags))::FLOAT / GREATEST(COUNT(*), 1)) * 100) AS b_win_percent,
     ROUND(AVG(a_lg_hits::NUMERIC / GREATEST(a_lg_attacks, 1)) * 100, 1) AS avg_lg_acc_percent,
     GREATEST(ROUND(AVG(a_frags::FLOAT / GREATEST((a_frags + b_frags), 1)) * 100), 0) AS avg_frag_percent,
-    TO_CHAR(MIN(NOW() - date), 'DD:HH24:MM:SS') as last_game_date
+    (MIN(EXTRACT(EPOCH FROM NOW() - date) / 60))::INTEGER AS last_game_minutes_ago
+    --TO_CHAR(MIN(NOW() - date), 'DD:HH24:MM:SS') as last_game_date
   FROM games
   WHERE mode = 'duel'
     AND dm = 3

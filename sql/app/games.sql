@@ -16,7 +16,9 @@ WITH duel_player_games AS (
   SELECT
     id AS game_id,
     date AS raw_date,
-    TO_CHAR(NOW() - date, 'DD:HH24:MM:SS') AS date,
+    --TO_CHAR(NOW() - date, 'DD:HH24:MM:SS') AS date,
+    (EXTRACT(EPOCH FROM NOW() - date) / 60)::INTEGER AS minutes_ago,
+    --TO_CHAR(NOW() - date, 'MM:SS') AS date,
     map,
 
     a_name,

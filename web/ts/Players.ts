@@ -15,7 +15,7 @@ import * as cmd from "./Cmd";
 import * as log from "./Log";
 import { rec_sort_duel_players } from "./Recipes";
 
-type ColumnName = "player" | "games" | "opponents" | "winrate" | "frags" | "lg hits" | "last";
+type ColumnName = "player" | "games" | "opponents" | "winrate" | "frags" | "lg hits" | "ago";
 
 export interface Players {
     html_root: HTMLElement | null;
@@ -112,7 +112,7 @@ function _html_render_players_header(c: ColumnName, d: SortDirection): string {
   ${html_header_center_right_align_cell("winrate", 0, "table__cell--small", c === "winrate" ? d : null)}
   ${html_header_center_right_align_cell("frags", 0, "table__cell--small", c === "frags" ? d : null)}
   ${html_header_center_right_align_cell("lg hits", 11, "table__cell--small", c === "lg hits" ? d : null)}
-  ${html_header_time_cell("last", "", c === "last" ? d : null)}
+  ${html_header_time_cell("ago", "", c === "ago" ? d : null)}
 </div>
 `;
 }
@@ -126,7 +126,7 @@ function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_oppon
   ${html_center_right_align_cell(p.a_win_percent, "table__cell--small", true)}
   ${html_center_right_align_cell(p.avg_frag_percent, "table__cell--small", true)}
   ${html_center_right_align_cell(p.avg_lg_acc_percent, "table__cell--small", true)}
-  ${html_time_cell(p.last_game_date)}
+  ${html_time_cell(p.last_game_minutes_ago)}
 </div>
 `;
 }

@@ -230,6 +230,25 @@ $separator-cell-basis: 40px;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// time cell
+.table__time-cell {
+    @extend .table__cell;
+    //flex-basis: $cell-basis;
+    //position: relative;
+}
+
+.table__time-cell__value {
+    flex: 1;
+    text-align: right;
+    margin-right: 7px;
+}
+
+.table__time-cell__label {
+    flex: 1.5;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // separator cell
 
 .table__cell--separator {
