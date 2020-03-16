@@ -168,7 +168,7 @@ __DATA__
     <meta name="msapplication-config" content="/favicon/browserconfig.xml">
 
   </head>
-  <body>
+  <body class="theme-krychu">
     <script>
       const PAGE = 'duel_players';
     </script>
@@ -205,7 +205,7 @@ __DATA__
     <meta name="msapplication-config" content="/favicon/browserconfig.xml">
 
   </head>
-  <body>
+  <body class="theme-krychu">
     <script>
       const PAGE = 'duel_player';
       const SV_PLAYER = '<%= $player %>';
