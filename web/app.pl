@@ -92,7 +92,7 @@ post '/api/1vs1/:player/games/:cnt' => sub {
         "lg acc"   => "a_lg_acc_percent",
         ra         => "a_ra",
         ya         => "a_ya",
-        mh         => "a_mh"
+        mega       => "a_mh"
     }->{$sort_column_name};
     my $sort_direction = $c->param("sort_direction");
     my $player = $c->stash('player');

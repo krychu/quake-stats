@@ -15,7 +15,7 @@ import * as cmd from "./Cmd";
 import * as log from "./Log";
 import { rec_sort_duel_player_games } from "./Recipes";
 
-type ColumnName = "ago" | "frags" | "opponent" | "map" | "dmg" | "rl/min" | "lg/min" | "lg acc" | "ra" | "ya" | "mh";
+type ColumnName = "ago" | "frags" | "opponent" | "map" | "dmg" | "rl/min" | "lg/min" | "lg acc" | "ra" | "ya" | "mega";
 
 export interface Games {
     show_game_cnt: number;
@@ -57,7 +57,7 @@ function cmd_games_create_html_root(): Promise<void> {
     const html_root = document.createElement("div");
     html_root.addEventListener("click", (e) => { _on_click(e); });
     //html_root.setAttribute("id", "duel-games");
-    html_root.className = "m11-games";
+    html_root.className = "table--games";
     state.duel_player.games.html_root = html_root;
     return Promise.resolve();
 }
@@ -124,7 +124,7 @@ function _html_render_games_header(g: GameData, c: ColumnName, d: SortDirection)
     <!--<div class="m11-games__header__cmp-cell m11-games__cell">FPM</div>-->
     <!--<div class="m11-games__header__cmp-cell m11-games__cell">K/D</div>-->
 
-    ${html_header_cmp_cell("dmg", "table__cell--small", c === "dmg" ? d : null)}
+    ${html_header_cmp_cell("dmg", "table__cell--small optional", c === "dmg" ? d : null)}
     <!--<div class="m11-games__header__cmp-cell">dmg/min</div>-->
     ${html_header_cmp_cell("rl/min", "", c === "rl/min" ? d : null)}
     ${html_header_cmp_cell("lg/min", "", c === "lg/min" ? d : null)}
@@ -133,8 +133,8 @@ function _html_render_games_header(g: GameData, c: ColumnName, d: SortDirection)
     ${html_separator_cell()}
 
     ${html_header_cmp_cell("ra", "table__cell--small", c === "ra" ? d : null)}
-    ${html_header_cmp_cell("ya", "table__cell--small", c === "ya" ? d : null)}
-    ${html_header_cmp_cell("mh", "table__cell--small", c === "mh" ? d : null)}
+    ${html_header_cmp_cell("ya", "table__cell--small optional", c === "ya" ? d : null)}
+    ${html_header_cmp_cell("mega", "table__cell--small", c === "mega" ? d : null)}
     ${html_header_time_cell("ago", "", c === "ago" ? d : null)}
 
     <!--<div class="m11-games__header__cmp-cell">speed</div>-->
@@ -156,7 +156,7 @@ function _html_render_games_row(g: GameData): string {
 
     <!--${html_cmp_cell_100percent(g.a_frag_percent, g.b_frag_percent, "table__cell--small")} -->
 
-    ${html_cmp_cell_100percent(g.a_dmg_percent, g.b_dmg_percent, "table__cell--small")}
+    ${html_cmp_cell_100percent(g.a_dmg_percent, g.b_dmg_percent, "table__cell--small optional")}
     ${html_cmp_cell_clamped_ratio(g.a_rl_dmg_minute, g.b_rl_dmg_minute)}
     ${html_cmp_cell_clamped_ratio(g.a_lg_dmg_minute, g.b_lg_dmg_minute)}
     ${html_cmp_cell_clamped_frac(g.a_lg_acc_percent, g.b_lg_acc_percent, true)}
@@ -164,7 +164,7 @@ function _html_render_games_row(g: GameData): string {
     ${html_separator_cell()}
 
     ${html_cmp_cell_clamped_frac(g.a_ra, g.b_ra, false, "table__cell--small")}
-    ${html_cmp_cell_clamped_frac(g.a_ya, g.b_ya, false, "table__cell--small")}
+    ${html_cmp_cell_clamped_frac(g.a_ya, g.b_ya, false, "table__cell--small optional")}
     ${html_cmp_cell_clamped_frac(g.a_mh, g.b_mh, false, "table__cell--small")}
 
     ${html_time_cell(g.minutes_ago)}

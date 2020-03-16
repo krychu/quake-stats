@@ -27,6 +27,8 @@ $themes: (
         bar-border-color-better: rgba(0,255,0,1),
 
         separator-cell-basis: 40px,
+
+        optional: none, // inherit, flex, or none
     ),
 );
 

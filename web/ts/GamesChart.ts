@@ -54,7 +54,7 @@ async function cmd_gchart_create_html_root(): Promise<void> {
   //html_root.className = "m11-games-chart";
 
   const html_chart_root = document.createElement("div");
-  html_chart_root.className = "m11-games-chart";
+  html_chart_root.className = "m11-games-chart optional";
 
     state.duel_player.games_chart.html_root = html_root;
     state.duel_player.games_chart.html_chart_root = html_chart_root;
@@ -64,7 +64,7 @@ async function cmd_gchart_create_html_root(): Promise<void> {
 
 function _html_render_title(): string {
   return `
-<div class="section_title--games-chart">
+<div class="section_title">
 Last games
 </div>
 `;
