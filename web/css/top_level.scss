@@ -13,7 +13,10 @@
 
 .m11-toplevel__item__stat {
     text-align: center;
-    font-size: $font-size-huge;
+
+    @include themify($themes) {
+        font-size: themed('font-size-huge');
+    }
 }
 
 .m11-toplevel__item__label {

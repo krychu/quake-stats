@@ -1,49 +1,5 @@
 @import 'themes';
 
-$win-color: none;//rgba(0,255,0,0.05);
-$vgap-normal: 20px;
-
-$table-hover-bg-color: rgba(0,0,0,0.04);
-$table-hover-color: white;
-
-$grey-0: black;
-$grey-1: #aaa;
-$grey-2: #ccc;
-$grey-3: #f5f5f5;
-
-$player-a-color: $grey-2;
-$vs-cell-color: $grey-2;
-$na-color: $grey-2;
-
-
-$font-1: 'Inconsolata';
-//$font-2: 'Inconsolata';
-//$font-2: 'Audiowide';
-//$font-2: 'Odibee Sans';
-$font-2: 'Titillium Web';
-$font-size-huge: 28px;
-$font-size-small: 14px;
-$font-size-tiny: 12px;
-
-//$hover-color: #ffd100;
-$hover-color: cyan;
-/* $bar-color-better: cyan; */
-/* $bar-border-color-better: cyan; */
-/* $bar-color-worse: magenta; */
-/* $bar-border-color-worse: magenta; */
-$bar-color-better: rgba(0,255,0,0.25);
-$bar-border-color-better: rgba(0,255,0,1);
-$bar-color-worse: rgba(255,0,0,0.15);
-$bar-border-color-worse: rgba(255,0,0,0.8);
-
-/* common styles, probably should be moved later to a separate file */
-$huge-cell-basis: 150px;
-$big-cell-basis: 120px;
-$cell-basis: 100px;
-$small-cell-basis: 80px;
-$tiny-cell-basis: 50px;
-$separator-cell-basis: 40px;
-
 ////////////////////////////////////////////////////////////////////////////////
 
 .table__row, .table__header-row {
@@ -54,7 +10,10 @@ $separator-cell-basis: 40px;
 .table__row:hover {
     cursor: pointer;
     //color: $table-hover-color;
-    background-color: $table-hover-bg-color;
+
+    @include themify($themes) {
+        background-color: themed('table-hover-bg-color');
+    }
 }
 
 .table__row:nth-child(even) {
@@ -66,17 +25,23 @@ $separator-cell-basis: 40px;
 
 .table__cell {
     display: flex;
-    flex-basis: $cell-basis;
     box-sizing: border-box;
     margin: 0px 10px;
+
+    @include themify($themes) {
+        flex-basis: themed('cell-basis');
+    }
 }
 
 .table__cell--header {
     text-transform: uppercase;
-    margin-bottom: $vgap-normal;
     //justify-content: center;
     justify-content: flex-start;
     cursor: pointer;
+
+    @include themify($themes) {
+        margin-bottom: themed('vgap-normal');
+    }
 }
 
 .table__cell--header--selected {
@@ -114,15 +79,21 @@ $separator-cell-basis: 40px;
 }
 
 .table__cell--tiny {
-    flex-basis: $tiny-cell-basis !important;
+    @include themify($themes) {
+        flex-basis: themed('tiny-cell-basis') !important;
+    }
 }
 
 .table__cell--normal {
-    flex-basis: $cell-basis !important;
+    @include themify($themes) {
+        flex-basis: themed('cell-basis') !important;
+    }
 }
 
 .table__cell--small {
-    flex-basis: $small-cell-basis !important;
+    @include themify($themes) {
+        flex-basis: themed('small-cell-basis') !important;
+    }
 }
 
 .table__cell--na {
@@ -150,22 +121,33 @@ $separator-cell-basis: 40px;
     @extend .table__cell;
 
     display: flex;
-    width: $cell-basis;
 
     div {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: $cell-basis;
+        @include themify($themes) {
+            max-width: themed('cell-basis');
+        }
+    }
+
+    @include themify($themes) {
+        width: themed('cell-basis');
     }
 }
 
 .table__name-cell--huge {
-    flex-basis: $huge-cell-basis;
-    width: $huge-cell-basis;
     div {
-        max-width: $huge-cell-basis;
+        @include themify($themes) {
+            max-width: themed('huge-cell-basis');
+        }
     }
+
+    @include themify($themes) {
+        flex-basis: themed('huge-cell-basis');
+        width: themed('huge-cell-basis');
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +165,7 @@ $separator-cell-basis: 40px;
     position: absolute;
     height: 100%;
     left: 0px;
-    background-color: #eee;
+    background-color: #f4f6f6;
     z-index: -1;
 }
 
@@ -192,9 +174,12 @@ $separator-cell-basis: 40px;
 
 .table__cmp-cell {
     @extend .table__cell;
-    flex-basis: $cell-basis;
     position: relative; // anchor for the bar
     justify-content: center;
+
+    @include themify($themes) {
+        flex-basis: themed('cell-basis');
+    }
 }
 
 .table__cmp-cell__a {
@@ -220,13 +205,17 @@ $separator-cell-basis: 40px;
 }
 
 .table__cmp-cell__bar--worse {
-    background-color: $bar-color-worse;
-    border-left: 1px solid $bar-border-color-worse;
+    @include themify($themes) {
+        background-color: themed('bar-color-worse');
+        border-left: 1px solid themed('bar-border-color-worse');
+    }
 }
 
 .table__cmp-cell__bar--better {
-    background-color: $bar-color-better;
-    border-right: 1px solid $bar-border-color-better;
+    @include themify($themes) {
+        background-color: themed('bar-color-better');
+        border-right: 1px solid themed('bar-border-color-better');
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +242,10 @@ $separator-cell-basis: 40px;
 
 .table__cell--separator {
     margin: 0px;
-    flex-basis: $separator-cell-basis;
+
+    @include themify($themes) {
+        flex-basis: themed('separator-cell-basis');
+    }
 }
 
 
@@ -261,6 +253,9 @@ $separator-cell-basis: 40px;
 // percent
 
 .table__cell__percent {
-    color: $grey-2;
     padding-left: 4px;
+
+    @include themify($themes) {
+        color: themed('grey-2');
+    }
 }

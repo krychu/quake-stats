@@ -1,7 +1,9 @@
 @import "./_common.scss";
 
 body {
-    font-family: $font-1;
+    @include themify($themes) {
+        font-family: themed('font-1');
+    }
 }
 
 h2 {
@@ -87,9 +89,12 @@ h3 {
 }
 
 .server-line--header {
-    color: $grey-2;
     //text-transform: uppercase;
     margin-bottom: 5px;
+
+    @include themify($themes) {
+        color: themed('grey-2');
+    }
 }
 
 .server-line--avg {

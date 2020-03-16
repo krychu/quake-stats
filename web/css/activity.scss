@@ -6,31 +6,43 @@
 }
 
 #main__activity tspan {
-    font-family: $font-1;
-    font-size: $font-size-tiny;
+    @include themify($themes) {
+        font-family: themed('font-1');
+        font-size: themed('font-size-tiny');
+    }
 }
 
 #main__activity rect {
-    fill: $grey-2;
-
     &:hover {
         cursor: crosshair;
+    }
+
+    @include themify($themes) {
+        fill: themed('grey-2');
     }
 }
 
 #main__activity text {
-    fill: $grey-0;
     transition: all 0.2s ease-in-out;
+
+    @include themify($themes) {
+        fill: themed('grey-0');
+    }
 }
 
 .main__activity__games, .main__activity__date {
-    fill: $hover-color !important;
+    @include themify($themes) {
+        fill: themed('hover-color') !important;
+    }
 }
 
 #main__activity .hovered {
-    color: $hover-color;
-    fill: $hover-color;
     transition: all 0.2s ease-in-out;
+
+    @include themify($themes) {
+        color: themed('hover-color');
+        fill: themed('hover-color');
+    }
 }
 
 .main__activity__header {

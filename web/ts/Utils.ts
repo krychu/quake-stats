@@ -69,14 +69,19 @@ export function html_na_cell(extra_classes: string = ""): string {
     return `<div class="table__cell table__cell--na ${extra_classes}">&#8212;</div>`
 }
 
-export function html_bar_cell(value: number, max_value: number, min_divider = 30, max_width = 70): string {
-    const divider = Math.max(max_value, min_divider);
-    const bar_width = Math.abs(value / divider) * max_width;
+export function html_bar_cell(value: number, max_value: number, min_divider = 30, max_width = 70, extra_classes = "", percent = false): string {
+    if (value == null) {
+        return html_na_cell(extra_classes);
+    }
 
+    const divider = Math.max(max_value, min_divider);
+    const bar_width = Math.min(Math.abs(value / divider) * max_width, max_width);
     const bar_style = `width: ${bar_width}px;`;
+    const html_percent = percent ? `<span class="table__cell__percent">%</span>` : "";;
+
     return `
-<div class="table__bar-cell table__cell--normal">
-  <div class="table__bar-cell__value">${value.toString()}</div>
+<div class="table__bar-cell table__cell--normal ${extra_classes}">
+  <div class="table__bar-cell__value">${value.toString()}${html_percent}</div>
   <div class="table__bar-cell__bar" style="${bar_style}"></div>
 </div>
 `;

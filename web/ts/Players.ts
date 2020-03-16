@@ -109,9 +109,9 @@ function _html_render_players_header(c: ColumnName, d: SortDirection): string {
   ${html_header_name_cell("player", "table__name-cell--huge table__cell--first-column", c === "player" ? d : null)}
   ${html_header_bar_cell("games", "", c === "games" ? d : null)}
   ${html_header_bar_cell("opponents", "", c === "opponents" ? d : null)}
-  ${html_header_center_right_align_cell("winrate", 0, "table__cell--small", c === "winrate" ? d : null)}
-  ${html_header_center_right_align_cell("frags", 0, "table__cell--small", c === "frags" ? d : null)}
-  ${html_header_center_right_align_cell("lg hits", 11, "table__cell--small", c === "lg hits" ? d : null)}
+  ${html_header_bar_cell("winrate", "", c === "winrate" ? d : null)}
+  ${html_header_bar_cell("frags", "", c === "frags" ? d : null)}
+  ${html_header_bar_cell("lg hits", "", c === "lg hits" ? d : null)}
   ${html_header_time_cell("ago", "", c === "ago" ? d : null)}
 </div>
 `;
@@ -123,9 +123,9 @@ function _html_render_players_row(p: PlayerData, max_game_cnt: number, max_oppon
   ${html_name_cell(p.name, "table__name-cell--huge table__cell--first-column")}
   ${html_bar_cell(p.game_cnt, max_game_cnt)}
   ${html_bar_cell(p.opponent_cnt, max_opponent_cnt, 10)}
-  ${html_center_right_align_cell(p.a_win_percent, "table__cell--small", true)}
-  ${html_center_right_align_cell(p.avg_frag_percent, "table__cell--small", true)}
-  ${html_center_right_align_cell(p.avg_lg_acc_percent, "table__cell--small", true)}
+  ${html_bar_cell(p.a_win_percent, 100, 1, 80, "", true)}
+  ${html_bar_cell(p.avg_frag_percent, 100, 1, 80, "", true)}
+  ${html_bar_cell(p.avg_lg_acc_percent, 40, 1, 80, "", true)}
   ${html_time_cell(p.last_game_minutes_ago)}
 </div>
 `;

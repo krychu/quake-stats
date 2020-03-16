@@ -11,16 +11,18 @@
     // font-weight: 300;
     // line-height: 1.4;
     //font-family: 'Inconsolata', monospace;
-    font-family: $font-1;
     //max-width: 80rem;
     max-width: 1400px;
     margin: 0 auto;
     margin-bottom: 100px;
+
+    @include themify($themes) {
+        font-family: themed('font-1');
+    }
 }
 
 #main__title {
     width: 800px;
-    font-family: $font-2;
     font-size: 52px;
     margin-bottom: 20px;
     //margin: 0 auto;
@@ -29,15 +31,22 @@
         text-decoration: none;
         color: blue;
     }
+
+    @include themify($themes) {
+        font-family: themed('font-2');
+    }
 }
 
 .section_title {
-    font-family: $font-2;
     font-size: 38px;
     //margin: 0 auto;
     text-align: left;
     margin-top: 50px;
     margin-bottom: 25px;
+
+    @include themify($themes) {
+        font-family: themed('font-2');
+    }
 }
 
 .section_title--games-chart {
