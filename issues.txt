@@ -6,6 +6,7 @@ Open issues
 - Filter incompleted games (<3 min)
 - Adopt bps' player name ordering (when sorting alphabetically)
 - Add game badges
+- Social snippet (when sharing link)
 - Contextual help: tooltips
 - Add demo download link and show it on hover only
 - Bug: Some txts in qtv cannot be retrieved
