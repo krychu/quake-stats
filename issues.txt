@@ -1,18 +1,16 @@
 Open issues
 --------------------------------------------------------------------------------
-- Filter incompleted games (<3 min)
-- Bug: Opponents percentages can be borked (probably because incomplete game, see bps-dot)
-- Bug: Frags could show "170% | -70%"
-- Sortable tables (especially players and recent games)
-- Add game badges
 - Implement bps visual design
-- Show ra/mh only
-- Add demo download link and show it on hover only
+- Bug: Frags could show "170% | -70%"
+- Bug: Opponents percentages can be borked (probably because incomplete game, see bps-dot)
+- Filter incompleted games (<3 min)
 - Adopt bps' player name ordering (when sorting alphabetically)
+- Add game badges
+- Contextual help: tooltips
+- Add demo download link and show it on hover only
 - Bug: Some txts in qtv cannot be retrieved
 - Opponents: Make dmg bars longer
 - Docker
-- Contextual help: tooltips?
 - Opponents: Progress indicators
 - Filters for player/map
 - Q: Development section needed?
@@ -26,6 +24,13 @@ Refactor
 
 Done
 --------------------------------------------------------------------------------
++ (17.03.2020) scaffolding for theming
++ (17.03.2020) proper day formatting & display
++ (17.03.2020) bars in all players' columns
++ (17.03.2020) removed unnecessary columns from games
++ (17.03.2020) removed games chart
++ (17.03.2020) Show ra/mh only
++ (17.03.2020) Sortable tables (especially players and recent games)
 + (05.03.2020) Preserve time selection
 + (05.03.2020) Add numbers above bars in Daily Games Chart +  show additional info on hover
 + (04.03.2020) Don't show tables or page if there's no data
