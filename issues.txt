@@ -73,6 +73,10 @@ Graveyard
 - Hover over games chart highlights related game
 - Label games chart
 
+Design
+--------------------------------------------------------------------------------
+https://projects.invisionapp.com/share/AFVJG0P8WG7#/screens/400615946
+
 Players handling
 --------------------------------------------------------------------------------
 We might have a need to edit players for a more sanitary list. 
