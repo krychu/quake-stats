@@ -37,7 +37,7 @@ Done
 + (04.03.2020) Don't show tables or page if there's no data
 + (02.03.2020) Refactor: design language
 + (02.03.2020) Refactor: commands should communicate via state, not pass arguments
-+ Add activity chart
++ (----------) Add activity chart
 + Add header / logo
 + Change win% in player table to a single number, no bars
 + Make ingestion work with multiple data paths
