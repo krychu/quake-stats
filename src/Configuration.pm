@@ -36,7 +36,7 @@ our @EXPORT_OK = qw($cfg);
 my $dev_config = {
     #$prod_config->%*,
 
-    postgresql_host         => 'localhost',
+    postgresql_host         => '127.0.0.1',#'192.168.1.112', # '10.195.20.6',
     postgresql_port         => 5432,
     postgresql_user         => 'postgres',
     postgresql_password     => '',

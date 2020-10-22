@@ -6,18 +6,12 @@ TBD
 
 ## Tooling
 
-- Scraping data
-  - ./run_scrape_quake1pl.pl
-  - ./run_scrape_qtv.pl
-  - ./run_scrape_badplace.pl
-- ./run_ingest.pl
-- TDB
+See ./ctrl.pl
 
 ## Development Environment
 
-- cd web; npx webpack --watch
-- ./run_webapp.pl
-
+./ctrl.pl webapp-dev
+./ctrl.pl webapp
 
 ### Docker TBD
 
@@ -27,3 +21,7 @@ docker start quake-stats-1
 docker exec -it quake-stats-1 bash
 ... then follow steps in docker/install
 
+## Useful links
+
+- https://gist.github.com/meag/a7ef2140813c33eeefc1802cc9575e1c#why-is-it-authenticating-to-badplaceeu-and-not-quakeworldnu
+- https://github.com/meag/qwscores

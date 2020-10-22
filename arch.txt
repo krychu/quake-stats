@@ -1,0 +1,66 @@
+Synopsis
+--------------------------------------------------------------------------------
+
+    +-----------+
+   +-----------+|          Multiple scrapers, running continuously, downloading
+  +-----------+|+          new stat files into data/.
+  |  Scrape   |+            
+  +-----------+
+        |
+        v
+  +------------+
+  | data/*.txt |           Directory with all scraped stat files.
+  +------------+
+        ^
+        v
+  +------------+           Running continuously, ingesting new stat files from
+  |   Ingest   |           data/ into PostgreSQL.
+  +------------+           
+        |
+        v
+  +------------+           
+  | PostgreSQL |           Game stats and players in queryable form.
+  +------------+
+        ^
+        v
+  +------------+           
+  |   Webapp   |           Thin web backend serving stat pages and data API.
+  +------------+
+
+
+This is a temporary solution for getting some data into the system. The
+long-term goal is to have a scalable solution that will allow timely harvest of
+game stats from all servers.
+
+Tech stack
+==========
+- Scrapers and ingest are Perl scripts.
+- Frontend is build with Typescript, SASS, and webpack. Backend is very thin
+  Mojolicious app in Perl.
+- Open to use Python, Elixir, or anything else in place of Perl if there is
+  such interest.
+
+Running
+=======
+- ./run_scrape_quake1.pl
+- ./run_scrape_qtv.pl
+- ./run_scrape_badplace.pl
+- ./run_digest.pl
+- ./run_webapp.pl
+
+
+
+Tooling
+--------------------------------------------------------------------------------
+
+Scraping data
+=============
+
+We have a number of
+
+
+Ingesting data
+==============
+
+Webapp
+======
