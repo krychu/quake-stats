@@ -44,7 +44,7 @@ sub fetch_server_stat_files {
     my $server_url = shift;
 
     $log->info("Fetching from: $server_url");
-    my $stat_urls = scrape_stat_urls(get_page($server_url));
+    my $stat_urls = scrape_all_stat_urls($server_url);
     my ($ok_cnt, $bad_cnt, $existed_cnt) = (0, 0, 0);
     for my $stat_url (@$stat_urls) {
         my ($file_path, $url) = @$stat_url;
@@ -87,6 +87,24 @@ sub scrape_server_urls {
     @urls = map { $base_address . $_ } @urls;
 
     return \@urls;
+}
+
+sub scrape_all_stat_urls {
+    my $server_url = shift;
+
+    my $i = 1;
+    my @all_urls;
+    while (1) {
+        my $url = $server_url . "view/?page=$i";
+        my $urls = scrape_stat_urls(get_page($url));
+        if (scalar(@$urls) == 0) {
+            last;
+        }
+        push(@all_urls, @$urls);
+        $i++;
+    };
+
+    return \@all_urls;
 }
 
 # Returns an array of pairs [txt, url]

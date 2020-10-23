@@ -25,6 +25,8 @@ Refactor
 
 Done
 --------------------------------------------------------------------------------
++ (24.10.2020) Fixed badplace scraping (pagination)
++ (23.10.2020) Added ctrl.pl for task execution
 + (17.03.2020) scaffolding for theming
 + (17.03.2020) proper day formatting & display
 + (17.03.2020) bars in all players' columns

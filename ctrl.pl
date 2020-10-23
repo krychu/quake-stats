@@ -13,13 +13,13 @@ my $web_dirname = catfile(dirname(__FILE__), 'web');
 my $usage = "  Usage
   -----
 
-    ./ctrl.pl command [args]
+    ./ctrl.pl command
 
   Available commands
   ------------------
 
-    createdb                 -- Creates PostgreSQL database
-    loadschema               -- Loads schema.sql which drops and re-creates tables and indices
+    createdb                 -- Create PostgreSQL database
+    loadschema               -- Load schema.sql which drops and re-creates tables and indices
 
     deletedata               -- Delete all scraped data
     scrape-quake1pl          -- Scrape stat files from quake1.pl
