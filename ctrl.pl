@@ -49,7 +49,8 @@ my $cmd_map = {
     "scrape-badplace"           => sub { run_once($scripts_dirname, "./scrape_badplace.pl"); },
     "scrape-qtv"                => sub { run_once($scripts_dirname, "./scrape_qtv.pl"); },
     "ingest"                    => sub { run_once($scripts_dirname, "./ingest.pl"); },
-    "webapp"                    => sub { run_once($web_dirname, "/usr/local/Cellar/perl/5.30.1/bin/morbo app.pl"); },
+#    "webapp"                    => sub { run_once($web_dirname, "/usr/local/Cellar/perl/5.30.1/bin/morbo app.pl"); },
+    "webapp"                    => sub { run_once($web_dirname, "~/perl5/perlbrew/perls/perl-5.31.3/bin/morbo app.pl"); },
 
     "run-scrape-quake1pl"       => sub { run_periodically("scrape-quake1pl", $cfg->{scrape_delay}); },
     "run-scrape-badplace"       => sub { run_periodically("scrape-badplace", $cfg->{scrape_delay}); },

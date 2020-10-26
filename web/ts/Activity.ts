@@ -75,19 +75,19 @@ function _html_render_activity(data: DayActivityData[], element: HTMLElement) {
   for (let i=0; i<data.length; i++) {
     //data[i].game_cnt = Math.round(Math.random() * 380);
 
-    const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
-    const game_divider = Math.max(max_game_cnt, 100);
-    const max_bar_height = 50; // in pixels
+      const max_game_cnt = data.reduce((acc, cur) => (cur.game_cnt > acc) ? cur.game_cnt : acc, 0);
+      const game_divider = Math.max(max_game_cnt, 100);
+      const max_bar_height = 50; // in pixels
 
-    const bar_width = 17;
+      const bar_width = 17;
       const bar_gap = 11;
       const bar_y_offset = 30;
       const chart_x_offset = 10;
-    const x = (bar_width + bar_gap) * i + chart_x_offset;
+      const x = (bar_width + bar_gap) * i + chart_x_offset;
       const bar_height = Math.max( Math.round((data[i].game_cnt / game_divider) * max_bar_height), 2);
-    const bar_y = max_bar_height - bar_height + bar_y_offset;
+      const bar_y = max_bar_height - bar_height + bar_y_offset;
 
-    const text_y = max_bar_height + bar_y_offset + 2;
+      const text_y = max_bar_height + bar_y_offset + 2;
 
       const games = draw.text("Games").style("opacity", "0").addClass("main__activity__games").move(x - 8, bar_y - 28);
       const date_parts = data[i].day_bucket.split("-");

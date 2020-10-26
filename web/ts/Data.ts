@@ -2,6 +2,7 @@ import { state } from "./State";
 import * as cmd from "./Cmd";
 import * as log from "./Log";
 import { create_form_data } from "./Utils";
+import { MainGameData } from "./1vs1/MainGames";
 
 export interface TopLevelData {
     game_cnt: number;
@@ -27,6 +28,7 @@ export interface DuelPlayerPageData {
 export interface DuelPlayersPageData {
     players: PlayerData[];
     activity: DayActivityData[];
+    games: MainGameData[];
 }
 
 export interface DayActivityData {
@@ -143,7 +145,8 @@ export function init() {
 
     const duel_players_data: DuelPlayersPageData = {
         players: [],
-        activity: []
+        activity: [],
+        games: []
     }
     state.duel_players.data = duel_players_data;
 }

@@ -83,8 +83,16 @@ sub insert_stat_files {
         $txt = decode_names($txt);
 
         # json pre-processing
-        my $json = parse_json($txt);
-        clean_dates($json);
+        my $json;
+        try {
+            $json = parse_json($txt);
+            clean_dates($json);
+        }
+        catch {
+            $log->error("parse error: $abs_path (skipping)");
+            $skip_cnt++;
+            next;
+        }
 
         my $file = basename($abs_path);
         last if is_already_added($dbh, $file, $json);
@@ -94,7 +102,7 @@ sub insert_stat_files {
 
         $cnt++;
     }
-    $log->info("New stat files added: $cnt, files skept: $skip_cnt (unsupported format)\n");
+    $log->info("New stat files added: $cnt, files skept: $skip_cnt (unsupported format or parsing problems)\n");
 }
 
 sub insert_game {

@@ -25,6 +25,7 @@ interface DuelPlayersPage {
     data: DuelPlayersPageData | null;
     activity: DayActivity | null;
     players: Players | null;
+    games: MainGames | null;
 };
 
 interface DuelPlayerPage {
@@ -64,7 +65,8 @@ let state: State = {
     duel_players: {
         data: null,
         activity: null,
-        players: null
+        players: null,
+        games: null
   }
 }
 
